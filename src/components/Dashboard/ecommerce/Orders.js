@@ -193,28 +193,7 @@ function Orders(props) {
 
         //editable: true,
       },
-      // {
-      //   field: "orderaction",
-      //   headerName: "",
-      //   width: 30,
-      //   description: "transaction row",
-      //   renderCell: (params) => (
-      //     <strong>
-      //       {/* {params.value.getFullYear()} */}
-      //       <ViewListIcon
-      //         style={{ cursor: "pointer" }}
-      //         onClick={() => [
-      //           // this.setState({
-      //           //   editOpen: true,
-      //           //   id: params.id,
-      //           //   params: params.row,
-      //           // }),
-      //           // history.push(`/products/onboard/${params.id}`),
-      //         ]}
-      //       />
-      //     </strong>
-      //   ),
-      // },
+      
     ];
 
     transactionList.map((transaction, index) => {
@@ -231,22 +210,7 @@ function Orders(props) {
           /(^\w|\s\w)(\S*)/g,
           (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
         ),
-        // shopType: transaction.shopType.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
-        // deliveryStatus: transaction.deliveryStatus.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
-        // deliveryMode: transaction.deliveryMode.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
-        // daysToDelivery: transaction.daysToDelivery.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
+        
         daysToDelivery: transaction.daysToDelivery,
 
         paymentMethod: transaction.paymentMethod.replace(
@@ -301,9 +265,9 @@ function Orders(props) {
             </Grid>
             <Grid item xs={2}>
               <div>
-                <Button variant="contained" onClick={handleOpen}>
+                {/* <Button variant="contained" onClick={handleOpen}>
                   Process Order
-                </Button>
+                </Button> */}
                 <Backdrop
                   sx={{
                     color: "#fff",

@@ -51,13 +51,13 @@ const useStyles = makeStyles((theme) => ({
   },
   rootMobile: {
     // maxWidth: 600,
-    maxWidth: "100%",
+    maxWidth: 350,
     height: "100%",
     //height: 545,
     //width: 400,
-    width: "100%",
+    width: "97%",
 
-    marginLeft: "3px",
+    marginLeft: "0px",
     //borderRadius: 30,
     marginTop: "-3.5em",
     marginBottom: "3em",
@@ -130,6 +130,7 @@ export default function CheckoutCard(props) {
   const [isOnPromo, setIsOnPromo] = useState(false);
   const [promoPrice, setPromoPrice] = useState();
   const [promoMinQuantity, setPromoMinQuantity] = useState();
+  const [creator, setCreator] = useState({});
   const [course, setCourse] = useState({});
 
   // const { token, setToken } = useToken();
@@ -156,120 +157,71 @@ export default function CheckoutCard(props) {
     const fetchData = async () => {
       let allData = [];
       api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
-      const response = await api.get(`/courses/${props.course}`);
-      const course = response.data.data.data;
+      const response = await api.get(`/creators/${props.creator}`);
+      const creator = response.data.data.data;
 
       allData.push({
-        id: course._id,
-        title: course.title,
-        imageCover: course.imageCover,
-        shortDescription: course.shortDescription,
-        longDescription: course.longDescription,
-        features: course.features,
-        deliveryMethod: course.deliveryMethod,
-        duration: course.duration,
-        category: course.category,
-        commencementDate: course.commencementDate,
-        commencementWeekdaysDate: course.commencementWeekdaysDate,
-        commencementWeekendsDate: course.commencementWeekendsDate,
-        price: course.price,
-        currency: course.currency,
-        venue: course.venue,
-        refNumber: course.refNumber,
-        sessionDuration: course.sessionDuration,
-        sessionPeriod: course.sessionPeriod,
-        studyPeriod: course.studyPeriod,
-        lectureDuration: course.lectureDuration,
-        projectDuration: course.projectDuration,
-        instructor: course.instructor,
-        image: course.imageCover,
-        createBy: course.createBy,
-        prerequisites: course.prerequisites,
-        tools: course.tools,
-        targetAudience: course.targetAudience,
-        whatToLearn: course.whatToLearn,
-        venueLink: course.venueLink,
-        commencementWeekdaysDate: course.commencementWeekdaysDate,
-        commencementWeekendsDate: course.commencementWeekendsDate,
-        genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-        genericWeekendStartDateText: course.genericWeekendStartDateText,
-        showGenericWeekdayStartDateText: course.showGenericWeekdayStartDateText,
-        showGenericWeekendStartDateText: course.showGenericWeekendStartDateText,
-        weekdaySessionPeriod: course.weekdaySessionPeriod,
-        weekendSessionPeriod: course.weekendSessionPeriod,
-        paymentOptions: course.paymentOptions,
-        track: course.track,
-        isCourseAuditable: course.isCourseAuditable,
-        weekdayAuditDays: course.weekdayAuditDays,
-        weekendAuditDays: course.weekendAuditDays,
-        hasMentorshipCredit: course.hasMentorshipCredit,
-        mentorshipCredit: course.mentorshipCredit,
-        mentorshipDuration: course.mentorshipDuration,
-        hasSeries: course.hasSeries,
-        series: course.series,
-        costPerMentorshipCredit: course.costPerMentorshipCredit,
-        isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-        maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-        allowLifeTimeAccess: course.allowLifeTimeAccess,
-        videoType: course.videoType,
+         id: creator._id,
+          name: creator.name,
+          description: creator.description,
+          videoPrice: creator.videoPrice,
+          videoHookPrice: creator.videoHookPrice,
+          videoDeliveryDays: creator.videoDeliveryDays,
+          soundPrice: creator.soundPrice,
+          soundHookPrice: creator.soundHookPrice,
+          soundDeliveryDays: creator.soundDeliveryDays,
+          age: creator.age,
+          gender:creator.gender,
+          rate: creator.rate,
+          country: creator.country,
+          category: creator.category,
+          categoryCode: creator.category? creator.category[0].code : "",
+          categoryName: creator.category ? creator.category[0].name : "",
+          countryId: creator.country? creator.country[0].id : "",
+          niche: creator.niches,
+          nicheId: creator.niches ? creator.niches[0].id :"",
+          language: creator.languages,
+          languageId: creator.languages ? creator.languages[0].id :"",
+          currency: creator.currency,
+          slug: creator.slug,
+          image: creator.image,
+          createBy: creator.createBy,
+          createdAt: creator.createdAt,
+          bio:creator.bio
       });
 
       if (!allData) {
         return;
       }
-      setCourse({
+      setCreator({
+       
         id: allData[0].id,
-        title: allData[0].title,
-        imageCover: allData[0].imageCover,
-        shortDescription: allData[0].shortDescription,
-        longDescription: allData[0].longDescription,
-        features: allData[0].features,
-        deliveryMethod: allData[0].deliveryMethod,
-        duration: allData[0].duration,
-        category: allData[0].category,
-        commencementDate: allData[0].commencementDate,
-        price: allData[0].price,
-        currency: allData[0].currency,
-        venue: allData[0].venue,
-        refNumber: allData[0].refNumber,
-        sessionDuration: allData[0].sessionDuration,
-        sessionPeriod: allData[0].sessionPeriod,
-        studyPeriod: allData[0].studyPeriod,
-        lectureDuration: allData[0].lectureDuration,
-        projectDuration: allData[0].projectDuration,
-        instructor: allData[0].instructor,
-        image: allData[0].image,
-        createBy: allData[0].createBy,
-        prerequisites: allData[0].prerequisites,
-        tools: allData[0].tools,
-        targetAudience: allData[0].targetAudience,
-        whatToLearn: allData[0].whatToLearn,
-        venueLink: allData[0].venueLink,
-        commencementWeekdaysDate: allData[0].commencementWeekdaysDate,
-        commencementWeekendsDate: allData[0].commencementWeekendsDate,
-        genericWeekdayStartDateText: allData[0].genericWeekdayStartDateText,
-        genericWeekendStartDateText: allData[0].genericWeekendStartDateText,
-        showGenericWeekdayStartDateText:
-          allData[0].showGenericWeekdayStartDateText,
-        showGenericWeekendStartDateText:
-          allData[0].showGenericWeekendStartDateText,
-        weekdaySessionPeriod: allData[0].weekdaySessionPeriod,
-        weekendSessionPeriod: allData[0].weekendSessionPeriod,
-        paymentOptions: allData[0].paymentOptions,
-        track: allData[0].track,
-        isCourseAuditable: allData[0].isCourseAuditable,
-        weekdayAuditDays: allData[0].weekdayAuditDays,
-        weekendAuditDays: allData[0].weekendAuditDays,
-        hasMentorshipCredit: allData[0].hasMentorshipCredit,
-        mentorshipCredit: allData[0].mentorshipCredit,
-        mentorshipDuration: allData[0].mentorshipDuration,
-        hasSeries: allData[0].hasSeries,
-        series: allData[0].series,
-        costPerMentorshipCredit: allData[0].costPerMentorshipCredit,
-        isInstallmentalPaymentAllowed: allData[0].isInstallmentalPaymentAllowed,
-        maximumInstallmentalPayment: allData[0].maximumInstallmentalPayment,
-        allowLifeTimeAccess: allData[0].allowLifeTimeAccess,
-        videoType: allData[0].videoType,
+          name: allData[0].name,
+          description: allData[0].description,
+          videoPrice: allData[0].videoPrice,
+          videoHookPrice: allData[0].videoHookPrice,
+          videoDeliveryDays: allData[0].videoDeliveryDays,
+          soundPrice: allData[0].soundPrice,
+          soundHookPrice: allData[0].soundHookPrice,
+          soundDeliveryDays: allData[0].soundDeliveryDays,
+          age: allData[0].age,
+          gender:allData[0].gender,
+          rate: allData[0].rate,
+          country: allData[0].country,
+          category: allData[0].category,
+          categoryCode: allData[0].categoryCode,
+          caegoryName: allData[0].categoryName,
+          countryId: allData[0].countryId,
+          niche: allData[0].niche,
+          nicheId: allData[0].nicheId,
+          language: allData[0].language,
+          languageId: allData[0].languageId,
+          currency: allData[0].currency,
+          slug: allData[0].slug,
+          image: allData[0].image,
+          createBy: allData[0].createBy,
+          createdAt: allData[0].createdAt,
+          bio:allData[0].bio
       });
     };
 
@@ -278,9 +230,13 @@ export default function CheckoutCard(props) {
     fetchData().catch(console.error);
   }, []);
 
+  
+
+  
+
   let imageUrl = "";
-  if (course) {
-    imageUrl = `${baseURL}/images/courses/${course.image}`;
+  if (creator) {
+    imageUrl = `${baseURL}/images/creators/${creator.image}`;
   }
 
   const Str = require("@supercharge/strings");
@@ -497,6 +453,7 @@ export default function CheckoutCard(props) {
   if (!course) {
     return <></>;
   }
+  
 
   return (
     <>
@@ -508,7 +465,7 @@ export default function CheckoutCard(props) {
               <CardMedia
                 className={classes.media}
                 component="img"
-                alt={course.title}
+                alt={creator.name}
                 image={imageUrl}
                 //title={product.name}
                 crossOrigin="anonymous"
@@ -516,317 +473,88 @@ export default function CheckoutCard(props) {
             </Grid>
             <Grid item style={{ width: "46.19%", border: "1px dotted grey" }}>
               <CardContent disableRipple>
-                {course.hasSeries ? (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {course.title}
-                    <span style={{ fontSize: 16, fontWeight: 700 }}>
-                      <em> ({course.series})</em>
-                    </span>
-                  </Typography>
-                ) : (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {course.title}
-                  </Typography>
-                )}
+                {creator.categoryCode === 'video-and-audio-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                                    {creator.name}
+                                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                                      <em> ({creator.country[0].name}, Video & Jingle Creator,  {creator.age} years)</em>
+                                    </span>
+                </Typography>}
+               {creator.categoryCode === 'video-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                                    {creator.name}
+                                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                                      <em> ({creator.country[0].name}, Video Creator,  {creator.age} years)</em>
+                                    </span>
+                 </Typography>}
+                {creator.categoryCode === 'audio-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                                    {creator.name}
+                                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                                      <em> ({creator.country[0].name}, Jingle Creator,  {creator.age} years)</em>
+                                    </span>
+                </Typography>}
                 <Typography
                   variant="subtitle1"
                   color="textSecondary"
                   component="p"
                   style={{ marginTop: 20 }}
                 >
-                  {Str(course.shortDescription).limit(200, "...").get()}
+                  {Str(creator.bio).limit(200, "...").get()}
                 </Typography>
+                
+                
                 <Typography
-                  variant="h4"
-                  color="textSecondary"
-                  component="p"
-                  style={{ marginTop: 10, marginBottom: 15 }}
-                >
-                  <span style={{ marginLeft: 130 }}>
-                    <strong>
-                      {getCurrencyCode()}
-                      {course.price
-                        ? course.price
-                            .toFixed(2)
-                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                        : ""}
-                      <span style={{ fontSize: 12 }}> &nbsp;</span>
-                    </strong>
-                  </span>
-                </Typography>
-                {props.priceLabel !== undefined && (
-                  <Typography
                     variant="h5"
-                    style={{
-                      color: "red",
-                      fontSize: 15,
-                      marginTop: 9,
-                      marginBottom: 15,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {props.priceLabel}
-                  </Typography>
-                )}
-                {course.refNumber !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
+                    style={{ color: "black", fontSize: 13 }}
                   >
                     <span style={{ marginRight: 20 }}>
-                      {" "}
                       <strong>Reference Number:</strong>
                     </span>
-                    {course.refNumber}
-                  </Typography>
-                )}
-                {course.duration !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Duration:</strong>
-                    </span>
-                    {course.duration}
-                  </Typography>
-                )}
-                {course.commencementDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Start date:</strong>
-                    </span>
-                    {course.commencementDate
-                      ? new Date(course.commencementDate).toDateString()
-                      : "Coming Soon"}
-                  </Typography>
-                )}
-                {course.deliveryMethod !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Delivery Method:</strong>
-                    </span>
-                    {course.deliveryMethod}
-                  </Typography>
-                )}
-                {course.venue !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Venue:</strong>
-                    </span>
-                    {course.venue}
-                  </Typography>
-                )}
-                {course.track !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Track:</strong>
-                    </span>
-                    {course.track}
-                  </Typography>
-                )}
-                {course.commencementWeekdaysDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Weekday Start Date(s):</strong>
-                    </span>
                     <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {course.commencementWeekdaysDate.join("|")} */}
-                      {course.commencementWeekdaysDate}
+                      {props.refNumber} &nbsp;
                     </span>
                   </Typography>
-                )}
-                {course.commencementWeekendsDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Weekend Start Date(s):</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {course.commencementWeekendsDate.join("|")} */}
-                      {course.commencementWeekendsDate}
-                    </span>
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekday Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {course.weekdaySessionPeriod}
-                  </span>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekend Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {course.weekendSessionPeriod}
-                  </span>
-                </Typography>
-                {course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Credit:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.mentorshipCredit}&nbsp; Units &nbsp; (to be used
-                      after graduation)
-                    </span>
-                  </Typography>
-                )}
-                {course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Total Value of Mentorship Credit:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {getCurrencyCode()}
-                      {(
-                        course.mentorshipCredit * course.costPerMentorshipCredit
-                      )
-                        .toFixed(2)
-                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
-                    </span>
-                  </Typography>
-                )}
-                {course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Duration:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.mentorshipDuration}&nbsp;&nbsp; ( from the day of
-                      graduation)
-                    </span>
-                  </Typography>
-                )}
-                {course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Is Installmental Payment Allowed :</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.isInstallmentalPaymentAllowed
-                        .charAt(0)
-                        .toUpperCase() +
-                        course.isInstallmentalPaymentAllowed.slice(1)}
-                    </span>
-                  </Typography>
-                )}
-                {course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>
-                        Maximum Number of Installmental Payment Allowed :
-                      </strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.maximumInstallmentalPayment}&nbsp;times
-                    </span>
-                  </Typography>
-                )}
-                {course.passGrade !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Minimum NextChamp Grade:</strong>
-                    </span>
-                    {course.passGrade}
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    {" "}
-                    <strong>
-                      Is Life Time Access To This Course Allowed?:
-                    </strong>
-                  </span>
-                  {course.allowLifeTimeAccess ? "Yes" : "No"}
-                </Typography>
-                <br /> <br />
-                {course.isCourseAuditable && (
-                  <Typography>
-                    <span
-                      style={{
-                        fontSize: 18,
-                        marginLeft: 14,
-                        //textAlign: "center",
-                      }}
-                    >
-                      You can audit this course for FREE for up to
-                      <strong>
-                        <span>{course.weekdayAuditDays}</span>
-                      </strong>
-                      &nbsp;. You only make payment afterwards when you are sure
-                      the course is a good fit for you
-                    </span>
-                  </Typography>
-                )}
+                   <Typography style={{marginLeft:10}}><strong>Niches:</strong></Typography>
+                                
+                                 {creator.niche && <Grid container direction="row" style={{marginLeft:30}}>
+                                                {creator.niche.map((niche, index) => (
+                                                  <Typography>{niche.niche},  </Typography>
+                  
+                                                ))}
+                                              </Grid>}
+                                  <Typography style={{marginLeft:10}}><strong>Languages:</strong></Typography>
+                                  
+                                  {creator.language && <Grid container direction="row" style={{marginLeft:30}}>
+                                                {creator.language.map((lang, index) => (
+                                                  <Typography>{lang.language},  </Typography>
+                  
+                                                ))}
+                                              </Grid>}
+                  
+
+                
+                
+               
               </CardContent>
             </Grid>
 
             <Grid item style={{ width: "26.30%", border: "1px dotted grey" }}>
-              {course.price && (
+              {props.grandTotal && (
                 <CheckoutActionPage
-                  price={course.price}
-                  minimumQuantity={course.minimumQuantity}
-                  courseId={course.id}
+                  grandTotal={props.grandTotal}
+                  brandName={props.brandName}
+                  minimumQuantity={creator.minimumQuantity}
+                  creatorId={creator.id}
+                  creativeQuantity={props.creativeQuantity}
+                  creativeHookQuantity={props.creativeHookQuantity}
+                  creativeType={props.creativeType}
+                  projectName= {props.projectName}
+                  projectType= {props.projectType}
+                  projectLanguage= {props.projectLanguage}
                   token={props.token}
                   userId={props.userId}
                   quantity={props.quantity}
                   preferredStartDate={props.preferredStartDate}
                   cartId={props.cartId}
-                  currency={course.currency}
+                  currency={creator.currency}
                   dateAddedToCart={props.dateAddedToCart}
                   handleMakeOpenLoginFormDialogStatus={
                     handleMakeOpenLoginFormDialogStatus
@@ -854,7 +582,7 @@ export default function CheckoutCard(props) {
               <CardMedia
                 className={classes.mediaMobile}
                 component="img"
-                alt={course.title}
+                alt={creator.name}
                 image={imageUrl}
                 //title={product.name}
                 crossOrigin="anonymous"
@@ -869,297 +597,61 @@ export default function CheckoutCard(props) {
               }}
             >
               <CardContent disableRipple>
-                {course.hasSeries ? (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {course.title}
-                    <span style={{ fontSize: 16, fontWeight: 700 }}>
-                      <em> ({course.series})</em>
-                    </span>
-                  </Typography>
-                ) : (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {course.title}
-                  </Typography>
-                )}
+              {creator.categoryCode === 'video-and-audio-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                                    {creator.name}
+                                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                                      <em> ({creator.country[0].name}, Video & Jingle Creator,  {creator.age} years)</em>
+                                    </span>
+                </Typography>}
+               {creator.categoryCode === 'video-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                                    {creator.name}
+                                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                                      <em> ({creator.country[0].name}, Video Creator,  {creator.age} years)</em>
+                                    </span>
+                 </Typography>}
+                {creator.categoryCode === 'audio-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                                    {creator.name}
+                                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                                      <em> ({creator.country[0].name}, Jingle Creator,  {creator.age} years)</em>
+                                    </span>
+                </Typography>}
                 <Typography
                   variant="subtitle1"
                   color="textSecondary"
                   component="p"
+                  style={{ marginTop: 20 }}
                 >
-                  {Str(course.shortDescription).limit(200, "...").get()}
+                  {Str(creator.bio).limit(200, "...").get()}
                 </Typography>
+                
+                
                 <Typography
-                  variant="h5"
-                  color="textSecondary"
-                  component="p"
-                  style={{ marginTop: 5, marginBottom: 15 }}
-                >
-                  <span style={{ marginLeft: 130 }}>
-                    <strong>
-                      {getCurrencyCode()}
-                      {course.price
-                        ? course.price
-                            .toFixed(2)
-                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                        : ""}
-                      <span style={{ fontSize: 12 }}> &nbsp;</span>
-                    </strong>
-                  </span>
-                </Typography>
-                {course.priceLabel !== undefined && (
-                  <Typography
                     variant="h5"
-                    style={{
-                      color: "red",
-                      fontSize: 15,
-                      marginTop: 9,
-                      marginBottom: 15,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {props.priceLabel}
-                  </Typography>
-                )}
-                {course.refNumber !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
+                    style={{ color: "black", fontSize: 13 }}
                   >
                     <span style={{ marginRight: 20 }}>
-                      {" "}
                       <strong>Reference Number:</strong>
                     </span>
-                    {course.refNumber}
-                  </Typography>
-                )}
-                {course.duration !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Duration:</strong>
-                    </span>
-                    {course.duration}
-                  </Typography>
-                )}
-                {course.commencementDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Start date:</strong>
-                    </span>
-                    {course.commencementDate
-                      ? new Date(course.commencementDate).toDateString()
-                      : "Coming Soon"}
-                  </Typography>
-                )}
-                {course.deliveryMethod !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Delivery Method:</strong>
-                    </span>
-                    {course.deliveryMethod}
-                  </Typography>
-                )}
-                {course.venue !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Venue:</strong>
-                    </span>
-                    {course.venue}
-                  </Typography>
-                )}
-                {course.track !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Track:</strong>
-                    </span>
-                    {course.track}
-                  </Typography>
-                )}
-                {course.commencementWeekdaysDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Weekday Start Date(s):</strong>
-                    </span>
                     <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {course.commencementWeekdaysDate.join("|")} */}
-                      {course.commencementWeekdaysDate}
+                      {props.refNumber} &nbsp;
                     </span>
                   </Typography>
-                )}
-                {course.commencementWeekendsDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Weekend Start Date(s):</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {course.commencementWeekendsDate.join("|")} */}
-                      {course.commencementWeekendsDate}
-                    </span>
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekday Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {course.weekdaySessionPeriod}
-                  </span>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekend Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {course.weekendSessionPeriod}
-                  </span>
-                </Typography>
-                {course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Credit:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.mentorshipCredit}&nbsp; Units &nbsp;
-                    </span>
-                  </Typography>
-                )}
-                {course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Credit Value:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {getCurrencyCode()}
-                      {(
-                        course.mentorshipCredit * course.costPerMentorshipCredit
-                      )
-                        .toFixed(2)
-                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
-                    </span>
-                  </Typography>
-                )}
-                {course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Duration:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.mentorshipDuration}&nbsp;&nbsp;
-                    </span>
-                  </Typography>
-                )}
-                {course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Installmental Payment Allowed?:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.isInstallmentalPaymentAllowed
-                        .charAt(0)
-                        .toUpperCase() +
-                        course.isInstallmentalPaymentAllowed.slice(1)}
-                    </span>
-                  </Typography>
-                )}
-                {course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>No. of Installmental Payment:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {course.maximumInstallmentalPayment}&nbsp;times
-                    </span>
-                  </Typography>
-                )}
-                {course.passGrade !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Minimum NextChamp Grade:</strong>
-                    </span>
-                    {course.passGrade}
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    {" "}
-                    <strong>
-                      Is Life Time Access To This Course Allowed?:
-                    </strong>
-                  </span>
-                  {course.allowLifeTimeAccess ? "Yes" : "No"}
-                </Typography>
-                <br /> <br />
-                {course.isCourseAuditable && (
-                  <Typography>
-                    <span
-                      style={{
-                        fontSize: 18,
-                        marginLeft: 14,
-                        //textAlign: "center",
-                      }}
-                    >
-                      You can audit this course for FREE for up to
-                      <strong>
-                        <span>{course.weekdayAuditDays}</span>
-                      </strong>
-                      &nbsp;. You only make payment afterwards when you are sure
-                      the course is a good fit for you
-                    </span>
-                  </Typography>
-                )}
+                   <Typography style={{marginLeft:10}}><strong>Niches:</strong></Typography>
+                                
+                                 {creator.niche && <Grid container direction="row" style={{marginLeft:30}}>
+                                                {creator.niche.map((niche, index) => (
+                                                  <Typography>{niche.niche},  </Typography>
+                  
+                                                ))}
+                                              </Grid>}
+                                  <Typography style={{marginLeft:10}}><strong>Languages:</strong></Typography>
+                                  
+                                  {creator.language && <Grid container direction="row" style={{marginLeft:30}}>
+                                                {creator.language.map((lang, index) => (
+                                                  <Typography>{lang.language},  </Typography>
+                  
+                                                ))}
+                                              </Grid>}
               </CardContent>
             </Grid>
 
@@ -1172,12 +664,18 @@ export default function CheckoutCard(props) {
                 border: "1px dotted grey",
               }}
             >
-              {course.price && (
+              {props.grandTotal && (
                 <CheckoutActionPage
-                  price={course.price}
-                  minimumQuantity={course.minimumQuantity}
-                  courseId={course.id}
-                  preferredStartDate={props.preferredStartDate}
+                  grandTotal={props.grandTotal}
+                  brandName={props.brandName}
+                  minimumQuantity={creator.minimumQuantity}
+                  creatorId={creator.id}
+                  creativeQuantity={props.creativeQuantity}
+                  creativeHookQuantity={props.creativeHookQuantity}
+                  creativeType={props.creativeType}
+                  projectName= {props.projectName}
+                  projectType= {props.projectType}
+                  projectLanguage= {props.projectLanguage}
                   token={props.token}
                   userId={props.userId}
                   quantity={props.quantity}

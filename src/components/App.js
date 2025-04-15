@@ -43,6 +43,9 @@ import ProductNuggetDetails from "./products/ProductNuggetDetails";
 import ProductHomeAndPrivateDetails from "./products/ProductHomeAndPrivateDetails";
 import ProductMentorshipDetails from "./products/ProductMentorshipDetails";
 import ProductAssessmentDetails from "./products/ProductAssessmentDetails";
+import DashboardBrand from "./Dashboard/DashboardBrand";
+import DashboardCreator from "./Dashboard/DashboardCreator";
+import ResetUserPasswordForm from "./authForms/ResetUserPasswordForm";
 
 function App() {
   const { token, setToken } = useToken();
@@ -371,7 +374,7 @@ function App() {
               />
             </Route>
 
-            <Route path="/career">
+            <Route path="careers">
               <CareerPage />
             </Route>
             <Route path="/dashboard/:slug">
@@ -382,8 +385,34 @@ function App() {
                 setUserId={setUserId ? setUserId : {}}
               />
             </Route>
+           
+
+            <Route path="/brands/:userId/:slug">            
+              <DashboardBrand
+                token={token}
+                setToken={setToken ? setToken : {}}
+                userId={userId}
+                setUserId={setUserId ? setUserId : {}}
+              />
+            </Route>
+            <Route path="/creators/:userId/:slug">
+              <DashboardCreator
+                token={token}
+                setToken={setToken ? setToken : {}}
+                userId={userId}
+                setUserId={setUserId ? setUserId : {}}
+              />
+            </Route>
             <Route path="/channel/:channel/:programme/:programmeSlug">
               <ProgrammeDetails
+                token={token}
+                setToken={setToken ? setToken : {}}
+                userId={userId}
+                setUserId={setUserId ? setUserId : {}}
+              />
+            </Route>
+            <Route path="/users/resetpassword/:token">
+              <ResetUserPasswordForm
                 token={token}
                 setToken={setToken ? setToken : {}}
                 userId={userId}

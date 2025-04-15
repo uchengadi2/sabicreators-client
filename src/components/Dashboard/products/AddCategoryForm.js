@@ -82,6 +82,37 @@ const renderNameField = ({
   );
 };
 
+
+const renderCodeField = ({
+  input,
+  label,
+  meta: { touched, error, invalid },
+  type,
+  id,
+  ...custom
+}) => {
+  return (
+    <TextField
+      //error={touched && invalid}
+      helperText="Category Unique Code"
+      variant="outlined"
+      label={label}
+      id={input.name}
+      defaultValue={input.value}
+      fullWidth
+      //required
+      type={type}
+      {...custom}
+      onChange={input.onChange}
+      inputProps={{
+        style: {
+          height: 1,
+        },
+      }}
+    />
+  );
+};
+
 const renderSlugField = ({
   input,
   label,
@@ -219,6 +250,7 @@ function AddCategoryForm(props) {
 
     const form = new FormData();
     form.append("name", formValues.name);
+    form.append("code", formValues.code);
     form.append("slug", formValues.slug);
     form.append("description", formValues.description);
     form.append("createdBy", props.userId);
@@ -314,6 +346,14 @@ function AddCategoryForm(props) {
           name="description"
           type="text"
           component={renderDescriptionField}
+
+        />
+        <Field
+          label=""
+          id="code"
+          name="code"
+          type="text"
+          component={renderCodeField}
         />
         <Field
           label=""

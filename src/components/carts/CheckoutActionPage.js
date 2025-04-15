@@ -601,6 +601,7 @@ function CheckoutActionPage(props) {
     return <React.Fragment>Remove</React.Fragment>;
   };
 
+  
   const onSubmit = () => {
     setLoading(true);
     const createForm = async () => {
@@ -662,19 +663,33 @@ function CheckoutActionPage(props) {
     );
   };
 
+  
+
   return (
     <>
-      {/* <Typography style={{ width: 300, marginTop: 15, marginLeft: 10 }}>
-        Total Delivery Cost:{props.getCurrencyCode()}
-        {totalDeliveryCostForDisplay}
-      </Typography> */}
+      <Typography style={{ width: 300, marginTop: 15, marginLeft: 10 }}>
+        <strong>Brand:</strong>&nbsp;&nbsp;{props.brandName}
+        
+      </Typography>
+      <Typography style={{ width: 300, marginTop: 15, marginLeft: 10 }}>
+        <strong>Project:</strong>&nbsp;&nbsp;{props.projectName}        
+      </Typography>
+      <Typography style={{ width: 300, marginTop: 15, marginLeft: 10 }}>
+        <strong>Project Type:</strong>&nbsp;&nbsp;{props.projectType}        
+      </Typography>
+      <Typography style={{ width: 300, marginTop: 15, marginLeft: 10 }}>
+        <strong>Required Language for this Project:</strong>&nbsp;&nbsp;{props.projectLanguage}        
+      </Typography>
       <Typography style={{ width: "100%", marginTop: 5, marginLeft: 10 }}>
-        Number of Learner(s) Slot:&nbsp;&nbsp;{quantity}
+        <strong>Number of {props.creativeType ==="video" ? "video(s)":"jingle(s)"} required:</strong>&nbsp;&nbsp;{props.creativeQuantity}
       </Typography>
-      <Typography style={{ width: "100%", marginTop: 15, marginLeft: 10 }}>
-        Total Cost:{props.getCurrencyCode()}
-        {total}
+      <Typography style={{ width: "100%", marginTop: 5, marginLeft: 10 }}>
+        <strong>Number of Hooks required:</strong>&nbsp;&nbsp;{props.creativeHookQuantity} 
       </Typography>
+     {props.grandTotal && <Typography style={{ width: "100%", marginTop: 15, marginLeft: 10 }}>
+        <strong>Total Cost:</strong>{props.getCurrencyCode()}
+        {props.grandTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,")}
+      </Typography>}
       {/* <Typography
         style={{ width: 300, fontSize: 20, marginTop: 15, marginLeft: 10 }}
       >

@@ -13,7 +13,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { TextField, Typography } from "@material-ui/core";
-import background from "./../../logistic_assets/cover_image_1.png";
+import background from "./../../assets/images/covers/aboutus-cover.jpg";
 import history from "./../../history";
 import api from "./../../apis/local";
 
@@ -261,7 +261,7 @@ const SignUpForm = (props) => {
   };
 
   const handleMakeCloseSignUpDialogStatus = () => {
-    props.handleMakeCloseSignUpDialogStatus();
+    props.handleMakeCloseSignCreatorUpDialogStatus();
   };
 
   const handleMakeOpenLoginFormDialogStatus = () => {
@@ -337,7 +337,17 @@ const SignUpForm = (props) => {
 
       return;
     }
-    console.log("");
+    
+    const data = {
+      name: formValues.name,
+      phoneNumber: formValues.phoneNumber,
+      email: formValues.email,
+      password: formValues.password,
+      passwordConfirm: formValues.passwordConfirm,
+      role: "brand",
+      type:"brand",
+      createdBy: props.userId,
+    };
 
     if (formValues) {
       const createForm = async () => {
@@ -345,7 +355,7 @@ const SignUpForm = (props) => {
         const response = await api.get(`/users?email=` + formValues["email"]);
 
         if (response.data.results === 0) {
-          props.onSubmit(formValues);
+          props.onSubmit(data);
           setLoading(true);
         } else {
           props.handleFailedSignUpDialogOpenStatusWithSnackbar(
@@ -374,7 +384,7 @@ const SignUpForm = (props) => {
               style={{ color: "blue", fontSize: "1.5em" }}
               component="legend"
             >
-              Sign Up Form
+              Brand's Sign Up Form
             </FormLabel>
           </Grid>
           <Box
@@ -494,7 +504,7 @@ const SignUpForm = (props) => {
               style={{ color: "blue", fontSize: "1.15em" }}
               component="legend"
             >
-              Sign Up Form
+               Brand's Sign Up Form
             </FormLabel>
           </Grid>
           <Box

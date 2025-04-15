@@ -139,7 +139,7 @@ function SendCourseToCheckoutForm(props) {
 
   useEffect(() => {
     setQuantity(newQuantity);
-    setPrice(props.price);
+    setPrice(props.videoPrice);
   }, [props, newQuantity]);
 
   useEffect(() => {

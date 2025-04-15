@@ -151,6 +151,43 @@ import {
   FETCH_COURSE_TOPIC,
   DELETE_COURSE_TOPIC,
   EDIT_COURSE_TOPIC,
+
+  CREATE_LANGUAGE,
+  FETCH_LANGUAGES, 
+  FETCH_LANGUAGE,
+  DELETE_LANGUAGE,
+  EDIT_LANGUAGE,
+
+  CREATE_NICHE,
+  FETCH_NICHES,
+  FETCH_NICHE,
+  DELETE_NICHE,
+  EDIT_NICHE,
+
+  CREATE_PROJECT,
+  FETCH_PROJECTS,
+  FETCH_PROJECT,
+  DELETE_PROJECT,
+  EDIT_PROJECT,
+
+  CREATE_CREATOR,
+  FETCH_CREATORS,
+  FETCH_CREATOR,
+  DELETE_CREATOR,
+  EDIT_CREATOR,
+
+  CREATE_BRAND,
+  FETCH_BRANDS,
+  FETCH_BRAND,
+  DELETE_BRAND,
+  EDIT_BRAND,
+
+  CREATE_SAMPLE,
+  FETCH_SAMPLES,
+  FETCH_SAMPLE,
+  DELETE_SAMPLE,
+  EDIT_SAMPLE
+  
 } from "./types";
 
 //authentication and authorization  operations
@@ -1585,6 +1622,289 @@ export const deleteCourseTopic = (id) => {
   return async (dispatch) => {
     await data.delete(`/coursetopics/${id}`);
     dispatch({ type: DELETE_COURSE_TOPIC, payload: id });
+    //history.push("/");
+  };
+};
+
+
+////////////////////////////////////////LANGUAGE///////////////////////////////
+//LANGUAGE resources crud operations
+export const createLanguage = (formValues) => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
+    const response = await data.post("/languages", {
+      ...formValues,
+      userId,
+    });
+
+    //console.log(response);
+    dispatch({ type: CREATE_LANGUAGE, payload: response.data });
+    // history.push("/");
+  };
+};
+
+export const fetchLanguages = () => {
+  return async (dispatch) => {
+    const response = await data.get("/languages");
+    dispatch({ type: FETCH_LANGUAGES, payload: response.data.data.data });
+  };
+};
+
+export const fetchLanguage = (id) => {
+  return async (dispatch) => {
+    const response = await data.get(`/languages/${id}`);
+    dispatch({ type: FETCH_LANGUAGE, payload: response.data.data });
+  };
+};
+
+export const editLanguage = (id, formValues) => {
+  return async (dispatch) => {
+    const response = await data.patch(`/languages/${id}`, formValues);
+    dispatch({ type: EDIT_LANGUAGE, payload: response.data.data });
+    //history.push("/");
+  };
+};
+
+export const deleteLanguage = (id) => {
+  return async (dispatch) => {
+    await data.delete(`/languages/${id}`);
+    dispatch({ type: DELETE_LANGUAGE, payload: id });
+    //history.push("/");
+  };
+};
+
+
+////////////////////////////////////////NICHES///////////////////////////////
+//NICHES resources crud operations
+export const createNiche = (formValues) => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
+    const response = await data.post("/niches", {
+      ...formValues,
+      userId,
+    });
+
+    //console.log(response);
+    dispatch({ type: CREATE_NICHE, payload: response.data });
+    // history.push("/");
+  };
+};
+
+export const fetchNiches = () => {
+  return async (dispatch) => {
+    const response = await data.get("/niches");
+    dispatch({ type: FETCH_NICHES, payload: response.data.data.data });
+  };
+};
+
+export const fetchNiche = (id) => {
+  return async (dispatch) => {
+    const response = await data.get(`/niches/${id}`);
+    dispatch({ type: FETCH_NICHE, payload: response.data.data });
+  };
+};
+
+export const editNiche = (id, formValues) => {
+  return async (dispatch) => {
+    const response = await data.patch(`/niches/${id}`, formValues);
+    dispatch({ type: EDIT_NICHE, payload: response.data.data });
+    //history.push("/");
+  };
+};
+
+export const deleteNiche = (id) => {
+  return async (dispatch) => {
+    await data.delete(`/niches/${id}`);
+    dispatch({ type: DELETE_NICHE, payload: id });
+    //history.push("/");
+  };
+};
+
+
+////////////////////////////////////////PROJECTS///////////////////////////////
+//PROJECTS resources crud operations
+export const createProject = (formValues) => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
+    const response = await data.post("/projects", {
+      ...formValues,
+      userId,
+    });
+
+    //console.log(response);
+    dispatch({ type: CREATE_PROJECT, payload: response.data });
+    // history.push("/");
+  };
+};
+
+export const fetchProjects = () => {
+  return async (dispatch) => {
+    const response = await data.get("/projects");
+    dispatch({ type: FETCH_PROJECTS, payload: response.data.data.data });
+  };
+};
+
+export const fetchProject= (id) => {
+  return async (dispatch) => {
+    const response = await data.get(`/projects/${id}`);
+    dispatch({ type: FETCH_PROJECT, payload: response.data.data });
+  };
+};
+
+export const editProject = (id, formValues) => {
+  return async (dispatch) => {
+    const response = await data.patch(`/projects/${id}`, formValues);
+    dispatch({ type: EDIT_PROJECT, payload: response.data.data });
+    //history.push("/");
+  };
+};
+
+export const deleteProject = (id) => {
+  return async (dispatch) => {
+    await data.delete(`/projects/${id}`);
+    dispatch({ type: DELETE_PROJECT, payload: id });
+    //history.push("/");
+  };
+};
+
+
+////////////////////////////////////////BRANDS///////////////////////////////
+//BRANDS resources crud operations
+export const createBrand = (formValues) => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
+    const response = await data.post("/brands", {
+      ...formValues,
+      userId,
+    });
+
+    //console.log(response);
+    dispatch({ type: CREATE_BRAND, payload: response.data });
+    // history.push("/");
+  };
+};
+
+export const fetchBrands = () => {
+  return async (dispatch) => {
+    const response = await data.get("/brands");
+    dispatch({ type: FETCH_BRANDS, payload: response.data.data.data });
+  };
+};
+
+export const fetchBrand= (id) => {
+  return async (dispatch) => {
+    const response = await data.get(`/brands/${id}`);
+    dispatch({ type: FETCH_BRAND, payload: response.data.data });
+  };
+};
+
+export const editBrand = (id, formValues) => {
+  return async (dispatch) => {
+    const response = await data.patch(`/brands/${id}`, formValues);
+    dispatch({ type: EDIT_BRAND, payload: response.data.data });
+    //history.push("/");
+  };
+};
+
+export const deleteBrand = (id) => {
+  return async (dispatch) => {
+    await data.delete(`/brands/${id}`);
+    dispatch({ type: DELETE_BRAND, payload: id });
+    //history.push("/");
+  };
+};
+
+
+////////////////////////////////////////CREATORS///////////////////////////////
+//CREATORS resources crud operations
+export const createCreator = (formValues) => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
+    const response = await data.post("/creators", {
+      ...formValues,
+      userId,
+    });
+
+    //console.log(response);
+    dispatch({ type: CREATE_CREATOR, payload: response.data });
+    // history.push("/");
+  };
+};
+
+export const fetchCreators = () => {
+  return async (dispatch) => {
+    const response = await data.get("/creators");
+    dispatch({ type: FETCH_CREATORS, payload: response.data.data.data });
+  };
+};
+
+export const fetchCreator= (id) => {
+  return async (dispatch) => {
+    const response = await data.get(`/creators/${id}`);
+    dispatch({ type: FETCH_CREATOR, payload: response.data.data });
+  };
+};
+
+export const editCreator = (id, formValues) => {
+  return async (dispatch) => {
+    const response = await data.patch(`/creators/${id}`, formValues);
+    dispatch({ type: EDIT_CREATOR, payload: response.data.data });
+    //history.push("/");
+  };
+};
+
+export const deleteCreator = (id) => {
+  return async (dispatch) => {
+    await data.delete(`/creators/${id}`);
+    dispatch({ type: DELETE_CREATOR, payload: id });
+    //history.push("/");
+  };
+};
+
+
+
+////////////////////////////////////////CREATOR SAMPLES///////////////////////////////
+//CREATORS resources crud operations
+export const createSample = (formValues) => {
+  return async (dispatch, getState) => {
+    const { userId } = getState().auth;
+    const response = await data.post("/samples", {
+      ...formValues,
+      userId,
+    });
+
+    //console.log(response);
+    dispatch({ type: CREATE_SAMPLE, payload: response.data });
+    // history.push("/");
+  };
+};
+
+export const fetchSamples = () => {
+  return async (dispatch) => {
+    const response = await data.get("/samples");
+    dispatch({ type: FETCH_SAMPLES, payload: response.data.data.data });
+  };
+};
+
+export const fetchSample= (id) => {
+  return async (dispatch) => {
+    const response = await data.get(`/samples/${id}`);
+    dispatch({ type: FETCH_SAMPLE, payload: response.data.data });
+  };
+};
+
+export const editSample = (id, formValues) => {
+  return async (dispatch) => {
+    const response = await data.patch(`/samples/${id}`, formValues);
+    dispatch({ type: EDIT_SAMPLE, payload: response.data.data });
+    //history.push("/");
+  };
+};
+
+export const deleteSample = (id) => {
+  return async (dispatch) => {
+    await data.delete(`/samples/${id}`);
+    dispatch({ type: DELETE_SAMPLE, payload: id });
     //history.push("/");
   };
 };

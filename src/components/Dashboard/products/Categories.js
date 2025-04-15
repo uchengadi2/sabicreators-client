@@ -55,6 +55,7 @@ function Categories(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowId, setSelectedRowId] = useState();
   const [rowNumber, setRowNumber] = useState(0);
+  const [rowSelected, setRowSelected] = useState(false);
   const [updateCategoryCounter, setUpdateCategoryCounter] = useState(false);
   const [updateEdittedCategoryCounter, setUpdateEdittedCategoryCounter] =
     useState(false);
@@ -74,13 +75,14 @@ function Categories(props) {
       api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
       const response = await api.get(`/categories`);
       const workingData = response.data.data.data;
-      console.log("fresh category:", workingData);
+      
       workingData.map((category) => {
         allData.push({
           id: category._id,
           name: category.name,
           description: category.description,
           slug: category.slug,
+          code:category.code,
           image: category.image,
         });
       });
@@ -187,6 +189,11 @@ function Categories(props) {
     selectedIDs.forEach(function (value) {
       setSelectedRowId(value);
     });
+    if (selectedIDs.size === 1) {
+      setRowSelected(true);
+    } else {
+      setRowSelected(false);
+    }
   };
 
   const renderDataGrid = () => {
@@ -202,6 +209,13 @@ function Categories(props) {
       {
         field: "name",
         headerName: "Category",
+        width: 350,
+
+        //editable: true,
+      },
+      {
+        field: "code",
+        headerName: "Code",
         width: 350,
 
         //editable: true,
@@ -223,6 +237,7 @@ function Categories(props) {
         id: category.id,
         image: category.image,
         slug: category.slug,
+        code:category.code,
         name: category.name.replace(
           /(^\w|\s\w)(\S*)/g,
           (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
@@ -249,7 +264,7 @@ function Categories(props) {
         pageSizeOptions={[5]}
         checkboxSelection
         disableRowSelectionOnClick
-        onSelectionModelChange={(ids) => onRowsSelectionHandler(ids, rows)}
+       onSelectionModelChange={(ids) => onRowsSelectionHandler(ids, rows)}
         sx={{
           boxShadow: 3,
           border: 3,
@@ -299,7 +314,10 @@ function Categories(props) {
                       />
                     </DialogContent>
                   </Dialog>
-                  <Button variant="contained" onClick={handleEditOpen}>
+                  <Button variant="contained" 
+                    onClick={handleEditOpen}  
+                    disabled={rowSelected ? false : true}
+                  >
                     Edit
                   </Button>
                   <Dialog
@@ -325,7 +343,10 @@ function Categories(props) {
                       />
                     </DialogContent>
                   </Dialog>
-                  <Button variant="contained" onClick={handleDeleteOpen}>
+                  <Button variant="contained"
+                    onClick={handleDeleteOpen} 
+                    disabled={rowSelected ? false : true}
+                  >
                     Delete
                   </Button>
                   <Dialog

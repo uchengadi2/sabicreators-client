@@ -19,7 +19,8 @@ import ReactPlayer from "react-player";
 import CallToAction from "./../ui/CallToAction";
 
 import revolutionBackground from "./../../assets/repeatingBackground.svg";
-import infoBackground from "./../../assets/infoBackground.svg";
+//import infoBackground from "./../../assets/infoBackground.svg";
+import infoBackground from "./../../assets/images/covers/aboutus-cover.jpg";
 
 import background from "./../../logistic_assets/cover_image_1.png";
 
@@ -301,13 +302,19 @@ function UpperFooter(props) {
                     </Typography>
                   ) : (
                     <Typography variant="subtitle2" style={{ fontSize: 14 }}>
-                      <strong>
+                      {/* <strong>
                         Learning is easy but becoming a professional or an
                         expert is not. <br />
                         At NextChamp, we are all about making professionals{" "}
                         <br />
                         and experts through a combination of teaching, <br />
                         practice, mentoring and assessment <br />
+                      </strong> */}
+                      <strong>
+                        At TopCreators, we believe that powerful storytelling is at the heart of every successful brand.
+                        Our platform is designed to connect businesses with top-tier creators specializing in marketing videos and jingles 
+                        that captivate audiences and leave a lasting impression
+
                       </strong>
                     </Typography>
                   )}
@@ -371,7 +378,7 @@ function UpperFooter(props) {
                       <span> 64 Okota Road, Isolo, Lagos</span>
                       <br />
 
-                      <span>nextchamps.academy@gmail.com</span>
+                      <span>controlsoftng@gmail.com</span>
                       <br />
 
                       <span>+234 803 201 5819, +234 701 854 1894</span>

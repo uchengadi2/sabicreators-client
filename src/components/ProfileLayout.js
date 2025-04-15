@@ -22,7 +22,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { TextField, Typography } from "@material-ui/core";
-import background from "./../assets/images/footage/footage_image.png";
+import background from "./../assets/images/covers/aboutus-cover.jpg";
 import history from "./../history";
 import data from "./../apis/local";
 import UserOwnPasswordChange from "./users/UserOwnPasswordChange";
@@ -67,11 +67,38 @@ const useStyles = makeStyles((theme) => ({
       backgroundAttachment: "inherit",
     },
   },
+
+  backgroundMobile: {
+    backgroundImage: `url(${background})`,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    //backgroundAttachment: "fixed",
+    backgroundRepeat: "no-repeat",
+    height: "10em",
+    width: "100%",
+    [theme.breakpoints.down("md")]: {
+      // backgroundImage: `url(${mobileBackground})`,
+      backgroundAttachment: "inherit",
+    },
+  },
+
+  
   root: {
     maxWidth: "100%",
     width: "100%",
     height: "80vh",
     marginTop: "2.5rem",
+    // height: "100%",
+    position: "relative",
+    "& video": {
+      objectFit: "cover",
+    },
+  },
+  rootMobile: {
+    maxWidth: "100%",
+    width: "100%",
+    height: "80vh",
+    marginTop: "-1.0rem",
     // height: "100%",
     position: "relative",
     "& video": {
@@ -476,7 +503,140 @@ const ProfileLayout = (props) => {
           </Grid>
         )
       ) : (
-        <></>
+        <>
+            {!isLoading && (
+            <Grid container direction="row" className={classes.rootMobile}>
+              <Grid item>
+                <Box className={classes.rootMobile}>
+                  <Box
+                    component="div"
+                    id="profileLayout"
+                    // onSubmit={onSubmit}
+                    sx={{
+                      width: 380,
+                      height: 480,
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    // style={{ marginTop: 20 }}
+                  >
+                    <Grid
+                      container
+                      direction="row"
+                      className={classes.backgroundMobile}
+                      style={{width:'100%'}}
+                    >
+                      <Box
+                        sx={{
+                          width: 350,
+                          height: 180,
+                        }}
+                        noValidate
+                        autoComplete="off"
+                      ></Box>
+                    </Grid>
+
+                    <Grid
+                      container
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                      style={{ marginTop: 15 }}
+                    >
+                      <Grid item>
+                        <Typography variant="subtitle1">{user.name}</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="subtitle1">
+                          {user.email}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="subtitle1">
+                          Phone Number: {user.phoneNumber}
+                        </Typography>
+                        {/* {user.isAMember && (
+                          <Grid item>
+                            <Typography variant="subtitle1">
+                              Membership Number: {user.membershipNo}
+                            </Typography>
+                          </Grid>
+                        )}
+                        {user.isAMember && (
+                          <Grid item>
+                            <Typography variant="subtitle1">
+                              Membership Status: {user.membershipStatus}
+                            </Typography>
+                          </Grid>
+                        )} */}
+                      </Grid>
+
+                      {/* {!user.isAMember && (
+                        <Grid item>
+                          <Button
+                            variant="contained"
+                            className={classes.membershipMobileButton}
+                            onClick={() => [setMembershipInfo(true)]}
+                          >
+                            Complete Membership Form
+                          </Button>
+                        </Grid>
+                      )} */}
+
+                      {/* {user.isAMember && (
+                        <Grid item>
+                          <Button
+                            variant="contained"
+                            className={classes.updateMembershipMobileButton}
+                            onClick={() => [setUpdateMembershipInfo(true)]}
+                          >
+                            Update Membership Form
+                          </Button>
+                        </Grid>
+                      )} */}
+
+                      <Grid item>
+                        <Button
+                          variant="contained"
+                          className={classes.sendButton}
+                          // onClick={() => setPasswordFormOpen(true)}
+                          onClick={() => [setPasswordFormOpen(true)]}
+                        >
+                          Change Password
+                        </Button>
+                      </Grid>
+                      <Grid
+                        item
+                        container
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{ marginTop: 20 }}
+                      >
+                        <Button
+                          variant="text"
+                          onClick={() => [setNameFormOpen(true)]}
+                        >
+                          Update User Details
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Box>
+              </Grid>
+              <Grid item style={{ width: "100%", marginTop: "20px" }}>
+                {" "}
+                {/*....INFORMATION BLOCK....*/}
+              </Grid>
+              <Grid item className={classes.footer}>
+                <UpperFooter />
+              </Grid>
+              {renderChangePasswordForm()}
+              {renderChangeNameForm()}
+              
+            </Grid>
+          )}
+        
+        </>
       )}
       <Snackbar
         open={alert.open}

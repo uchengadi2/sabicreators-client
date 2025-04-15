@@ -5,10 +5,10 @@ import { signUp } from "./../../actions";
 import ForgotPasswordForm from "../authForms/ForgotPasswordForm";
 
 class UserPasswordReset extends React.Component {
-  onSubmit = (formValues) => {
-    //console.log(formValues);
-    this.props.signUp(formValues);
-  };
+  // onSubmit = (formValues) => {
+  //   //console.log(formValues);
+  //   this.props.signUp(formValues);
+  // };
   handleMakeOpenLoginFormDialogStatus = () => {
     this.handleMakeOpenLoginFormDialogStatus();
   };
@@ -16,13 +16,19 @@ class UserPasswordReset extends React.Component {
     return (
       <div>
         <ForgotPasswordForm
-          onSubmit={this.onSubmit}
+          // onSubmit={this.onSubmit}
           handleSignUpDialogOpenStatus={this.props.handleSignUpDialogOpenStatus}
           handleMakeOpenLoginFormDialogStatus={
             this.props.handleMakeOpenLoginFormDialogStatus
           }
           handleMakeCloseForgotPasswordFormDialogStatus={
             this.props.handleMakeCloseForgotPasswordFormDialogStatus
+          }
+          handleSuccessfulForgotPasswordDialogOpenStatusWithSnackbar={
+            this.props.handleSuccessfulForgotPasswordDialogOpenStatusWithSnackbar
+          }
+          handleFailedForgotPasswordDialogOpenStatusWithSnackbar={
+            this.props.handleFailedForgotPasswordDialogOpenStatusWithSnackbar
           }
         />
       </div>

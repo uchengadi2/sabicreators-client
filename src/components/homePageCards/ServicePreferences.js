@@ -33,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     //height: "100%",
     //height: 350,
-    width: "80%",
+    width: "93%",
 
-    marginLeft: "13em",
+    marginLeft: "4em",
     //borderRadius: 30,
     marginTop: "4em",
     marginBottom: "1em",
@@ -87,6 +87,32 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: "2em",
     },
   },
+  submitButton: {
+    borderRadius: 10,
+    height: 40,
+    width: 100,
+    marginLeft: 30,
+    marginTop: 25,
+    marginBottom: 0,
+    color: "white",
+    backgroundColor: theme.palette.common.blue,
+    "&:hover": {
+      backgroundColor: theme.palette.common.blue,
+    },
+  },
+  submitButtonMobile: {
+    borderRadius: 10,
+    height: 40,
+    width: 120,
+    marginLeft: 140,
+    marginTop: 25,
+    marginBottom: 20,
+    color: "white",
+    backgroundColor: theme.palette.common.blue,
+    "&:hover": {
+      backgroundColor: theme.palette.common.blue,
+    },
+  },
   dialog: {
     //maxWidth: 325,
     maxWidth: 500,
@@ -133,15 +159,21 @@ export default function ServicePreferences(props) {
   const [countryName, setCountryName] = useState();
   const [stateName, setStateName] = useState();
   const [product, setProduct] = useState({});
-  const [courseList, setCourseList] = useState([]);
+  
   const [courseType, setCourseType] = useState("all");
 
   const [learningPath, setLearningPath] = useState("retail");
   const [servicePath, setServicePath] = useState(0);
-  const [programmeList, setProgrammeList] = useState([]);
-  const [channelList, setChannelList] = useState([]);
-  const [channel, setChannel] = useState(0);
-  const [programme, setProgramme] = useState(0);
+  const [countriesList, setCountriesList] = useState([]);
+  const [languagesList, setLanguagesList] = useState([]);
+  const [nichesList, setNichesList] = useState([]);
+  const [country, setCountry] = useState(0);
+  const [language, setLanguage] = useState(0);
+  const [niche, setNiche] = useState(0);
+  const [age, setAge] = useState('all');
+  const [deliveryDays, setDeliveryDays] = useState('all');
+  const [priceRange, setPriceRange] = useState('all');
+  const [gender, setGender] = useState('all');
 
   // const { token, setToken } = useToken();
   // const { userId, setUserId } = useUserId();
@@ -167,111 +199,150 @@ export default function ServicePreferences(props) {
   useEffect(() => {
     const fetchData = async () => {
       let allData = [];
-      api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
-      const response = await api.get(`/channels`);
-      const workingData = response.data.data.data;
 
-      workingData.map((channel) => {
-        allData.push({ id: channel._id, name: channel.name });
-      });
-      setChannelList(allData);
-    };
-
-    //call the function
-
-    fetchData().catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let allData = [];
-
-      if (channel === 0) {
+      if (country === 0) {
         api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
-        const response = await api.get(`/programmes`);
+        const response = await api.get(`/countries`);
         const workingData = response.data.data.data;
-        workingData.map((programme) => {
-          allData.push({ id: programme._id, name: programme.name });
+        workingData.map((country) => {
+          allData.push({ id: country._id, name: country.name });
         });
-        setProgrammeList(allData);
+        setCountriesList(allData);
       } else {
         api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
-        const response = await api.get(`/programmes`, {
-          params: { channel: channel },
-        });
+        const response = await api.get(`/countries/${country}`);
         const workingData = response.data.data.data;
-        workingData.map((programme) => {
-          allData.push({ id: programme._id, name: programme.name });
+        workingData.map((country) => {
+          allData.push({ id: country._id, name: country.name });
         });
-        setProgrammeList(allData);
+        setCountriesList(allData);
       }
     };
 
     //call the function
 
     fetchData().catch(console.error);
-  }, [channel]);
+  }, [country]);
 
-  console.log("ProgrammeList is:", programmeList);
+  //retrieve the languages data
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     let allData = [];
-  //     api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
-  //     const response = await api.get(`/courses`, {
-  //       params: { channel: channel, programme: programme },
-  //     });
-  //     const workingData = response.data.data.data;
-  //     workingData.map((course) => {
-  //       allData.push({ id: course._id, name: course.title });
-  //     });
-  //     setCourseList(allData);
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      let allData = [];
 
-  //   //call the function
+      if (language === 0 && country !==0) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
+        const response = await api.get(`/languages`,{params:{country:country}});
+        const workingData = response.data.data.data;
+        workingData.map((language) => {
+          allData.push({ id: language._id, name: language.language });
+        });
+        setLanguagesList(allData);
+      } else if(language !== 0 && country !==0) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
+        const response = await api.get(`/languages/${language}`, {
+          params: {country:country },
+        });
+        const workingData = response.data.data.data;
+        workingData.map((lang) => {
+          allData.push({ id: lang._id, name: lang.language });
+        });
+        setLanguagesList(allData);
+      }else if(language ===0 && country ===0){
+        api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
+        const response = await api.get(`/languages`);
+        const workingData = response.data.data.data;
+        workingData.map((language) => {
+          allData.push({ id: language._id, name: language.language });
+        });
+        setLanguagesList(allData);
 
-  //   fetchData().catch(console.error);
-  // }, [channel, programme]);
+      }//end
+    };
 
-  // const handleMarketChange = (event) => {
-  //   setMarket(event.target.value);
-  // };
+    //call the function
 
-  const handleProgrammeChange = (event) => {
-    setProgramme(event.target.value);
-    props.updateChannelHandler(channel);
-    props.updateProgrammeHandler(event.target.value);
-    props.updatePathHandler(courseType);
-    props.updateServicePathInfoInfo();
-  };
+    fetchData().catch(console.error);
+  }, [language,country]);
 
-  const handleChannelChange = (event) => {
-    setChannel(event.target.value);
-    props.updateChannelHandler(event.target.value);
-    props.updateProgrammeHandler(programme);
-    props.updatePathHandler(courseType);
-    props.updateServicePathInfoInfo();
-  };
+//retrieve the niches
 
-  const handleCourseTypeChange = (event) => {
-    setCourseType(event.target.value);
+  useEffect(() => {
+    const fetchData = async () => {
+      let allData = [];
 
-    //props.updatePathHandler(event.target.value);
-    props.updatePathHandler(event.target.value);
-    props.updateChannelHandler(channel);
-    props.updateProgrammeHandler(programme);
-    //props.updateLearningPathInfoInfo();
-    props.updateServicePathInfoInfo();
-  };
+      if (niche === 0) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
+        const response = await api.get(`/niches`);
+        const workingData = response.data.data.data;
+        workingData.map((niche) => {
+          allData.push({ id: niche._id, name: niche.niche });
+        });
+        setNichesList(allData);
+      } else {
+        api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
+        const response = await api.get(`/niches/${niche}`);
+        const workingData = response.data.data.data;
+        workingData.map((niche) => {
+          allData.push({ id: niche._id, name: niche.niche });
+        });
+        setNichesList(allData);
+      }
+    };
 
-  //get the market list
-  const renderCourseList = () => {
+    //call the function
+
+    fetchData().catch(console.error);
+  }, [niche]);
+
+  
+  
+
+  const handleCountryChange=(event)=>{
+    setCountry(event.target.value);
+    
+  }
+
+  const handleLanguageChange=(event)=>{
+    setLanguage(event.target.value);
+    
+  }
+
+  const handleNicheChange=(event)=>{
+    setNiche(event.target.value);
+    
+  }
+
+  const handleDeliveryDaysChange=(event)=>{
+    setDeliveryDays(event.target.value);
+    
+  }
+
+  const handleAgeChange=(event)=>{
+    setAge(event.target.value);
+    
+  }
+
+  const handleGenderChange=(event)=>{
+    setGender(event.target.value);
+    
+  }
+
+  const handlePriceRangeChange=(event)=>{
+    setPriceRange(event.target.value);
+    
+  }
+
+
+
+  //get the country list
+  const renderCountriesList = () => {
     let id = 0;
-    return courseList.map((item) => {
+    return countriesList.map((item) => {
       return [
         id === 0 && (
           <MenuItem key={id++} value={0}>
-            All Courses
+            All Country
           </MenuItem>
         ),
         <MenuItem key={item.id} value={item.id}>
@@ -281,14 +352,14 @@ export default function ServicePreferences(props) {
     });
   };
 
-  //get the state list
-  const renderProgrammeList = () => {
+  //get the languages list
+  const renderLanguagesList = () => {
     let id = 0;
-    return programmeList.map((item) => {
+    return languagesList.map((item) => {
       return [
         id === 0 && (
           <MenuItem key={id++} value={0}>
-            All Programmes
+            All Languages
           </MenuItem>
         ),
 
@@ -299,14 +370,14 @@ export default function ServicePreferences(props) {
     });
   };
 
-  //get the channe; list
-  const renderChannelList = () => {
+  //get the niche list
+  const renderNichesList = () => {
     let id = 0;
-    return channelList.map((item) => {
+    return nichesList.map((item) => {
       return [
         id === 0 && (
           <MenuItem key={id++} value={0}>
-            All Channels
+            All Niches
           </MenuItem>
         ),
         <MenuItem key={item.id} value={item.id}>
@@ -316,151 +387,325 @@ export default function ServicePreferences(props) {
     });
   };
 
-  // const renderCourseTypeField = () => {
-  //   return (
-  //     <Box>
-  //       <FormControl variant="outlined">
-  //         {/* <InputLabel id="vendor_city">City</InputLabel> */}
-  //         <Select
-  //           labelId="course"
-  //           id="course"
-  //           value={course}
-  //           onChange={handleCourseChange}
-  //           //label="Market"
-  //           style={{
-  //             height: 38,
-  //             width: matchesMDUp ? 300 : 135,
-  //             marginTop: 10,
-  //             //marginLeft: 80,
-  //           }}
-  //         >
-  //           {renderCourseList()}
-  //         </Select>
-  //         <FormHelperText>Choose A Course Type</FormHelperText>
-  //       </FormControl>
-  //     </Box>
-  //   );
-  // };
+  
 
-  const renderProgrammeField = () => {
+  const renderCountryField = () => {
     return (
       <Box>
         <FormControl variant="outlined">
           {/* <InputLabel id="vendor_city">City</InputLabel> */}
           <Select
-            labelId="programme"
-            id="programme"
-            value={programme}
-            onChange={handleProgrammeChange}
+            labelId="country"
+            id="country"
+            value={country}
+            onChange={handleCountryChange}
             // label="State"
             style={{
               height: 38,
-              width: matchesMDUp ? 300 : 115,
+              width: matchesMDUp ? 140 : 170,
               marginTop: 10,
               //marginLeft: 45,
             }}
           >
-            {renderProgrammeList()}
+            {renderCountriesList()}
           </Select>
-          <FormHelperText>Choose A Programme</FormHelperText>
+          <FormHelperText>Choose Country</FormHelperText>
         </FormControl>
       </Box>
     );
   };
 
-  const renderChannelField = () => {
+  const renderNichesField = () => {
     return (
       <Box>
         <FormControl variant="outlined">
           {/* <InputLabel id="vendor_city">City</InputLabel> */}
           <Select
-            labelId="channel"
-            id="channel"
-            value={channel}
-            onChange={handleChannelChange}
-            //label="Country"
+            labelId="niche"
+            id="niche"
+            value={niche}
+            onChange={handleNicheChange}
+            // label="State"
             style={{
               height: 38,
-              width: matchesMDUp ? 300 : 95,
-              marginTop: 10,
-              marginLeft: 0,
+              width: matchesMDUp ? 140 : 170,
+              marginTop: matchesMDUp ? 10 : 0,
+              //marginLeft: 45,
             }}
           >
-            {renderChannelList()}
+            {renderNichesList()}
           </Select>
-          <FormHelperText>Select Channel</FormHelperText>
+          <FormHelperText>Choose Niche</FormHelperText>
         </FormControl>
       </Box>
     );
   };
 
-  const renderCourseTypeField = () => {
+
+  const renderLanguagesField = () => {
+    return (
+      <Box>
+        <FormControl variant="outlined">
+          {/* <InputLabel id="vendor_city">City</InputLabel> */}
+          <Select
+            labelId="language"
+            id="language"
+            value={language}
+            onChange={handleLanguageChange}
+            // label="State"
+            style={{
+              height: 38,
+              width: matchesMDUp ? 140 : 170,
+              marginTop:matchesMDUp ? 10 : 0,
+              //marginLeft: 45,
+            }}
+          >
+            {renderLanguagesList()}
+          </Select>
+          <FormHelperText>Choose Language</FormHelperText>
+        </FormControl>
+      </Box>
+    );
+  };
+
+
+  const renderDeliveryDaysField = () => {
     return (
       <Box>
         <FormControl variant="outlined" className={classes.accountType}>
           {/* <InputLabel id="vendor_city">City</InputLabel> */}
           <Select
-            labelId="courseType"
-            id="courseType"
-            value={courseType}
-            onChange={handleCourseTypeChange}
+            labelId="deliveryDays"
+            id="deliveryDays"
+            value={deliveryDays}
+            onChange={handleDeliveryDaysChange}
             //label="Learning Path"
             style={{
               height: 38,
-              width: matchesMDUp ? 300 : 135,
-              marginTop: 10,
-              marginLeft: 10,
+              width: matchesMDUp ? 140 :350,
+              marginTop: matchesMDUp ? 10 : 0,
+              marginLeft: matchesMDUp ? 10 : 0,
             }}
           >
-            <MenuItem value={"all"}>All Courses</MenuItem>
-            <MenuItem value={"crash-course"}>
-              Nuggets(On-Demand Knowledge Refreshers)
+            <MenuItem value={"all"}>All Delivery Days</MenuItem>
+            <MenuItem value={"1"}>1 day
             </MenuItem>
-            <MenuItem value={"regular-course"}>Regular Courses</MenuItem>
-            <MenuItem value={"certification"}>Certification Courses</MenuItem>
-
-            <MenuItem value={"vocational"}>Vocational Courses</MenuItem>
+            <MenuItem value={"<=2"}>Less than or equal to 2 days</MenuItem>
+            <MenuItem value={"<=3"}>Less than or equal to 3 days</MenuItem>
+            <MenuItem value={"<=4"}>Less than or equal to 4 days</MenuItem>
+            <MenuItem value={"<=5"}>Less than or equal to 5 days</MenuItem>
+            <MenuItem value={"<=6"}>Less than or equal to 6 days</MenuItem>
+            <MenuItem value={"<=7"}>Less than or equal to 7 days</MenuItem>
+            <MenuItem value={"above-7"}>Above 7 days</MenuItem>
           </Select>
-          <FormHelperText>Select Course Type</FormHelperText>
+          <FormHelperText>Delivery Days Range</FormHelperText>
         </FormControl>
       </Box>
     );
   };
+
+ 
+    const renderGenderField = () => {
+    return (
+      <Box>
+        <FormControl variant="outlined" className={classes.accountType}>
+          {/* <InputLabel id="vendor_city">City</InputLabel> */}
+          <Select
+            labelId="gender"
+            id="gender"
+            value={gender}
+            onChange={handleGenderChange}
+            //label="Learning Path"
+            style={{
+              height: 38,
+              width: matchesMDUp ? 140 : 170,
+              marginTop: matchesMDUp ? 10 : 0,
+              marginLeft: matchesMDUp ? 10 : 0,
+            }}
+          >
+            <MenuItem value={"all"}>All Gender</MenuItem>
+            <MenuItem value={"male"}>Male
+            </MenuItem>
+            <MenuItem value={"female"}>Female</MenuItem>
+            
+          </Select>
+          <FormHelperText>Select Gender</FormHelperText>
+        </FormControl>
+      </Box>
+    );
+  };
+ 
+
+  const renderAgeField = () => {
+    return (
+      <Box>
+        <FormControl variant="outlined" className={classes.accountType}>
+          {/* <InputLabel id="vendor_city">City</InputLabel> */}
+          <Select
+            labelId="age"
+            id="age"
+            value={age}
+            onChange={handleAgeChange}
+            //label="Learning Path"
+            style={{
+              height: 38,
+              width: matchesMDUp ? 140 : 170,
+              marginTop: matchesMDUp ? 10 : 0,
+              marginLeft: matchesMDUp ? 10 : 0,
+            }}
+          >
+            <MenuItem value={"all"}>All Ages</MenuItem>
+            <MenuItem value={"18-24"}>18-24 years
+            </MenuItem>
+            <MenuItem value={"25-34"}>25-34 years</MenuItem>
+            <MenuItem value={"35-45"}>35-45 years</MenuItem>
+
+            <MenuItem value={"above-45"}>Above 45 years</MenuItem>
+          </Select>
+          <FormHelperText>Select Age Range</FormHelperText>
+        </FormControl>
+      </Box>
+    );
+  };
+
+  const renderPriceRangeField = () => {
+    return (
+      <Box>
+        <FormControl variant="outlined" className={classes.accountType}>
+          {/* <InputLabel id="vendor_city">City</InputLabel> */}
+          <Select
+            labelId="priceRange"
+            id="priceRange"
+            value={priceRange}
+            onChange={handlePriceRangeChange}
+            //label="Learning Path"
+            style={{
+              height: 38,
+              width: matchesMDUp ? 140 : 170,
+              marginTop: 10,
+              marginLeft: matchesMDUp ? 10 : 0,
+            }}
+          >
+            <MenuItem value={"all"}>All Price Ranges</MenuItem>
+            <MenuItem value={"less-than-100000"}>Less than  &#8358;100,000
+            </MenuItem>
+            <MenuItem value={"100000-200000"}>Between &#8358;100,000 to &#8358;200,000</MenuItem>
+            <MenuItem value={"200000-400000"}>Between &#8358;200,000 to &#8358;400,000</MenuItem>
+            <MenuItem value={"400000-600000"}>Between &#8358;400,000 to &#8358;600,000</MenuItem>
+            <MenuItem value={"600000-1000000"}>Between &#8358;600,000 to &#8358;1,000,000</MenuItem>
+
+            <MenuItem value={"above-1000000"}>Above &#8358;1,000,000</MenuItem>
+          </Select>
+          <FormHelperText>Select Price Range</FormHelperText>
+        </FormControl>
+      </Box>
+    );
+  };
+
+  const onApplyFilter=()=>{
+
+    props.updateCountryPathHandler(country)
+    props.updateLanguagePathHandler(language)
+    props.updateNichePathHandler(niche)
+    props.updateDeliveryDaysPathHandler(deliveryDays)
+    props.updateAgePathInfoHandler(age)
+    props.updateGenderPathHandler(gender)
+    props.updatePricePathHandler(priceRange)
+    props.updateServicePathInfoInfo();
+
+  }
 
   return (
     <>
       {matchesMDUp ? (
         <Card className={classes.root}>
           <Grid container direction="row" style={{ marginTop: 20 }}>
-            <Grid item style={{ width: "25%" }}>
-              <CardContent>{renderChannelField()}</CardContent>
+            <Grid item style={{ width: "9%" }}>
+              <CardContent>{renderPriceRangeField()}</CardContent>
             </Grid>
-            <Grid item style={{ width: "25%", marginLeft: 40 }}>
-              <CardContent>{renderProgrammeField()}</CardContent>
+            <Grid item style={{ width: "9%", marginLeft: 40 }}>
+              <CardContent>{renderCountryField()}</CardContent>
             </Grid>
-            <Grid item style={{ width: "25%", marginLeft: 40 }}>
-              <CardContent>{renderCourseTypeField()}</CardContent>
+            <Grid item style={{ width: "9%", marginLeft: 40 }}>
+              <CardContent>{renderLanguagesField()}</CardContent>
             </Grid>
+            <Grid item style={{ width: "9%", marginLeft: 40 }}>
+              <CardContent>{renderNichesField()}</CardContent>
+            </Grid>
+            <Grid item style={{ width: "9%", marginLeft: 40 }}>
+              <CardContent>{renderDeliveryDaysField()}</CardContent>
+            </Grid>
+            <Grid item style={{ width: "9%", marginLeft: 40 }}>
+              <CardContent>{renderAgeField()}</CardContent>
+            </Grid>
+            <Grid item style={{ width: "9%", marginLeft: 40 }}>
+              <CardContent>{renderGenderField()}</CardContent>
+            </Grid>
+            <Grid item style={{ width: "12%", marginLeft: 40 }}>
+              <Button  
+                variant="contained" 
+                className={classes.submitButton}
+                onClick={onApplyFilter}
+                >Apply
+              </Button>
+            </Grid>
+            
           </Grid>
           {/* </CardActionArea> */}
         </Card>
       ) : (
         <Card className={classes.rootMobile} disableRipple>
-          <Grid
-            container
-            direction="row"
-            justifyContent="left"
-            className={classes.rootMobile}
-          >
-            <Grid item style={{ width: "18%" }}>
-              <CardContent>{renderChannelField()}</CardContent>
+         
+          <Grid container direction="column" style={{ marginTop: 20, width: 350 }}>
+            <Grid item container direction="row" style={{width:350}}>
+            <Grid item style={{ width: 170 }}>
+              <CardContent>{renderPriceRangeField()}</CardContent>
             </Grid>
-            <Grid item style={{ width: "22%", marginLeft: 30 }}>
-              <CardContent>{renderProgrammeField()}</CardContent>
+            <Grid item style={{ width: 170, marginLeft: 10 }}>
+              <CardContent>{renderCountryField()}</CardContent>
+            </Grid>            
             </Grid>
-            <Grid item style={{ width: "40%", marginLeft: 40 }}>
-              <CardContent>{renderCourseTypeField()}</CardContent>
+
+            <Grid item container direction="row" style={{width:350,marginTop: "-25px"}}>
+            <Grid item style={{ width: 170 }}>
+              <CardContent>{renderLanguagesField()}</CardContent>
             </Grid>
+            <Grid item style={{ width: 170, marginLeft: 10 }}>
+              <CardContent>{renderNichesField()}</CardContent>
+            </Grid>            
+            </Grid>
+
+            <Grid item container direction="row" style={{width:350,marginTop: "-25px"}}>
+            <Grid item style={{ width: 170 }}>
+            <CardContent>{renderGenderField()}</CardContent>
+            </Grid>
+            <Grid item style={{ width: 170, marginLeft: 10 }}>
+              <CardContent>{renderAgeField()}</CardContent>
+            </Grid>            
+            </Grid>
+
+
+            <Grid item container direction="row" style={{width:350,marginTop: "-25px"}}>
+            <Grid item style={{ width: 350 }}>
+              <CardContent>{renderDeliveryDaysField()}</CardContent>
+            </Grid>
+                       
+            </Grid>
+                
+            
+            <Grid item container direction="row" style={{width:350,marginTop: "-25px"}}>
+            
+            <Grid item style={{ width: 350, marginLeft: 10 }}>
+              <Button  
+                variant="contained" 
+                className={classes.submitButtonMobile}
+                onClick={onApplyFilter}
+                >Apply
+              </Button>
+            </Grid>
+            </Grid>
+            
+            
           </Grid>
         </Card>
       )}

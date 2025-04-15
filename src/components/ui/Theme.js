@@ -2,27 +2,31 @@ import { createTheme } from "@material-ui/core/styles";
 
 const arcBlue = "#0B72B9";
 const arcOrange = "#2C3333";
-//const arcOrange = "#FD841F";
+const acrLigtOrange="#FF6600";
+//const arcOrange = "#410445";
 const arcGrey = "#868686";
 const arcWhite = "#ffffff";
 //const arcPrimary = "#019a31";
 const arcPrimary = "#DC0000";
+const acrBlack = "#1A1A1D"
 
 export default createTheme({
   palette: {
     common: {
       blue: arcBlue,
-      orange: arcOrange,
+     orange: arcOrange,
       grey: arcGrey,
       white: arcWhite,
       green: arcPrimary,
+      black: acrBlack
     },
     primary: {
-      // main: arcBlue,
-      main: arcPrimary,
+       main: acrBlack,
+      //main: arcPrimary,
     },
     secondary: {
-      main: arcOrange,
+      //main: arcOrange,
+      main:acrLigtOrange
     },
   },
   typography: {

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
+import useToken from "../../../custom-hooks/useToken";
+import useUserId from "../../../custom-hooks/useUserId";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Typography from "@mui/material/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import Stack from "@mui/material/Stack";
+import Snackbar from "@material-ui/core/Snackbar";
 
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { DataGrid } from "@mui/x-data-grid";
@@ -12,6 +18,15 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import api from "./../../../apis/local";
+
+//import AddVideoAndHooksForm from "./AddVideoAndHooksForm";
+import ViewOrderDetails from "./ViewOrderDetails";
+import GetCreatorDetails from "./GetCreatorDetails";
+import MarkOrderAsCompleted from "./MarkOrderAsCompleted";
+import ViewPaymentDetails from "./ViewPaymentDetails";
+import SendForDisputeResolution from "./SendForDisputeResolution";
+//import GetProjectBrief from "./GetProjectBrief";
+//import ProjectDeleteForm from "./ProjectDeleteForm";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -31,61 +46,193 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Payments(props) {
-  const classes = useStyles();
-
-  const [open, setOpen] = React.useState(false);
-
-  const [paymentsList, setPaymentsList] = useState([]);
+function Payment(props) {
+ const classes = useStyles();
+  const theme = useTheme();
+  const { token, setToken } = useToken();
+  const { userId, setUserId } = useUserId();
+  const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
+  const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
+  const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
+  const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [projectsList, setProjectList] = useState([]);
+  const [ordersList, setOrdersList] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowId, setSelectedRowId] = useState();
+  const [rowNumber, setRowNumber] = useState(0);
+   const [rowSelected, setRowSelected] = useState(false);
+  const [updateProjectCounter, setUpdateProjectCounter] = useState(false);
+  const [updateEdittedProjectCounter, setUpdateEdittedProjectCounter] =
+    useState(false);
+  const [updateDeletedProjectCounter, setUpdateDeletedProjectCounter] =
+    useState(false);
   const [loading, setLoading] = useState(false);
+  const [brandId, setBrandId] = useState();
+  const [paymentsList, setPaymentsList] = useState([]);
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    backgroundColor: "",
+  });
 
+  
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       let allData = [];
-      api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
-      const response = await api.get(`/payments`, {
-        params: { shopType: "online" },
-      });
-      const workingData = response.data.data.data;
-      workingData.map((payment) => {
-        allData.push({
-          id: payment._id,
-          orderNumber: payment.orderNumber,
-          transaction: payment.transaction,
-          customer: payment.customer,
-          totalProductAmount: payment.totalProductAmount,
-          amountPaid: payment.amountPaid,
-          amountAlreadyPaid: payment.amountAlreadyPaid,
-          totalDeliveryCost: payment.totalDeliveryCost,
-          paymentCurrency: payment.paymentCurrency,
-          paymentConfirmationStatus: payment.paymentConfirmationStatus,
-          paymentConfirmedBy: payment.paymentConfirmedBy,
-          datePosted: payment.datePosted,
-          paymentDate: payment.paymentDate,
-          shopType: payment.shopType,
-          deliveryMode: payment.deliveryMode,
-        });
-      });
-      setPaymentsList(allData);
-      setLoading(false);
+      //if(props.brandId){
+        const response = await api.get(`/payments`, {
+                  params: { paymentStatus: "paid" },
+          });
+                const workingData = response.data.data.data;
+                workingData.map((payment) => {
+                  allData.push({
+                    id: payment._id,
+                    refNumber: payment.refNumber,
+                    order: payment.order,
+                    brand: payment.brand,
+                    creator: payment.creator,
+                    platformReceipt: payment.platformReceipt,
+                    vatReceipt: payment.vatReceipt,
+                    creatorReceipt: payment.creatorReceipt,
+                    paymentCurrency: payment.paymentCurrency,
+                    paymentConfirmedBy: payment.paymentConfirmedBy,
+                    paymentConfirmedDate: payment.paymentConfirmedDate,
+                    paymentStatus: payment.paymentStatus,
+                    paymentMethod: payment.paymentMethod,
+                    prevailingPlatformRate: payment.prevailingPlatformRate,
+                    prevailingVatRate: payment.prevailingVatRate,
+                    prevailingMinimumPlatformRate: payment.prevailingMinimumPlatformRate,
+                    prevailingPlatformRateIsIncludedAsPartOfUserInputedAmount: payment.prevailingPlatformRateIsIncludedAsPartOfUserInputedAmount,
+                    prevailingVatRateIsIncludedAsPartOfUserInputedAmount: payment.prevailingVatRateIsIncludedAsPartOfUserInputedAmount,
+                   
+                  });
+                });
+                setPaymentsList(allData);
+                setLoading(false);
+      
     };
 
     //call the function
 
     fetchData().catch(console.error);
-  }, []);
+  }, [
+    updateProjectCounter,
+    updateEdittedProjectCounter,
+    updateDeletedProjectCounter,
+    
+  ]);
+
+  
+
+    
 
   useEffect(() => {
     // 👇️ scroll to top on page load
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
 
+  const renderProjectUpdateCounter = () => {
+    setUpdateProjectCounter((prevState) => !prevState);
+  };
+
+  const renderProjectEdittedUpdateCounter = () => {
+    setUpdateEdittedProjectCounter((prevState) => !prevState);
+  };
+
+  const renderProjectDeletedUpdateCounter = () => {
+    setUpdateDeletedProjectCounter((prevState) => !prevState);
+  };
+
+  const handleSuccessfulCreateSnackbar = (message) => {
+    //setBecomePartnerOpen(false);
+    setAlert({
+      open: true,
+      message: message,
+      //backgroundColor: "#4BB543",
+      backgroundColor: "#FF731D",
+    });
+  };
+  const handleSuccessfulEditSnackbar = (message) => {
+    //setBecomePartnerOpen(false);
+    setAlert({
+      open: true,
+      message: message,
+      //backgroundColor: "#4BB543",
+      backgroundColor: "#FF731D",
+    });
+  };
+
+  const handleSuccessfulDeletedItemSnackbar = (message) => {
+    //setBecomePartnerOpen(false);
+    setAlert({
+      open: true,
+      message: message,
+      //backgroundColor: "#4BB543",
+      backgroundColor: "#FF731D",
+    });
+  };
+
+  const handleFailedSnackbar = (message) => {
+    setAlert({
+      open: true,
+      message: message,
+      backgroundColor: "#FF3232",
+    });
+    //setBecomePartnerOpen(true);
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
-  const handleOpen = () => {
+  const handleAddOpen = () => {
     setOpen(true);
+  };
+
+  const handleDialogOpenStatus = () => {
+    setOpen(false);
+  };
+
+  const handleEditDialogOpenStatus = () => {
+    setEditOpen(false);
+  };
+
+  const handleDeleteDialogOpenStatus = () => {
+    setDeleteOpen(false);
+  };
+
+  const handleViewDialogOpenStatus = () => {
+    setViewOpen(false);
+  };
+
+
+  const handleEditOpen = () => {
+    setEditOpen(true);
+  };
+
+  const handleDeleteOpen = () => {
+    setDeleteOpen(true);
+  };
+  const handleViewOpen = () => {
+    setViewOpen(true);
+  };
+
+  const onRowsSelectionHandler = (ids, rows) => {
+    const selectedIDs = new Set(ids);
+    const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
+    setSelectedRows(selectedRowsData);
+    setRowNumber(selectedIDs.size);
+    selectedIDs.forEach(function (value) {
+      setSelectedRowId(value);
+    });
+    if (selectedIDs.size === 1) {
+      setRowSelected(true);
+    } else {
+      setRowSelected(false);
+    }
   };
 
   const renderDataGrid = () => {
@@ -98,9 +245,16 @@ function Payments(props) {
         headerName: "S/n",
         width: 100,
       },
+            {
+        field: "projectName",
+        headerName:"Project Name",
+        width: 250,
+
+        //editable: true,
+      },
       {
-        field: "paymentDate",
-        headerName: "Payment Date",
+        field: "paymentStatus",
+        headerName: "Payment Status",
         width: 150,
 
         //editable: true,
@@ -113,115 +267,110 @@ function Payments(props) {
         //editable: true,
       },
       {
-        field: "shopType",
-        headerName: "Transaction From",
+        field: "orderStatus",
+        headerName: "Order Status",
         width: 150,
 
         //editable: true,
       },
       {
-        field: "paymentConfirmationStatus",
-        headerName: `Payment Confirmation Status`,
+        field: "paymentConfirmedDate",
+        headerName: "Payment Confirmation Date",
+        width: 250,
+
+        //editable: true,
+      },
+      
+      {
+        field: "paymentMethod",
+        headerName: `Payment Method`,
         width: 180,
 
         //editable: true,
       },
+      
       {
-        field: "deliveryMode",
-        headerName: `Delivery Mode`,
-        width: 180,
-
-        //editable: true,
-      },
-      // {
-      //   field: "transaction",
-      //   headerName: "Transaction From",
-      //   width: 150,
-
-      //   //editable: true,
-      // },
-      {
-        field: "customer",
-        headerName: "Customer",
-        width: 150,
+        field: "platformReceipt",
+        headerName: `Platform Receipt ${"(" + "₦" + ")"}`,
+        width: 200,
 
         //editable: true,
       },
       {
-        field: "totalProductAmount",
-        headerName: `Total Product Amount`,
-        width: 180,
+        field: "creatorReceipt",
+        headerName: `Creator Receipt ${"(" + "₦" + ")"}`,
+        width: 200,
 
         //editable: true,
       },
       {
-        field: "totalDeliveryCost",
-        headerName: `Total Delivery Cost`,
-        width: 180,
+        field: "vatReceipt",
+        headerName: `VAT Receipt ${"(" + "₦" + ")"}`,
+        width: 200,
 
         //editable: true,
       },
+      {
+        field: "creatorName",
+        headerName: "Creator Name",
+         width: 180,
 
-      // {
-      //   field: "orderaction",
-      //   headerName: "",
-      //   width: 30,
-      //   description: "transaction row",
-      //   renderCell: (params) => (
-      //     <strong>
-      //       {/* {params.value.getFullYear()} */}
-      //       <ViewListIcon
-      //         style={{ cursor: "pointer" }}
-      //         onClick={() => [
-      //           // this.setState({
-      //           //   editOpen: true,
-      //           //   id: params.id,
-      //           //   params: params.row,
-      //           // }),
-      //           // history.push(`/products/onboard/${params.id}`),
-      //         ]}
-      //       />
-      //     </strong>
-      //   ),
-      // },
+        //editable: true,
+      },
+      {
+        field: "creatorCountry",
+        headerName: "Creator Country",
+         width: 180,
+
+        //editable: true,
+      },
+      {
+        field: "brandName",
+        headerName: "Brand Name",
+         width: 180,
+
+        //editable: true,
+      },
+      {
+        field: "brandCountry",
+        headerName: "Brand Country",
+         width: 180,
+
+        //editable: true,
+      },
+      
     ];
 
     paymentsList.map((payment, index) => {
+     
       let row = {
-        numbering: ++counter,
-        id: payment.id,
-        orderNumber: payment.orderNumber
-          ? payment.orderNumber.toUpperCase()
-          : "",
-        totalProductAmount: payment.totalProductAmount,
-        totalDeliveryCost: payment.totalDeliveryCost,
-        paymentDate: payment.paymentDate
-          ? new Date(payment.paymentDate).toLocaleDateString()
-          : "",
-        customer: payment.customer
-          ? payment.customer[0].name.replace(
-              /(^\w|\s\w)(\S*)/g,
-              (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-            )
-          : "",
-        shopType: payment.shopType
-          ? payment.shopType.replace(
-              /(^\w|\s\w)(\S*)/g,
-              (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-            )
-          : "",
-        paymentConfirmationStatus: payment.paymentConfirmationStatus
-          ? payment.paymentConfirmationStatus.replace(
-              /(^\w|\s\w)(\S*)/g,
-              (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-            )
-          : "",
-        deliveryMode: payment.deliveryMode
-          ? payment.deliveryMode.replace(
-              /(^\w|\s\w)(\S*)/g,
-              (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-            )
-          : "",
+          numbering: ++counter,
+          id: payment.id,
+          refNumber: payment.refNumber,
+          order: payment.order,
+          orderNumber: payment.order ? payment.order.orderNumber : "",
+          creativeType: payment.order ? payment.order.creativeType : "",
+          orderStatus: payment.order ? payment.order.status : "",
+          projectName: payment.order ? payment.order.project[0].name : "",
+          brand: payment.brand,
+          brandName: payment.brand ? payment.brand[0].name : "",
+          brandCountry: payment.brand ? payment.brand[0].country[0].name : "",
+          creatorName: payment.creator ? payment.creator[0].name : "",
+          creatorCountry: payment.creator ? payment.creator[0].country[0].name : "",
+          creator: payment.creator,
+          platformReceipt: payment.platformReceipt ? payment.platformReceipt.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,"): "",
+          vatReceipt: payment.vatReceipt ? payment.vatReceipt.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") : "",
+          creatorReceipt: payment.creatorReceipt ? payment.creatorReceipt.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,") : "",
+          paymentCurrency: payment.paymentCurrency,
+          paymentConfirmedBy: payment.paymentConfirmedBy,
+          paymentConfirmedDate: payment.paymentConfirmedDate ? new Date(payment.paymentConfirmedDate).toLocaleString("en-GB") : "",
+          paymentStatus: payment.paymentStatus,
+          paymentMethod: payment.paymentMethod,
+          prevailingPlatformRate: payment.prevailingPlatformRate,
+          prevailingVatRate: payment.prevailingVatRate,
+          prevailingMinimumPlatformRate: payment.prevailingMinimumPlatformRate.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,"),
+          prevailingPlatformRateIsIncludedAsPartOfUserInputedAmount: payment.prevailingPlatformRateIsIncludedAsPartOfUserInputedAmount,
+          prevailingVatRateIsIncludedAsPartOfUserInputedAmount: payment.prevailingVatRateIsIncludedAsPartOfUserInputedAmount,
       };
       rows.push(row);
     });
@@ -238,8 +387,9 @@ function Payments(props) {
           },
         }}
         pageSizeOptions={[5]}
-        //checkboxSelection
+        checkboxSelection
         disableRowSelectionOnClick
+        onSelectionModelChange={(ids) => onRowsSelectionHandler(ids, rows)}
         sx={{
           boxShadow: 3,
           border: 3,
@@ -257,25 +407,135 @@ function Payments(props) {
       <Grid container spacing={1} direction="column">
         <Grid item xs>
           <Grid container spacing={2}>
-            <Grid item xs={10}>
+            <Grid item xs={7.2}>
               {/* <Item>xs=8</Item> */}
               <Typography variant="h4">Payments</Typography>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={4.8}>
               <div>
-                <Button variant="contained" onClick={handleOpen}>
-                  Process Payment
-                </Button>
-                <Backdrop
-                  sx={{
-                    color: "#fff",
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                  }}
-                  open={open}
-                  onClick={handleClose}
-                >
-                  {/* <CircularProgress color="inherit" /> */}
-                </Backdrop>
+                <Stack direction="row" spacing={1.5}>
+                  <Button variant="contained" onClick={handleAddOpen} disabled={rowSelected ? false : true}>
+                    View Payment Details
+                  </Button>
+                  <Dialog
+                    //style={{ zIndex: 1302 }}
+                    fullScreen={matchesXS}
+                    open={open}
+                    // onClose={() => [setOpen(false), history.push("/utilities/countries")]}
+                    onClose={() => [setOpen(false)]}
+                  >
+                    <DialogContent>
+                      <ViewPaymentDetails
+                        token={token}
+                        userId={userId}
+                        brandId={brandId}
+                        params={selectedRows}
+                        //creatorName={creatorName}
+                       // creatorCountry={creatorCountry}
+                        //creatorId={creatorId}
+                        handleDialogOpenStatus={handleDialogOpenStatus}
+                        handleSuccessfulCreateSnackbar={
+                          handleSuccessfulCreateSnackbar
+                        }
+                        handleFailedSnackbar={handleFailedSnackbar}
+                        renderProjectUpdateCounter={
+                          renderProjectUpdateCounter
+                        }
+                      />
+                    </DialogContent>
+                  </Dialog>
+                  {/* <Button variant="contained" onClick={handleViewOpen} disabled={rowSelected ? false : true}>
+                    Get Creator Contact Details
+                  </Button> */}
+                  <Dialog
+                    //style={{ zIndex: 1302 }}
+                    fullScreen={matchesXS}
+                    open={viewOpen}
+                    // onClose={() => [setOpen(false), history.push("/utilities/countries")]}
+                    onClose={() => [setViewOpen(false)]}
+                  >
+                    <DialogContent>
+                      <GetCreatorDetails
+                        token={token}
+                        userId={userId}
+                        params={selectedRows}
+                        // creatorName={creatorName}
+                        // creatorCountry={creatorCountry}
+                        // creatorId={creatorId}
+                        // creatorPhoneNumber={creatorPhoneNumber}
+                        // creatorEmail={creatorEmail}
+                        // creatorGender={creatorGender}
+                        handleViewDialogOpenStatus={handleViewDialogOpenStatus}
+                        handleSuccessfulEditSnackbar={
+                          handleSuccessfulEditSnackbar
+                        }
+                        handleFailedSnackbar={handleFailedSnackbar}
+                        renderProjectEdittedUpdateCounter={
+                          renderProjectEdittedUpdateCounter
+                        }
+                      />
+                    </DialogContent>
+                  </Dialog>
+                  <Button variant="contained" onClick={setDeleteOpen} disabled={rowSelected ? false : true}>
+                    Send for Dispute Resolution
+                  </Button>
+                  <Dialog
+                    //style={{ zIndex: 1302 }}
+                    fullScreen={matchesXS}
+                    open={deleteOpen}
+                    // onClose={() => [setOpen(false), history.push("/utilities/countries")]}
+                    onClose={() => [setDeleteOpen(false)]}
+                  >
+                    <DialogContent>
+                      <SendForDisputeResolution
+                        token={token}
+                        userId={userId}
+                        brandId={brandId}
+                        params={selectedRows}
+                        //projectName={projectName}
+                        handleDeleteDialogOpenStatus={handleDeleteDialogOpenStatus}
+                        handleSuccessfulEditSnackbar={
+                          handleSuccessfulEditSnackbar
+                        }
+                        handleSuccessfulDeletedItemSnackbar={
+                            handleSuccessfulDeletedItemSnackbar
+                          }
+                        handleFailedSnackbar={handleFailedSnackbar}
+                        renderProjectEdittedUpdateCounter={
+                          renderProjectEdittedUpdateCounter
+                        }
+                      />
+                    </DialogContent>
+                  </Dialog>
+                  {/* <Button variant="contained" onClick={handleDeleteOpen}>
+                    Delete
+                  </Button> */}
+                  {/* <Dialog
+                    //style={{ zIndex: 1302 }}
+                    fullScreen={matchesXS}
+                    open={deleteOpen}
+                    // onClose={() => [setOpen(false), history.push("/utilities/countries")]}
+                    onClose={() => [setDeleteOpen(false)]}
+                  >
+                    <DialogContent>
+                      <ProjectDeleteForm
+                        token={token}
+                        userId={userId}
+                        params={selectedRows}
+                        handleDeleteDialogOpenStatus={
+                          handleDeleteDialogOpenStatus
+                        }
+                        handleSuccessfulDeletedItemSnackbar={
+                          handleSuccessfulDeletedItemSnackbar
+                        }
+                        handleFailedSnackbar={handleFailedSnackbar}
+                        renderProjectDeletedUpdateCounter={
+                          renderProjectDeletedUpdateCounter
+                        }
+                      />
+                    </DialogContent>
+                  </Dialog> */}
+                </Stack>
               </div>
             </Grid>
           </Grid>
@@ -286,9 +546,20 @@ function Payments(props) {
             {!loading && renderDataGrid()}
           </Box>
         </Grid>
+        <Snackbar
+          open={alert.open}
+          message={alert.message}
+          ContentProps={{
+            style: { backgroundColor: alert.backgroundColor },
+          }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          onClose={() => setAlert({ ...alert, open: false })}
+          autoHideDuration={4000}
+        />
       </Grid>
     </Box>
   );
 }
 
-export default Payments;
+export default Payment;
+

@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 
 function CourseInfo(props) {
   const {
-    prerequisites,
+    bio,
     tools,
     targetAudience,
     whatToLearn,
@@ -147,14 +147,14 @@ function CourseInfo(props) {
         ></Grid>
 
         <Typography style={{ width: 300, marginTop: 15 }}>
-          <strong>Prerequisites:</strong>&nbsp;
-          <ReactMarkdown>{prerequisites}</ReactMarkdown>
+          <strong>Bio:</strong>&nbsp;
+          <ReactMarkdown>{bio}</ReactMarkdown>
         </Typography>
         <br />
-        <Typography style={{ width: 300, marginTop: 10 }}>
+        {/* <Typography style={{ width: 300, marginTop: 10 }}>
           <strong>Who should attend:</strong>&nbsp;
           <ReactMarkdown>{targetAudience}</ReactMarkdown>
-        </Typography>
+        </Typography> */}
 
         {categorySlug && (
           <Button

@@ -14,7 +14,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { TextField, Typography } from "@material-ui/core";
-import background from "./../../assets/images/footage/footage_image.png";
+import background from "./../../assets/images/covers/aboutus-cover.jpg";
 import history from "./../../history";
 import SignUpForm from "./SignUpForm";
 import { style } from "@mui/system";
@@ -321,7 +321,7 @@ const LoginForm = (props) => {
                 item
                 container
                 alignItems="flex-start"
-                style={{ width: "65%" }}
+                style={{ width: "85%", marginLeft:80 }}
               >
                 <Button
                   variant="text"
@@ -336,9 +336,9 @@ const LoginForm = (props) => {
               <Grid
                 item
                 container
-                style={{ width: "25%", marginLeft: 10, fontSize: 10 }}
+                style={{ width: "5%", marginLeft: 10, fontSize: 10 }}
               >
-                <Button
+                {/* <Button
                   variant="text"
                   onClick={() => [
                     handleMakeOpenSignUpDialogStatus(),
@@ -346,7 +346,7 @@ const LoginForm = (props) => {
                   ]}
                 >
                   Sign Up
-                </Button>
+                </Button> */}
               </Grid>
             </Grid>
 

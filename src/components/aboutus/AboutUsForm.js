@@ -20,7 +20,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import data from "./../../apis/local";
-import background from "../../assets/images/covers/aboutus-cover.png";
+import background from "../../assets/images/covers/aboutus-cover.jpg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -158,13 +158,13 @@ function AboutUsForm(props) {
         // onSubmit={onSubmit}
         sx={{
           width: 800,
-          height: 350,
+          height: 450,
         }}
         noValidate
         autoComplete="off"
         // style={{ marginTop: 20 }}
         // className={classes.background}
-        style={{ height: "25em", marginTop: "-300" }}
+        style={{ height: "35em", marginTop: "-300" }}
       >
         <Grid
           container
@@ -184,20 +184,63 @@ function AboutUsForm(props) {
             <Typography
               //variant="h4"
               style={{
-                marginTop: 70,
+                marginTop: 50,
                 marginLeft: 100,
-                color: "white",
-                fontSize: 20,
+                color: "aqua",
+                fontSize: 16,
               }}
             >
               <strong>
-                Learning is easy but becoming a professional or an expert is not
-                <br /> At NextChamp, we are all about making professionals and
-                <br /> experts through a combination of teaching, practice,
-                <br />
-                mocking, mentoring and assessment
+              At TopCreators, we believe that powerful storytelling is at the heart of every successful brand.
+              Our platform is designed to connect businesses with top-tier creators specializing in marketing videos and jingles 
+              that captivate audiences and leave a lasting impression
                 <br />
               </strong>
+            </Typography>
+            <br />
+            <Typography
+              //variant="h4"
+              style={{
+                marginTop: 20,
+                marginLeft: 100,
+                color: "aqua",
+                fontSize: 16,
+              }}
+            >
+              {/* <strong> */}
+              We bring together talented video producers, animators, voice-over artists, and musicians who are passionate about
+              helping brands stand out in today’s competitive market. Whether you need an engaging ad, a product explainer, 
+              or a catchy jingle to reinforce your brand identity, our curated network of professionals is here to bring your 
+              vision to life.
+
+              {/* </strong> */}
+            </Typography>
+            <Typography
+              //variant="h4"
+              style={{
+                marginTop: 20,
+                marginLeft: 100,
+                color: "aqua",
+                fontSize: 16,
+              }}
+            >
+              {/* <strong> */}
+              Our mission is simple: to make high-quality creative production accessible, seamless, and results-driven. With an intuitive platform, transparent collaboration, and a commitment to excellence, we empower brands to produce marketing content that resonates, 
+              inspires, and drives growth
+              {/* </strong> */}
+            </Typography>
+            <Typography
+              //variant="h4"
+              style={{
+                marginTop: 20,
+                marginLeft: 100,
+                color: "aqua",
+                fontSize: 16,
+              }}
+            >
+              {/* <strong> */}
+              Join us and discover how the right creative partnership can take your brand to new heights!
+              {/* </strong> */}
             </Typography>
           </Grid>
           {/* <Grid item style={{ width: "50%" }}>

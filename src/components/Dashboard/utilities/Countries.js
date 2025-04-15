@@ -58,6 +58,7 @@ function Countries(props) {
   const [countryList, setCountryList] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowId, setSelectedRowId] = useState();
+    const [rowSelected, setRowSelected] = useState(false);
   const [rowNumber, setRowNumber] = useState(0);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({
@@ -186,6 +187,11 @@ function Countries(props) {
     selectedIDs.forEach(function (value) {
       setSelectedRowId(value);
     });
+    if (selectedIDs.size === 1) {
+      setRowSelected(true);
+    } else {
+      setRowSelected(false);
+    }
   };
 
   const renderDataGrid = () => {
@@ -319,7 +325,7 @@ function Countries(props) {
                       />
                     </DialogContent>
                   </Dialog>
-                  <Button variant="contained" onClick={handleEditOpen}>
+                  <Button variant="contained" onClick={handleEditOpen} disabled={rowSelected ? false : true}>
                     Edit
                   </Button>
                   <Dialog
@@ -345,7 +351,7 @@ function Countries(props) {
                       />
                     </DialogContent>
                   </Dialog>
-                  <Button variant="contained" onClick={handleDeleteOpen}>
+                  <Button variant="contained" onClick={handleDeleteOpen} disabled={rowSelected ? false : true}>
                     Delete
                   </Button>
                   <Dialog

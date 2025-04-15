@@ -98,7 +98,7 @@ function ContactUsForm(props) {
           <Typography variant="h5" style={{ marginTop: 10 }}>
             <span style={{ color: "orange" }}>Email:</span>{" "}
             <span style={{ marginLeft: 30 }}>
-              nextchamps.academy@gmail.com{" "}
+              controlsoftng@gmail.com{" "}
             </span>
             <br /> <br /> <span style={{ color: "orange" }}>Tel:</span>{" "}
             <span style={{ marginLeft: 50 }}>+234 803 201 5819</span>

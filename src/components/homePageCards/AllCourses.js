@@ -221,10 +221,14 @@ export default function AllCourses(props) {
   const matchesMDUp = useMediaQuery(theme.breakpoints.up("md"));
 
   let imageUrl = "";
+  
   if (product) {
-    imageUrl = `${baseURL}/images/courses/${props.image}`;
+    imageUrl = `${baseURL}/images/creators/${props.image}`;
   }
+  
   const imageMobileUrl = MobileCoverImage;
+
+
 
   const Str = require("@supercharge/strings");
 
@@ -451,7 +455,7 @@ export default function AllCourses(props) {
               <CardMedia
                 className={classes.media}
                 component="img"
-                alt={props.title}
+                alt={props.name}
                 image={imageUrl}
                 //title={product.name}
                 crossOrigin="anonymous"
@@ -461,14 +465,14 @@ export default function AllCourses(props) {
               <CardContent>
                 {props.hasSeries ? (
                   <Typography variant="h4" color="textSecondary" component="p">
-                    {props.title}
+                    {props.name}
                     <span style={{ fontSize: 16, fontWeight: 700 }}>
                       <em> ({props.series})</em>
                     </span>
                   </Typography>
                 ) : (
                   <Typography variant="h4" color="textSecondary" component="p">
-                    {props.title}
+                    {props.name}
                   </Typography>
                 )}
                 <Typography
@@ -476,7 +480,7 @@ export default function AllCourses(props) {
                   color="textSecondary"
                   component="p"
                 >
-                  {Str(props.shortDescription).limit(200, "...").get()}
+                  {Str(props.bio).limit(200, "...").get()}
                 </Typography>
                 <Typography
                   variant="h4"
@@ -487,13 +491,15 @@ export default function AllCourses(props) {
                   <span style={{ marginLeft: 130 }}>
                     <strong>
                       {getCurrencyCode()}
-                      {props.price
-                        ? props.price
+                      {props.videoPrice
+                        ? props.videoPrice
                             .toFixed(2)
                             .replace(/\d(?=(\d{3})+\.)/g, "$&,")
                         : 0}
                     </strong>
+                   
                   </span>
+                  <span style={{fontSize:12}}>/per video</span>
                 </Typography>
                 {props.priceLabel && (
                   <Typography
@@ -511,17 +517,29 @@ export default function AllCourses(props) {
                 )}
                 <Typography>
                   <span style={{ fontSize: 14, marginLeft: 10, marginTop: 20 }}>
-                    <strong>Delivery Method:</strong> &nbsp;
-                    <span>{props.deliveryMethod}</span>
+                    <strong>Nationality:</strong> &nbsp;
+                    <span>{props.country[0].name}</span>
                   </span>
                 </Typography>
                 <Typography>
                   <span style={{ fontSize: 14, marginLeft: 10 }}>
-                    <strong> Venue:</strong>
-                    <span>{props.venue}</span>
+                    <strong> Age:</strong>
+                    <span>{props.age}</span>
                   </span>
                 </Typography>
                 <Typography>
+                  <span style={{ fontSize: 14, marginLeft: 10 }}>
+                    <strong> Cost for An Extra Hook:</strong>
+                    <span>{props.videoHookPrice}</span>
+                  </span>
+                </Typography>
+                <Typography>
+                  <span style={{ fontSize: 14, marginLeft: 10 }}>
+                    <strong> Delivery Period:</strong>
+                    <span>{props.videoDeliveryDays} days</span>
+                  </span>
+                </Typography>
+                {/* <Typography>
                   <span style={{ fontSize: 14, marginLeft: 10 }}>
                     <strong> Total Course Duration:</strong>
                     <span>{props.duration} </span>
@@ -539,143 +557,17 @@ export default function AllCourses(props) {
                     <span>{props.weekendSessionPeriod} </span>
                   </span>
                 </Typography>
-                <Typography>
-                  <span style={{ fontSize: 14, marginLeft: 10 }}>
-                    <strong>Course Track:</strong>
-                    <span>{props.track}</span>
-                  </span>
-                </Typography>
-                {(props.track === "weekdays" ||
-                  props.track === "weekdays/weekends") && (
-                  <Typography>
-                    <span style={{ fontSize: 14, marginLeft: 10 }}>
-                      <strong>Weekday Start Date(s): </strong>&nbsp;&nbsp;
-                      {!props.showGenericWeekdayStartDateText
-                        ? props.commencementWeekdaysDate.toString()
-                        : props.genericWeekdayStartDateText}
-                    </span>
-                  </Typography>
-                )}
-                {(props.track === "weekends" ||
-                  props.track === "weekdays/weekends") && (
-                  <Typography>
-                    <span style={{ fontSize: 14, marginLeft: 10 }}>
-                      <strong>Weekend Start Date(s): </strong>&nbsp;&nbsp;
-                      {!props.showGenericWeekendStartDateText
-                        ? props.commencementWeekendsDate.toString()
-                        : props.genericWeekendStartDateText}
-                    </span>
-                  </Typography>
-                )}
-                {props.hasMentorshipCredit && (
-                  <Typography>
-                    <span style={{ fontSize: 14, marginLeft: 10 }}>
-                      <strong>Mentorship Credit:</strong>
-                      <span>
-                        {props.mentorshipCredit}&nbsp;Units&nbsp;&nbsp; (to be
-                        used after graduation)
-                      </span>
-                    </span>
-                  </Typography>
-                )}
-                {props.hasMentorshipCredit && (
-                  <Typography>
-                    <span style={{ fontSize: 14, marginLeft: 10 }}>
-                      <strong>Total Value of Mentorship Credit:</strong>
-                      <span>
-                        {getCurrencyCode()}
-                        {(
-                          props.mentorshipCredit * props.costPerMentorshipCredit
-                        )
-                          .toFixed(2)
-                          .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
-                      </span>
-                    </span>
-                  </Typography>
-                )}
-                {props.hasMentorshipCredit && (
-                  <Typography>
-                    <span style={{ fontSize: 14, marginLeft: 10 }}>
-                      <strong>Mentorship Duration:</strong>
-                      <span>
-                        {props.mentorshipDuration}&nbsp;&nbsp; (from the day of
-                        graduation )
-                      </span>
-                    </span>
-                  </Typography>
-                )}
-                <Typography>
-                  <span style={{ fontSize: 14, marginLeft: 10 }}>
-                    <strong>Payment Options:</strong>
-                    <span>{props.paymentOptions}</span>
-                  </span>
-                </Typography>
-                {props.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography>
-                    <span style={{ fontSize: 14, marginLeft: 10 }}>
-                      <strong>Is installmental Payment Allowed?:</strong>
-                      <span>
-                        {props.isInstallmentalPaymentAllowed
-                          .charAt(0)
-                          .toUpperCase() +
-                          props.isInstallmentalPaymentAllowed.slice(1)}
-                      </span>
-                    </span>
-                  </Typography>
-                )}
-                {props.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography>
-                    <span style={{ fontSize: 14, marginLeft: 10 }}>
-                      <strong>
-                        Maximum Number of Installmental Payment Allowed:
-                      </strong>
-                      <span>
-                        {props.maximumInstallmentalPayment}&nbsp;times
-                      </span>
-                    </span>
-                  </Typography>
-                )}
-                <Typography>
-                  <span style={{ fontSize: 14, marginLeft: 10 }}>
-                    <strong>
-                      Is a lifetime Access To This Course Allowed?:
-                    </strong>
-                    <span>{props.allowLifeTimeAccess ? "Yes" : "No"} </span>
-                  </span>
-                </Typography>
-                <br /> <br />
-                {props.isCourseAuditable && (
-                  <Typography>
-                    <span
-                      style={{
-                        fontSize: 18,
-                        marginLeft: 14,
-                        //textAlign: "center",
-                      }}
-                    >
-                      You can audit this course for FREE for up to
-                      <strong>
-                        <span>{props.weekdayAuditDays}</span>
-                      </strong>
-                      &nbsp;. You only make payment afterwards when you are sure
-                      the course is a good fit for you
-                    </span>
-                  </Typography>
-                )}
+                */}
               </CardContent>
             </Grid>
 
             <Grid item style={{ width: "26.50%", border: "1px dotted grey" }}>
               <CourseInfo
-                prerequisites={props.prerequisites}
-                tools={props.tools}
-                targetAudience={props.targetAudience}
-                whatToLearn={props.whatToLearn}
-                venueLink={props.venueLink}
-                categoryId={props.category}
+                bio={props.bio}
+                categoryId={props.category[0].id}
                 productId={props.courseId}
                 slug={props.slug}
-                categorySlug={props.categorySlug}
+                categorySlug={props.category[0].slug}
                 updateLearningPathInfoInfo={props.updateLearningPathInfoInfo}
               />
             </Grid>

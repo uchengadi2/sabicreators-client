@@ -54,6 +54,10 @@ import { FaLaptopHouse } from "react-icons/fa";
 import OrderPage from "../orders/OrderPage";
 import ProfileLayout from "../ProfileLayout";
 import MainDashboard from "../Dashboard/MainDashboard";
+import UserSignUpCreator from "../users/UserSignUpCreator";
+import DashboardCreator from "../Dashboard/DashboardCreator";
+import DashboardBrand from "../Dashboard/DashboardBrand";
+import AddCreatorForm from "../Dashboard/products/AddCreatorForm";
 
 function ElevationScroll(props) {
   const { children } = props;
@@ -97,16 +101,16 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   logoMobile: {
-    height: "3em",
-    width: "3em",
+    height: "9em",
+    width: "7em",
     marginLeft: -30,
     marginRight: "1.5px",
     padding: 0,
     [theme.breakpoints.down("md")]: {
-      height: "4em",
+      height: "7em",
     },
     [theme.breakpoints.down("xs")]: {
-      height: "4em",
+      height: "7em",
     },
   },
   logoContainer: {
@@ -141,6 +145,32 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "10px",
     height: "45px",
     width: "100px",
+
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.light,
+      color: "white",
+    },
+  },
+  buttonCreator: {
+    ...theme.typography.estimate,
+    borderRadius: "250px",
+    marginLeft: "20px",
+    marginRight: "10px",
+    height: "45px",
+    width: "180px",
+
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.light,
+      color: "white",
+    },
+  },
+  buttonBrand: {
+    ...theme.typography.estimate,
+    borderRadius: "250px",
+    marginLeft: "20px",
+    marginRight: "10px",
+    height: "45px",
+    width: "180px",
 
     "&:hover": {
       backgroundColor: theme.palette.secondary.light,
@@ -325,6 +355,41 @@ const useStyles = makeStyles((theme) => ({
       color: "white",
     },
   },
+
+  creatorDashboard: {
+    ...theme.typography.estimate,
+    borderRadius: "250px",
+    marginLeft: "2px",
+    marginRight: "2px",
+    height: "45px",
+    fontSize: "13px",
+    fontWeight: "500px",
+    width: "90px",
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.light,
+      color: "white",
+    },
+  },
+
+  brandDashboard: {
+    ...theme.typography.estimate,
+    borderRadius: "250px",
+    marginLeft: "2px",
+    ...theme.typography.estimate,
+    borderRadius: "250px",
+    marginLeft: "2px",
+    marginRight: "2px",
+    height: "45px",
+    fontSize: "13px",
+    fontWeight: "500px",
+    width: "90px",
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.light,
+      color: "white",
+    },
+  },
+
+  
 }));
 
 const Header = (props) => {
@@ -345,6 +410,7 @@ const Header = (props) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [openLoginForm, setOpenLoginForm] = useState(false);
   const [openSignUpForm, setOpenSignUpForm] = useState(false);
+  const [openCreatorSignUpForm, setOpenCreatorSignUpForm] = useState(false);
   const [openForgotPasswordForm, setOpenForgotPasswordForm] = useState(false);
   const [openLogOut, setOpenLogOut] = useState(false);
   const [category, setCategory] = useState("all");
@@ -352,6 +418,7 @@ const Header = (props) => {
   const [itemType, setItemType] = useState("");
   const [userName, setUserName] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
+  const [ userRole, setUserRole] = useState(null);
   const [searchText, setSearchText] = useState();
   const [alert, setAlert] = useState({
     open: false,
@@ -387,15 +454,19 @@ const Header = (props) => {
       // });
       const name = workingData.name;
       const email = workingData.email;
+      const role = workingData.role;
 
       setUserName(name);
       setUserEmail(email);
+      setUserRole(role)
     };
 
     //call the function
 
     fetchData().catch(console.error);
   }, [props]);
+
+  
 
   const handleChange = (e, newValue) => {
     props.setValue(newValue);
@@ -469,6 +540,7 @@ const Header = (props) => {
       backgroundColor: "#4BB543",
     });
     setOpenSignUpForm(false);
+    setOpenCreatorSignUpForm(false);
     setOpenDrawer(false);
   };
 
@@ -483,6 +555,30 @@ const Header = (props) => {
     setOpenSignUpForm(true);
   };
 
+
+  const handleSuccessfulForgotPasswordDialogOpenStatusWithSnackbar = (message) => {
+    // history.push("/categories/new");
+
+    setAlert({
+      open: true,
+      message: message,
+      backgroundColor: "#4BB543",
+    });
+    setOpenForgotPasswordForm(false);
+    setOpenDrawer(false);
+  };
+
+  const handleFailedForgotPasswordDialogOpenStatusWithSnackbar = (message) => {
+    // history.push("/categories/new");
+    setAlert({
+      open: true,
+      message: message,
+
+      backgroundColor: "#FF3232",
+    });
+    setOpenForgotPasswordForm(false);
+  };
+
   const handleCurrentClick = () => {
     ref.current.focus();
   };
@@ -490,6 +586,7 @@ const Header = (props) => {
   const handleMakeOpenLoginFormDialogStatus = () => {
     // history.push("/categories/new");
     setOpenSignUpForm(false);
+    setOpenCreatorSignUpForm(false);
     setOpenLoginForm(true);
   };
   const handleMakeOpenForgotPasswordFormDialogStatus = () => {
@@ -506,10 +603,27 @@ const Header = (props) => {
     // history.push("/categories/new");
     setOpenSignUpForm(true);
     setOpenLoginForm(false);
+    setOpenCreatorSignUpForm(false);
   };
+
+  const handleMakeOpenCreatorSignUpDialogStatus = () => {
+    // history.push("/categories/new");
+    setOpenCreatorSignUpForm(true);
+    setOpenLoginForm(false);
+    setOpenSignUpForm(false);
+  };
+
+  
 
   const handleMakeCloseSignUpDialogStatus = () => {
     // history.push("/categories/new");
+    setOpenSignUpForm(false);
+    setOpenCreatorSignUpForm(false);
+  };
+
+  const handleMakeCloseSignCreatorUpDialogStatus = () => {
+    // history.push("/categories/new");
+    setOpenCreatorSignUpForm(false);
     setOpenSignUpForm(false);
   };
 
@@ -570,6 +684,28 @@ const Header = (props) => {
           >
             Sign In
           </Button>
+          <Button
+            variant="contained"
+            // component={Link}
+            // to="/logout"
+            color="secondary"
+            className={classes.buttonBrand}
+            //onClick={() => [setOpenLoginForm(true), history.push("/")]}
+            onClick={() => [setOpenSignUpForm(true)]}
+          >
+            Sign Up As A Brand
+          </Button>
+          <Button
+            variant="contained"
+            // component={Link}
+            // to="/logout"
+            color="secondary"
+            className={classes.buttonCreator}
+            //onClick={() => [setOpenLoginForm(true), history.push("/")]}
+            onClick={() => [setOpenCreatorSignUpForm(true)]}
+          >
+            Sign Up As A Creator
+          </Button>
         </Fragment>
       );
     } else {
@@ -587,7 +723,7 @@ const Header = (props) => {
           >
             Career
           </Button> */}
-          <Button
+          {userRole ==='admin' && <Button
             onClick={() => <MainDashboard />}
             disableRipple
             component={Link}
@@ -595,21 +731,33 @@ const Header = (props) => {
             className={classes.dashboard}
           >
             Dashboard
-          </Button>
-          <Button
-            onClick={() => <OrderPage />}
+          </Button>}
+          {userRole === 'creator' && <Button
+            onClick={() => <DashboardCreator />}
             disableRipple
             component={Link}
             // to={`/carts/${props.userId}`}
             // to={`/orders`}
-            to={`/my-learningcenter`}
-            className={classes.learningcenter}
+            to={`/creators/${props.userId}/dashboard-creator-information`}
+            className={classes.creatorDashboard}
           >
             {/* <img alt="company logo" src={logo} className={classes.logo} /> */}
-            Learning Center
-          </Button>
+            Dashboard
+          </Button>}
+          {userRole === 'brand' && <Button
+            onClick={() => <DashboardBrand />}
+            disableRipple
+            component={Link}
+            // to={`/carts/${props.userId}`}
+            // to={`/orders`}
+            to={`/brands/${props.userId}/dasnboard-brand-information`}
+            className={classes.brandDashboard}
+          >
+            {/* <img alt="company logo" src={logo} className={classes.logo} /> */}
+            Dashboard
+          </Button>}
 
-          <Button
+          {/* <Button
             onClick={() => <ShowCustomerCart />}
             disableRipple
             component={Link}
@@ -617,9 +765,9 @@ const Header = (props) => {
             to={`/carts`}
             className={classes.checkout}
           >
-            {/* <img alt="company logo" src={logo} className={classes.logo} /> */}
+            <img alt="company logo" src={logo} className={classes.logo} />
             {`Cart` + `(${props.cartCounter})`}
-          </Button>
+          </Button> */}
           <Button
             onClick={() => <CheckoutPage />}
             disableRipple
@@ -816,6 +964,9 @@ const Header = (props) => {
             handleFailedSignUpDialogOpenStatusWithSnackbar={
               handleFailedSignUpDialogOpenStatusWithSnackbar
             }
+            handleMakeCloseSignCreatorUpDialogStatus={
+              handleMakeCloseSignCreatorUpDialogStatus
+            }
             setToken={props.setToken}
             setUserId={props.setUserId}
           />
@@ -823,6 +974,45 @@ const Header = (props) => {
       </Dialog>
     );
   };
+
+  const renderCreatorSignUpForm = () => {
+    return (
+      <Dialog
+        //style={{ zIndex: 1302 }}
+        fullScreen={matchesXS}
+        open={openCreatorSignUpForm}
+        // onClose={() => [setOpenSignUpForm(false), history.push("/")]}
+        onClose={() => [setOpenCreatorSignUpForm(false)]}
+      >
+        <DialogContent>
+          <UserSignUpCreator
+            token={props.token}
+            handleMakeOpenCreatorSignUpDialogStatus={handleMakeOpenCreatorSignUpDialogStatus}
+            handleMakeCloseSignCreatorUpDialogStatus={
+              handleMakeCloseSignCreatorUpDialogStatus
+            }
+            handleMakeOpenLoginFormDialogStatus={
+              handleMakeOpenLoginFormDialogStatus
+            }
+            handleSuccessfulSignUpDialogOpenStatusWithSnackbar={
+              handleSuccessfulSignUpDialogOpenStatusWithSnackbar
+            }
+            handleFailedSignUpDialogOpenStatusWithSnackbar={
+              handleFailedSignUpDialogOpenStatusWithSnackbar
+            }
+            handleMakeCloseSignUpDialogStatus={
+              handleMakeCloseSignUpDialogStatus
+            }
+
+            setToken={props.setToken}
+            setUserId={props.setUserId}
+          />
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
+  
 
   const renderLogOutForm = () => {
     return (
@@ -868,6 +1058,12 @@ const Header = (props) => {
             }
             handleMakeCloseForgotPasswordFormDialogStatus={
               handleMakeCloseForgotPasswordFormDialogStatus
+            }
+            handleSuccessfulForgotPasswordDialogOpenStatusWithSnackbar={
+              handleSuccessfulForgotPasswordDialogOpenStatusWithSnackbar
+            }
+            handleFailedForgotPasswordDialogOpenStatusWithSnackbar={
+              handleFailedForgotPasswordDialogOpenStatusWithSnackbar
             }
           />
         </DialogContent>
@@ -949,19 +1145,13 @@ const Header = (props) => {
           ))}
 
           {props.token === undefined ? (
+            <>
             <ListItem
               className={classes.drawerItemEstimate}
-              // onClick={() => {
-              //   setOpenDrawer(false);
-              //   props.setValue(5);
-              // }}
-              //onClick={() => [setOpenLoginForm(true), history.push("/")]}
               onClick={() => [setOpenLoginForm(true)]}
               divider
               button
-              // component={Link}
-              // to="/"
-              classes={{
+            classes={{
                 root: classes.drawerItemEstimate,
                 selected: classes.drawerItemSelected,
               }}
@@ -971,26 +1161,53 @@ const Header = (props) => {
                 Sign In
               </ListItemText>
             </ListItem>
+            <ListItem
+              className={classes.drawerItemEstimate}
+              onClick={() => [setOpenCreatorSignUpForm(true)]}
+              divider
+              button
+            classes={{
+                root: classes.drawerItemEstimate,
+                selected: classes.drawerItemSelected,
+              }}
+              selected={props.value === 5}
+            >
+              <ListItemText className={classes.drawerItem} disableTypography>
+                Sign Up As a Creator
+              </ListItemText>
+            </ListItem>
+            <ListItem
+              className={classes.drawerItemEstimate}
+              onClick={() => [setOpenSignUpForm(true)]}
+              divider
+              button
+            classes={{
+                root: classes.drawerItemEstimate,
+                selected: classes.drawerItemSelected,
+              }}
+              selected={props.value === 5}
+            >
+              <ListItemText className={classes.drawerItem} disableTypography>
+                Sign Up As A Brand
+              </ListItemText>
+            </ListItem>
+
+            </>
+            
           ) : (
             <>
-              <ListItem
+              {userRole === 'creator' && <ListItem
                 className={classes.drawerItem}
                 onClick={() => [
                   setOpenDrawer(false),
                   props.setValue(5),
-                  <OrderPage />,
+                  <DashboardCreator />,
                 ]}
-                // onClick={() => [
-                //   setOpenLoginForm(false),
-                //   history.push(`/orders/${props.userId}`),
-                // ]}
-                //onClick={() => [setOpenLoginForm(true)]}
+                
                 divider
                 button
                 component={Link}
-                // to={`/orders/${props.userId}`}
-                //to={`/orders`}
-                to={`/my-learningcenter`}
+                to={`/creators/${props.userId}/dashboard-creator-information`}
                 classes={{
                   root: classes.drawerItem,
                   selected: classes.drawerItemSelected,
@@ -998,27 +1215,21 @@ const Header = (props) => {
                 selected={props.value === 5}
               >
                 <ListItemText className={classes.drawerItem} disableTypography>
-                  Learning Center
+                  Dashboard
                 </ListItemText>
-              </ListItem>
-              <ListItem
+              </ListItem>}
+              {userRole === 'brand' && <ListItem
                 className={classes.drawerItem}
                 onClick={() => [
                   setOpenDrawer(false),
                   props.setValue(5),
-                  <ShowCustomerCart />,
+                  <DashboardCreator />,
                 ]}
-                //onClick={() => [setOpenLoginForm(true), history.push("/")]}
-                // onClick={() => [
-                //   setOpenMenu(true),
-                //   history.push("/"),
-                //   <ShowCustomerCart />,
-                // ]}
+                
                 divider
                 button
                 component={Link}
-                // to={`/carts/${props.userId}`}
-                to={`/carts`}
+                to={`/brands/${props.userId}/dasnboard-brand-information`}
                 classes={{
                   root: classes.drawerItem,
                   selected: classes.drawerItemSelected,
@@ -1026,9 +1237,10 @@ const Header = (props) => {
                 selected={props.value === 5}
               >
                 <ListItemText className={classes.drawerItem} disableTypography>
-                  Cart
+                  Dashboard
                 </ListItemText>
-              </ListItem>
+              </ListItem>}
+              
               <ListItem
                 className={classes.drawerItem}
                 onClick={() => [
@@ -1256,7 +1468,7 @@ const Header = (props) => {
               >
                 <img alt="company logo" src={logo} className={classes.logo} />
               </Button>
-              <Box
+              {/* <Box
                 sx={{
                   backgroundColor: "white",
                   padding: 10,
@@ -1290,7 +1502,7 @@ const Header = (props) => {
                 >
                   Search
                 </Button>
-              </Box>
+              </Box> */}
 
               {matches ? drawer : tabs}
             </Toolbar>
@@ -1310,7 +1522,7 @@ const Header = (props) => {
                     className={classes.logoMobile}
                   />
                 </Button>
-                <Box
+                {/* <Box
                   sx={{
                     backgroundColor: "white",
                     padding: 1,
@@ -1345,7 +1557,7 @@ const Header = (props) => {
                       Search
                     </span>
                   </Button>
-                </Box>
+                </Box> */}
 
                 {matches ? drawer : tabs}
               </Toolbar>
@@ -1393,6 +1605,7 @@ const Header = (props) => {
       <Box className={classes.toolbarMargin}></Box>
       {renderLoginForm()}
       {renderSignUpForm()}
+      {renderCreatorSignUpForm()}
       {renderForgotPasswordForm()}
       {renderLogOutForm()}
       <Snackbar

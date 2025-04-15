@@ -1,25 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
 import useToken from "../../../custom-hooks/useToken";
 import useUserId from "../../../custom-hooks/useUserId";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Typography from "@mui/material/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import Stack from "@mui/material/Stack";
 import Snackbar from "@material-ui/core/Snackbar";
+
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import Grid from "@mui/material/Grid";
 import { DataGrid } from "@mui/x-data-grid";
 import Backdrop from "@mui/material/Backdrop";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import api from "./../../../apis/local";
-// import ConfirmStockAvailabilityForm from "./ConfirmStockAvailabilityForm";
-// import UpdatePackageReadinessForm from "./UpdatePackageReadinessForm";
+
+//import AddVideoAndHooksForm from "./AddVideoAndHooksForm";
+import ViewOrderDetails from "./ViewOrderDetails";
+import GetCreatorDetails from "./GetCreatorDetails";
+import MarkOrderAsCompleted from "./MarkOrderAsCompleted";
+//import GetProjectBrief from "./GetProjectBrief";
+//import ProjectDeleteForm from "./ProjectDeleteForm";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -40,185 +45,149 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function OrderList(props) {
-  const classes = useStyles();
+ const classes = useStyles();
+  const theme = useTheme();
   const { token, setToken } = useToken();
   const { userId, setUserId } = useUserId();
-  const theme = useTheme();
   const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
   const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
-
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [projectsList, setProjectList] = useState([]);
+  const [ordersList, setOrdersList] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowId, setSelectedRowId] = useState();
   const [rowNumber, setRowNumber] = useState(0);
-  const [updateOrderListCounter, setUpdateOrderListCounter] = useState(false);
-  const [updateEdittedOrderListCounter, setUpdateEdittedOrderListCounter] =
+   const [rowSelected, setRowSelected] = useState(false);
+  const [updateProjectCounter, setUpdateProjectCounter] = useState(false);
+  const [updateEdittedProjectCounter, setUpdateEdittedProjectCounter] =
     useState(false);
-  const [
-    updateOrderListPackageReadinessCounter,
-    setUpdateOrderListPackageReadinessCounter,
-  ] = useState(false);
-  const [orderList, setOrderList] = useState([]);
-  const [currencyName, setCurrencyName] = useState();
-  const [rowSelected, setRowSelected] = useState(false);
+  const [updateDeletedProjectCounter, setUpdateDeletedProjectCounter] =
+    useState(false);
   const [loading, setLoading] = useState(false);
+  const [brandId, setBrandId] = useState();
+  const [creatorName, setCreatorName] = useState();
+  const [creatorId,setCreatorId] = useState();
+  const [creatorCountry, setCreatorCountry] =useState();
+  const [creatorPhoneNumber, setCreatorPhoneNumber] = useState();
+  const [creatorEmail, setCreatorEmail] = useState();
+  const [creatorGender, setCreatorGender] = useState();
+  const [projectName, setProjectName] = useState();
   const [alert, setAlert] = useState({
     open: false,
     message: "",
     backgroundColor: "",
   });
 
+  
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       let allData = [];
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await api.get(`/orders`);
+      //if(props.brandId){
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await api.get(`/orders`, {
+        params:{
+          status:'creative-pending'
+        }});
       const workingData = response.data.data.data;
+      
+     if(workingData.length>=1){
       workingData.map((order) => {
         allData.push({
           id: order._id,
           orderNumber: order.orderNumber,
-          cartId: order.cartId,
-          transaction: order.transactionId,
-          product: order.product,
+          transactionId:order.transactionId,
+          creator: order.creator,
           productCategory: order.productCategory,
-          productVendor: order.productVendor,
-          quantityAdddedToCart: order.quantityAdddedToCart,
-          orderedQuantity: order.orderedQuantity,
-          orderedPrice: order.orderedPrice,
-          currency: order.currency,
-          customerName: order.customerName,
-          customerPhoneNumber: order.customerPhoneNumber,
-          customerEmailAddress: order.customerEmailAddress,
-          recipientName: order.recipientName,
-          recipientPhoneNumber: order.recipientPhoneNumber,
-          recipientEmailAddress: order.recipientEmailAddress,
-          recipientAddress: order.recipientAddress,
-          postalCode: order.postalCode,
-          nearestBusstop: order.nearestBusstop,
-          recipientCountry: order.recipientCountry,
-          recipientState: order.recipientState,
-          recipientCity: order.recipientCity,
-          dateAddedToCart: order.dateAddedToCart,
-          dateOrdered: order.dateOrdered,
-          orderedBy: order.orderedBy,
-          paymentStatus: order.paymentStatus,
-          paymentMethod: order.paymentMethod,
-          salesTax: order.salesTax,
-          revenue: order.revenue,
-          vatRate: order.vatRate,
-          vat: order.vat,
-          origin: order.origin,
-          allowOriginSalesTax: order.allowOriginSalesTax,
-          implementSalesTaxCollection: order.implementSalesTaxCollection,
-          isVatable: order.isVatable,
-          deliveryStatus: order.deliveryStatus,
-          deliveryMode: order.deliveryMode,
-          daysToDelivery: order.daysToDelivery,
-          recipientCountryName: order.recipientCountryName,
-          recipientStateName: order.recipientStateName,
-          availabilityComment: order.availabilityComment,
-
-          isCourseAuditable: order.isCourseAuditable,
-          weekdayAuditDays: order.weekdayAuditDays,
-          weekendAuditDays: order.weekendAuditDays,
-          venue: order.venue,
-          venueLink: order.venueLink,
-          weekdaySessionPeriod: order.weekdaySessionPeriod,
-          weekendSessionPeriod: order.weekendSessionPeriod,
-          type: order.type,
-          lectureDuration: order.lectureDuration,
-          projectDuration: order.projectDuration,
-          venueLink: order.venueLink,
-          capstoneProject: order.capstoneProject,
-          passGrade: order.passGrade,
-          hasMentorshipCredit: order.hasMentorshipCredit,
-          mentorshipCredit: order.mentorshipCredit,
-          mentorshipDuration: order.mentorshipDuration,
-          costPerMentorshipCredit: order.costPerMentorshipCredit,
-          videoId: order.videoId,
-          videoType: order.videoType,
-          previewVideoId: order.previewVideoId,
-          deliveryMethod: order.deliveryMethod,
-          duration: order.duration,
-          category: order.category,
-          channel: order.channel,
-          programme: order.programme,
-          series: order.series,
-          hasSeries: order.hasSeries,
-          commencementWeekdaysDate: order.commencementWeekdaysDate,
-          commencementWeekendsDate: order.commencementWeekendsDate,
-          isInstallmentalPaymentAllowed: order.isInstallmentalPaymentAllowed,
-          maximumInstallmentalPayment: order.maximumInstallmentalPayment,
-          paymentOptions: order.paymentOptions,
-          slug: order.slug,
-          allowLifeTimeAccess: order.allowLifeTimeAccess,
-          priceLabel: order.priceLabel,
+          orderedCreativeQuantity:order.orderedCreativeQuantity,
+          orderedHookQuantity:order.orderedHookQuantity,
+          orderedCreativePricePerUnit:order.orderedCreativePricePerUnit,
+          orderedHookPricePerUnit:order.orderedHookPricePerUnit,
+          productCurrency:order.productCurrency,
+          creativeType:order.creativeType,
+          recipientName:order.recipientName,
+          recipientPhoneNumber:order.recipientPhoneNumber,
+          recipientEmailAddress:order.recipientEmailAddress,
+          dateOrdered:order.dateOrdered,
+          orderedBy:order.orderedBy,
+          paymentStatus:order.paymentStatus,
+          paymentMethod:order.paymentMethod,
+          status:order.status,
+          slug:order.slug,
+          brand:order.brand,
+          language:order.language,
+          creativeLanguage:order.creativeLanguage,
+          creativeDeliveryDays:order.creativeDeliveryDays,
+          image:order.image,
+          creatorCategoryCode:order.creatorCategoryCode,
+          brandCountry:order.brandCountry,
+          brandName:order.brandName,
+          project:order.project,
+          projectName:order.projectName,
+        
         });
+        
       });
-      setOrderList(allData);
-      //setCurrencyName(allData[0].currency.name.toLowerCase());
+      setOrdersList(allData);
+        setCreatorName(allData[0].creator.name);
+        setCreatorId(allData[0].id);
+        setCreatorPhoneNumber(allData[0].creator.creatorContactPhoneNumber);
+        setCreatorEmail(allData[0].creator.creatorContactEmailAddress);
+        setCreatorGender(allData[0].creator.gender)
+        setCreatorCountry(allData[0].creator.country[0].name);
+        setProjectName(allData[0].projectName)
+        setLoading(false);
 
+     }else{
+      setOrdersList(allData);
+      setCreatorName("");
+      setCreatorId("");
+      setCreatorPhoneNumber("");
+      setCreatorEmail("");
+      setCreatorGender("")
+      setCreatorCountry("");
+      setProjectName("")
       setLoading(false);
+     }     
+     
+      
+      //}//end
+      
     };
 
     //call the function
 
     fetchData().catch(console.error);
   }, [
-    updateOrderListCounter,
-    updateEdittedOrderListCounter,
-    updateOrderListPackageReadinessCounter,
+    updateProjectCounter,
+    updateEdittedProjectCounter,
+    updateDeletedProjectCounter,
+    
   ]);
+
+  
+
+    
 
   useEffect(() => {
     // 👇️ scroll to top on page load
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
 
-  console.log("orderList:", orderList);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleOpen = () => {
-    setOpen(true);
+  const renderProjectUpdateCounter = () => {
+    setUpdateProjectCounter((prevState) => !prevState);
   };
 
-  const handleEditOpen = () => {
-    setEditOpen(true);
+  const renderProjectEdittedUpdateCounter = () => {
+    setUpdateEdittedProjectCounter((prevState) => !prevState);
   };
 
-  const handleDeleteOpen = () => {
-    setDeleteOpen(true);
-  };
-
-  const handleOnboardOpen = () => {
-    //setOnboardOpen(true);
-  };
-
-  const handleDialogOpenStatus = () => {
-    setOpen(false);
-  };
-
-  const handleEditDialogOpenStatus = () => {
-    setEditOpen(false);
-  };
-
-  const handleDeleteDialogOpenStatus = () => {
-    setDeleteOpen(false);
-  };
-
-  const renderOrderListUpdateCounter = () => {
-    setUpdateOrderListCounter((prevState) => !prevState);
-  };
-
-  const renderOrderListUpdateUpdateCounter = () => {
-    setUpdateOrderListPackageReadinessCounter((prevState) => !prevState);
+  const renderProjectDeletedUpdateCounter = () => {
+    setUpdateDeletedProjectCounter((prevState) => !prevState);
   };
 
   const handleSuccessfulCreateSnackbar = (message) => {
@@ -259,6 +228,41 @@ function OrderList(props) {
     //setBecomePartnerOpen(true);
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleAddOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDialogOpenStatus = () => {
+    setOpen(false);
+  };
+
+  const handleEditDialogOpenStatus = () => {
+    setEditOpen(false);
+  };
+
+  const handleDeleteDialogOpenStatus = () => {
+    setDeleteOpen(false);
+  };
+
+  const handleViewDialogOpenStatus = () => {
+    setViewOpen(false);
+  };
+
+
+  const handleEditOpen = () => {
+    setEditOpen(true);
+  };
+
+  const handleDeleteOpen = () => {
+    setDeleteOpen(true);
+  };
+  const handleViewOpen = () => {
+    setViewOpen(true);
+  };
+
   const onRowsSelectionHandler = (ids, rows) => {
     const selectedIDs = new Set(ids);
     const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
@@ -274,16 +278,6 @@ function OrderList(props) {
     }
   };
 
-  const getCurrencyCode = () => {
-    if (currencyName) {
-      if (currencyName.toLowerCase() === "naira") {
-        return <span>&#8358;</span>;
-      } else {
-        return;
-      }
-    }
-  };
-
   const renderDataGrid = () => {
     let rows = [];
     let counter = 0;
@@ -296,235 +290,124 @@ function OrderList(props) {
       },
       {
         field: "dateOrdered",
-        headerName: "Ordered Date",
+        headerName: "Date Ordered",
         width: 150,
 
         //editable: true,
       },
-      {
-        field: "transactionNumber",
-        headerName: "Transaction Number",
-        width: 150,
-
-        //editable: true,
-      },
-
       {
         field: "orderNumber",
         headerName: "Order Number",
-        width: 200,
-
-        //editable: true,
-      },
-
-      {
-        field: "productName",
-        headerName: "Product Name",
-        width: 350,
-
-        //editable: true,
-      },
-      {
-        field: "channelName",
-        headerName: "Channel",
-        width: 200,
-
-        //editable: true,
-      },
-      {
-        field: "programmeName",
-        headerName: "Programme",
-        width: 200,
-
-        //editable: true,
-      },
-      {
-        field: "categoryName",
-        headerName: "Category",
-        width: 200,
-
-        //editable: true,
-      },
-
-      {
-        field: "paymentStatus",
-        headerName: "Payment Status",
         width: 150,
 
         //editable: true,
       },
-
+      
       {
-        field: "recipientName",
-        headerName: `Trainee Name`,
-        width: 180,
+        field: "projectName",
+        headerName: "Project Name",
+        width: 300,
+
+        //editable: true,
+      },
+      
+      {
+        field: "brandName",
+        headerName: "Brand",
+        width: 200,
+        // hide: true,
 
         //editable: true,
       },
       {
-        field: "recipientPhoneNumber",
-        headerName: `Trainee Phone Number`,
-        width: 180,
+        field: "brandCountryDisplay",
+        headerName: "Brand Country of Origin",
+        width: 200,
+        // hide: true,
+
+        //editable: true,
+      },     
+      
+      
+      {
+        field: "status",
+        headerName: "Status",
+        width: 150,
+        // hide: true,
 
         //editable: true,
       },
       {
-        field: "recipientEmailAddress",
-        headerName: `Trainee Email Address`,
-        width: 180,
+        field: "creativeType",
+        headerName: "Creative Type",
+        width: 150,
+        // hide: true,
 
         //editable: true,
       },
       {
-        field: "duration",
-        headerName: `Course Duration`,
-        width: 180,
+        field: "orderedCreativeQuantity",
+        headerName: "Creative Quantity",
+        width: 150,
+        // hide: true,
 
         //editable: true,
       },
       {
-        field: "type",
-        headerName: `Course Type`,
-        width: 180,
+        field: "orderedHookQuantity",
+        headerName: "Hook Quantity",
+        width: 150,
+        // hide: true,
 
         //editable: true,
       },
       {
-        field: "venue",
-        headerName: `Course Venue`,
-        width: 180,
+        field: "creativeLanguage",
+        headerName: "Required Creative Language",
+        width: 200,
+        // hide: true,
 
         //editable: true,
       },
-      {
-        field: "venueLink",
-        headerName: `Course VenueLink`,
-        width: 250,
-
-        //editable: true,
-      },
-      {
-        field: "allowLifeTimeAccess",
-        headerName: `Allow Life Time Access?`,
-        width: 180,
-
-        //editable: true,
-      },
+      
     ];
 
-    orderList.map((order, index) => {
-      console.log("order is:", order);
+    ordersList.map((order, index) => {
+     
       let row = {
         numbering: ++counter,
         id: order.id,
-        dateOrdered: order.dateOrdered
-          ? new Date(order.dateOrdered).toLocaleDateString()
-          : "",
-        // status: order.status.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
-        // shopType: order.shopType.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
-        // deliveryStatus: order.deliveryStatus.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
-        // deliveryMode: order.deliveryMode.replace(
-        //   /(^\w|\s\w)(\S*)/g,
-        //   (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
-        // ),
-
-        orderNumber: order.orderNumber.toUpperCase(),
-        cartId: order.cartId,
-        transaction: order.transaction,
-        transactionNumber: order.transaction.orderNumber,
-        transactionId: order.transaction.id,
-        product: order.product,
-        productName: order.product.title,
-        sku: order.product.sku,
-        productCategory: order.productCategory,
-        productVendor: order.productVendor,
-        quantityAdddedToCart: order.quantityAdddedToCart,
-        orderedQuantity: order.orderedQuantity,
-        orderedPrice: order.orderedPrice,
-        currency: order.currency,
-        //currencyName: order.currency.name,
-        customerName: order.customerName,
-        customerPhoneNumber: order.customerPhoneNumber,
-        customerEmailAddress: order.customerEmailAddress,
-        recipientName: order.recipientName,
-        recipientPhoneNumber: order.recipientPhoneNumber,
-        recipientEmailAddress: order.recipientEmailAddress,
-        recipientAddress: order.recipientAddress,
-        postalCode: order.postalCode,
-        nearestBusstop: order.nearestBusstop,
-        recipientCountry: order.recipientCountry,
-        recipientState: order.recipientState,
-        recipientCity: order.recipientCity,
-        dateAddedToCart: order.dateAddedToCart,
-
-        orderedBy: order.orderedBy,
-
-        paymentStatus: order.paymentStatus,
-        paymentMethod: order.paymentMethod,
-        salesTax: order.salesTax,
-        revenue: order.revenue,
-        vatRate: order.vatRate,
-        vat: order.vat,
-        origin: order.origin,
-        allowOriginSalesTax: order.allowOriginSalesTax,
-        implementSalesTaxCollection: order.implementSalesTaxCollection,
-        isVatable: order.isVatable,
-
-        daysToDelivery: order.daysToDelivery,
-        recipientCountryName: order.recipientCountryName,
-
-        recipientStateName: order.recipientStateName,
-        recipientCityName: order.recipientCityName,
-
-        isCourseAuditable: order.isCourseAuditable,
-        weekdayAuditDays: order.weekdayAuditDays,
-        weekendAuditDays: order.weekendAuditDays,
-        venue: order.venue,
-        venueLink: order.venueLink,
-        weekdaySessionPeriod: order.weekdaySessionPeriod,
-        weekendSessionPeriod: order.weekendSessionPeriod,
-        type: order.type,
-        lectureDuration: order.lectureDuration,
-        projectDuration: order.projectDuration,
-        capstoneProject: order.capstoneProject,
-        passGrade: order.passGrade,
-        hasMentorshipCredit: order.hasMentorshipCredit,
-        mentorshipCredit: order.mentorshipCredit,
-        mentorshipDuration: order.mentorshipDuration,
-        costPerMentorshipCredit: order.costPerMentorshipCredit,
-        videoId: order.videoId,
-        videoType: order.videoType,
-        previewVideoId: order.previewVideoId,
-        deliveryMethod: order.deliveryMethod,
-        duration: order.duration,
-        category: order.category,
-        channel: order.channel,
-        programme: order.programme,
-        series: order.series,
-        hasSeries: order.hasSeries,
-        commencementWeekdaysDate: order.commencementWeekdaysDate,
-        commencementWeekendsDate: order.commencementWeekendsDate,
-        isInstallmentalPaymentAllowed: order.isInstallmentalPaymentAllowed,
-        maximumInstallmentalPayment: order.maximumInstallmentalPayment,
-        paymentOptions: order.paymentOptions,
-        slug: order.slug,
-        allowLifeTimeAccess: order.allowLifeTimeAccess,
-        priceLabel: order.priceLabel,
-
-        categoryName:
-          order.category.length === 1 ? order.category[0].name : " ",
-        channelName: order.channel.length === 1 ? order.channel[0].name : " ",
-        programmeName:
-          order.programme.length === 1 ? order.programme[0].name : " ",
+               
+          orderNumber: order.orderNumber,
+          transactionId:order.transactionId,
+          creator: order.creator,
+          productCategory: order.productCategory,
+          orderedCreativeQuantity:order.orderedCreativeQuantity,
+          orderedHookQuantity:order.orderedHookQuantity,
+          orderedCreativePricePerUnittor:order.orderedCreativePricePerUnit,
+          orderedHookPricePerUnit:order.orderedHookPricePerUnit,
+          productCurrency:order.productCurrency,
+          creativeType:order.creativeType,
+          recipientName:order.recipientName,
+          recipientPhoneNumber:order.recipientPhoneNumber,
+          recipientEmailAddress:order.recipientEmailAddress,
+          dateOrdered:new Date(order.dateOrdered).toLocaleString("en-GB"),
+          orderedBy:order.orderedBy,
+          paymentStatus:order.paymentStatus,
+          paymentMethod:order.paymentMethod,
+          status:order.status,
+          slug:order.slug,
+          brand:order.brand,
+          language:order.language,
+          creativeLanguage:order.creativeLanguage,
+          creativeDeliveryDays:order.creativeDeliveryDays,
+          image:order.image,
+          creatorCategoryCode:order.creatorCategoryCode,
+          brandCountry:order.brandCountry,
+          brandName:order.brandName,
+          brandCountryDisplay:order.brandCountry ? order.brandCountry.name:"",
+          project:order.project,
+          projectName:order.projectName,
       };
       rows.push(row);
     });
@@ -555,24 +438,21 @@ function OrderList(props) {
       />
     );
   };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1} direction="column">
         <Grid item xs>
           <Grid container spacing={2}>
-            <Grid item xs={5.5}>
+            <Grid item xs={5.2}>
               {/* <Item>xs=8</Item> */}
-              <Typography variant="h5">Pending Orders List</Typography>
+              <Typography variant="h4">Orders</Typography>
             </Grid>
-            <Grid item xs={6.5}>
+            <Grid item xs={6.8}>
               <div>
                 <Stack direction="row" spacing={1.5}>
-                  {/* <Button
-                    variant="contained"
-                    onClick={handleOpen}
-                    disabled={rowSelected ? false : true}
-                  >
-                    Confirm Stock Availability Status
+                  <Button variant="contained" onClick={handleAddOpen} disabled={rowSelected ? false : true}>
+                    View Order Details
                   </Button>
                   <Dialog
                     //style={{ zIndex: 1302 }}
@@ -582,55 +462,60 @@ function OrderList(props) {
                     onClose={() => [setOpen(false)]}
                   >
                     <DialogContent>
-                      <ConfirmStockAvailabilityForm
+                      <ViewOrderDetails
                         token={token}
                         userId={userId}
+                        brandId={brandId}
                         params={selectedRows}
+                        //creatorName={creatorName}
+                       // creatorCountry={creatorCountry}
+                        //creatorId={creatorId}
                         handleDialogOpenStatus={handleDialogOpenStatus}
                         handleSuccessfulCreateSnackbar={
                           handleSuccessfulCreateSnackbar
                         }
                         handleFailedSnackbar={handleFailedSnackbar}
-                        renderOrderListUpdateCounter={
-                          renderOrderListUpdateCounter
+                        renderProjectUpdateCounter={
+                          renderProjectUpdateCounter
                         }
                       />
                     </DialogContent>
-                  </Dialog> */}
-                  {/* <Button
-                    variant="contained"
-                    onClick={handleEditOpen}
-                    disabled={rowSelected ? false : true}
-                  >
-                    Update Packaging Readiness Status
+                  </Dialog>
+                  <Button variant="contained" onClick={handleViewOpen} disabled={rowSelected ? false : true}>
+                    Get Creator Contact Details
                   </Button>
                   <Dialog
                     //style={{ zIndex: 1302 }}
                     fullScreen={matchesXS}
-                    open={editOpen}
+                    open={viewOpen}
                     // onClose={() => [setOpen(false), history.push("/utilities/countries")]}
-                    onClose={() => [setEditOpen(false)]}
+                    onClose={() => [setViewOpen(false)]}
                   >
                     <DialogContent>
-                      <UpdatePackageReadinessForm
+                      <GetCreatorDetails
                         token={token}
                         userId={userId}
                         params={selectedRows}
-                        handleEditDialogOpenStatus={handleEditDialogOpenStatus}
-                        handleFailedSnackbar={handleFailedSnackbar}
+                        // creatorName={creatorName}
+                        // creatorCountry={creatorCountry}
+                        // creatorId={creatorId}
+                        // creatorPhoneNumber={creatorPhoneNumber}
+                        // creatorEmail={creatorEmail}
+                        // creatorGender={creatorGender}
+                        handleViewDialogOpenStatus={handleViewDialogOpenStatus}
                         handleSuccessfulEditSnackbar={
                           handleSuccessfulEditSnackbar
                         }
-                        renderOrderListUpdateUpdateCounter={
-                          renderOrderListUpdateUpdateCounter
+                        handleFailedSnackbar={handleFailedSnackbar}
+                        renderProjectEdittedUpdateCounter={
+                          renderProjectEdittedUpdateCounter
                         }
                       />
                     </DialogContent>
-                  </Dialog> */}
-
-                  {/* <Button variant="contained" onClick={handleDeleteOpen}>
-                    Update Packaging Readiness Status
-                  </Button> */}
+                  </Dialog>
+                  <Button variant="contained" onClick={setDeleteOpen} disabled={rowSelected ? false : true}>
+                    Mark As Completed
+                  </Button>
                   <Dialog
                     //style={{ zIndex: 1302 }}
                     fullScreen={matchesXS}
@@ -639,7 +524,38 @@ function OrderList(props) {
                     onClose={() => [setDeleteOpen(false)]}
                   >
                     <DialogContent>
-                      {/* <ProductDeleteForm
+                      <MarkOrderAsCompleted
+                        token={token}
+                        userId={userId}
+                        brandId={brandId}
+                        params={selectedRows}
+                        //projectName={projectName}
+                        handleDeleteDialogOpenStatus={handleDeleteDialogOpenStatus}
+                        handleSuccessfulEditSnackbar={
+                          handleSuccessfulEditSnackbar
+                        }
+                        handleSuccessfulDeletedItemSnackbar={
+                            handleSuccessfulDeletedItemSnackbar
+                          }
+                        handleFailedSnackbar={handleFailedSnackbar}
+                        renderProjectEdittedUpdateCounter={
+                          renderProjectEdittedUpdateCounter
+                        }
+                      />
+                    </DialogContent>
+                  </Dialog>
+                  {/* <Button variant="contained" onClick={handleDeleteOpen}>
+                    Delete
+                  </Button> */}
+                  {/* <Dialog
+                    //style={{ zIndex: 1302 }}
+                    fullScreen={matchesXS}
+                    open={deleteOpen}
+                    // onClose={() => [setOpen(false), history.push("/utilities/countries")]}
+                    onClose={() => [setDeleteOpen(false)]}
+                  >
+                    <DialogContent>
+                      <ProjectDeleteForm
                         token={token}
                         userId={userId}
                         params={selectedRows}
@@ -650,12 +566,12 @@ function OrderList(props) {
                           handleSuccessfulDeletedItemSnackbar
                         }
                         handleFailedSnackbar={handleFailedSnackbar}
-                        renderProductDeletedUpdateCounter={
-                          renderProductDeletedUpdateCounter
+                        renderProjectDeletedUpdateCounter={
+                          renderProjectDeletedUpdateCounter
                         }
-                      /> */}
+                      />
                     </DialogContent>
-                  </Dialog>
+                  </Dialog> */}
                 </Stack>
               </div>
             </Grid>

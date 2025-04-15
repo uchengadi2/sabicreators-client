@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import FormLabel from "@material-ui/core/FormLabel";
@@ -14,6 +15,7 @@ import { TextField, Typography } from "@material-ui/core";
 import background from "./../../logistic_assets/cover_image_1.png";
 import history from "./../../history";
 import SignUpForm from "./SignUpForm";
+import api from "./../../apis/local";
 
 const useStyles = makeStyles((theme) => ({
   sendButton: {
@@ -39,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
     ...theme.typography.estimate,
     borderRadius: 10,
     height: 50,
-    width: 90,
-    marginLeft: 5,
+    width: 140,
+    marginLeft: '28%',
     marginTop: 10,
     marginBottom: 10,
     // fontSize: "1.25rem",
@@ -51,16 +53,16 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down("sm")]: {
       height: 50,
-      width: 90,
+      width: 140,
     },
   },
   root: {
     maxWidth: 600,
   },
   rootMobile: {
-    maxWidth: 300,
+    maxWidth: 350,
     marginTop: 150,
-    padding: 20,
+    padding: 10,
   },
   background: {
     backgroundImage: `url(${background})`,
@@ -117,13 +119,81 @@ const ForgotPasswordForm = (props) => {
   const [islogged, setIsLogged] = useState(false);
 
   const [signUpOpen, setSignUpOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLoginDialogOpenStatus = () => {
     props.handleLoginDialogOpenStatus();
   };
 
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+    const buttonContent = () => {
+      return <React.Fragment>Reset Password</React.Fragment>;
+    };
+
   const onSubmit = (formValues) => {
-    props.onSubmit(formValues);
+    //props.onSubmit(formValues);
+    setLoading(false);
+
+    if (!validateEmail(formValues["email"])) {
+      props.handleFailedForgotPasswordDialogOpenStatusWithSnackbar(
+        "You just entered an invalid email address. Please correct it and try again"
+      );
+      setLoading(false);
+
+      return;
+    }
+
+    const email = formValues.email;
+     if (formValues) {
+          const createForm = async () => {
+            // api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
+            const response = await api.post(`/users/forgotpassword/`,{
+              email
+            });
+                
+            if (response.status === 200) {
+             
+        
+              props.handleSuccessfulForgotPasswordDialogOpenStatusWithSnackbar(
+                `If an account is associated with the provided email address, a password reset link has been sent. Please check your email.`
+              );
+              //props.onSubmit(response.data.token);
+              props.handleMakeCloseForgotPasswordFormDialogStatus();
+    
+              setLoading(false);
+              return
+            }else {
+              props.handleFailedForgotPasswordDialogOpenStatusWithSnackbar(
+                "If an account is associated with the provided email address, a password reset link has been sent. Please check your email."
+              );
+              setLoading(false);
+    
+              return;
+            }
+          };
+          createForm().catch((err) => {
+            
+            // console.log("err:", err.message);
+            props.handleFailedForgotPasswordDialogOpenStatusWithSnackbar(
+              "If an account is associated with the provided email address, a password reset link has been sent. Please check your email."
+            );
+            props.handleMakeCloseForgotPasswordFormDialogStatus();
+            setLoading(false);
+    
+            return;
+          });
+        }
+    
+        setLoading(true);
+
   };
 
   return (
@@ -167,7 +237,11 @@ const ForgotPasswordForm = (props) => {
                   className={classes.sendButton}
                   onClick={props.handleSubmit(onSubmit)}
                 >
-                  Reset Password
+                      {loading ? (
+                                  <CircularProgress size={30} color="inherit" />
+                                ) : (
+                                  buttonContent()
+                                )}
                 </Button>
               </Grid>
             </Grid>
@@ -190,15 +264,15 @@ const ForgotPasswordForm = (props) => {
               id="ForgotPasswordForm"
               // onSubmit={onSubmit}
               sx={{
-                width: 300,
-                height: 140,
+                width: 350,
+                //height: 140,
               }}
               noValidate
               autoComplete="off"
               // style={{ marginTop: 20 }}
             >
-              <Grid container direction="row">
-                <Grid item style={{ wdith: "60%" }}>
+              <Grid container direction="column">
+                <Grid item style={{ wdith: "90%" }}>
                   <Field
                     label="Enter your registered email address"
                     id="email"
@@ -208,13 +282,18 @@ const ForgotPasswordForm = (props) => {
                     style={{ marginTop: 10 }}
                   />
                 </Grid>
-                <Grid item style={{ wdith: "35%" }}>
+                {/* <Grid item style={{ wdith: "35%" }}> */}
+                <Grid item >
                   <Button
                     variant="contained"
                     className={classes.sendButtonMobile}
                     onClick={props.handleSubmit(onSubmit)}
                   >
-                    Reset Password
+                    {loading ? (
+                                  <CircularProgress size={30} color="inherit" />
+                                ) : (
+                                  buttonContent()
+                                )}
                   </Button>
                 </Grid>
               </Grid>

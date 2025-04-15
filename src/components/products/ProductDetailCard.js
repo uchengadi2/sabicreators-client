@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import ReactMarkdown from "react-markdown";
-import Card from "@material-ui/core/Card";
+
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import Box from "@material-ui/core/Box";
+import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -35,6 +36,7 @@ import { baseURL } from "./../../apis/util";
 
 import theme from "./../ui/Theme";
 import { RoomSharp } from "@material-ui/icons";
+import SendCreatorToCheckoutForm from "./SendCreatorToCheckoutForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     //height: 440,
     //height: 500,
-
+    width:'100%',
+    
     //marginLeft: "0.1%",
     borderRadius: 0,
     marginTop: "6em",
@@ -77,7 +80,8 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 400,
-    width: 400,
+    //width: 400,
+    width:"100%"
   },
 
   learnButton: {
@@ -113,8 +117,9 @@ const useStyles = makeStyles((theme) => ({
     transform: "rotate(180deg)",
   },
   secondRow: {
-    marginLeft: "0.7",
-    width: 550,
+    marginLeft: "0",
+    //width: 500,
+    width:"45%",
     border: "1px dotted",
     padding: 20,
   },
@@ -138,10 +143,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10rem",
   },
   thirdRow: {
-    marginLeft: "0.9%",
-    width: 350,
+    marginLeft: "0.0%",
+   // width: 350,
+   width:"30%",
     border: "1px dotted",
-    padding: 20,
+    padding: 0,
   },
   thirdRowMobile: {
     marginLeft: 10,
@@ -248,11 +254,12 @@ export default function ProductDetailCard(props) {
   const [openLoginForm, setOpenLoginForm] = useState(false);
   const [openSignUpForm, setOpenSignUpForm] = useState(false);
   const [openForgotPasswordForm, setOpenForgotPasswordForm] = useState(false);
-  const [currencyName, setCurrencyName] = useState(props.course.currency);
+  const [currencyName, setCurrencyName] = useState();
   const [countryName, setCountryName] = useState();
   const [stateName, setStateName] = useState();
   const [price, setPrice] = useState();
   const [minQuantity, setMinQuantity] = useState();
+  const [samplesList, setSamplesList] = useState([]);
 
   // const { token, setToken } = useToken();
   // const { userId, setUserId } = useUserId();
@@ -269,7 +276,7 @@ export default function ProductDetailCard(props) {
   const matchesMDUp = useMediaQuery(theme.breakpoints.up("md"));
 
   //const imageUrl = `${baseURL}/images/categories/${props.image}`;
-  const imageUrl = `${baseURL}/images/courses/${props.course.image}`;
+  const imageUrl = `${baseURL}/images/creators/${props.creator.image}`;
 
   const Str = require("@supercharge/strings");
 
@@ -278,11 +285,15 @@ export default function ProductDetailCard(props) {
   //   Str(props.description).limit(100, "...").get()
   // );
 
-  console.log("currency name is:", currencyName);
+ 
 
   useEffect(() => {
-    setPrice(props.course.price);
-  }, [props.course]);
+    setPrice(props.creator.price);
+    setCurrencyName(props.creator.currency ? props.creator.currency[0].name : "")
+  }, [props.creator]);
+
+
+  
 
   useEffect(() => {
     // 👇️ scroll to top on page load
@@ -298,20 +309,53 @@ export default function ProductDetailCard(props) {
     const fetchData = async () => {
       let allData = [];
       api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
-      const response = await api.get(`/currencies/${props.course.currency}`);
+      const response = await api.get(`/currencies/${props.creator.currency}`);
       const item = response.data.data.data;
       //workingData.map((vendor) => {
       allData.push({ name: item.name });
       //});
 
-      console.log("currency name is :", allData[0].name);
+      
       setCurrencyName(allData[0].name);
     };
 
     //call the function
 
     fetchData().catch(console.error);
-  }, [props.course.currency]);
+  }, [props.creator.currency]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let allData = [];
+      api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
+      const response = await api.get(`/samples`, {
+        params:{
+          creator:props.creatorId,
+          status:"visible",
+          isAllowedOnThePlatform:true
+        }});
+      const workingData = response.data.data.data;
+      workingData.map((sample) => {
+      allData.push({ refNumber: sample.refNumber, 
+        youtubeId:sample.youtubeId, 
+        status:sample.status,
+        sampleType:sample.sampleType,
+        creator:sample.creator,
+        isAllowedOnThePlatform:sample.isAllowedOnThePlatform
+       });
+      });
+
+      
+      setSamplesList(allData);
+    };
+
+    //call the function
+
+    fetchData().catch(console.error);
+  }, [props.creatorId]);
+
+  
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -378,6 +422,7 @@ export default function ProductDetailCard(props) {
     });
   };
 
+ 
   const handleFailedSignUpDialogOpenStatusWithSnackbar = (message) => {
     // history.push("/categories/new");
     setAlert({
@@ -528,17 +573,19 @@ export default function ProductDetailCard(props) {
     }
   };
 
+  
+
   return (
     <>
       {matchesMDUp ? (
         <Grid container direction="column" className={classes.root}>
           <Grid item container direction="row">
-            <Grid item>
+            <Grid item style={{width:'25%'}}>
               <Card>
                 <CardMedia
                   className={classes.media}
                   component="img"
-                  alt={props.course.title}
+                  alt={props.creator.name}
                   image={imageUrl}
                   //   title={props.name}
                   crossOrigin="anonymous"
@@ -547,303 +594,237 @@ export default function ProductDetailCard(props) {
             </Grid>
             <Grid item className={classes.secondRow}>
               <Box>
-                {props.course.hasSeries ? (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {props.course.title}
+              {props.creator.category[0].code === 'video-and-audio-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                    {props.creator.name}
                     <span style={{ fontSize: 16, fontWeight: 700 }}>
-                      <em> ({props.course.series})</em>
+                      <em> ({props.creator.country[0].name}, Video & Jingle Creator,  {props.creator.age} years)</em>
                     </span>
-                  </Typography>
-                ) : (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {props.course.title}
-                  </Typography>
-                )}
-                <Typography variant="h4" style={{ marginTop: 10 }}>
-                  {getCurrencyCode()}
-                  {price
-                    ? price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                    : 0}
-                  <span style={{ fontSize: 12, marginLeft: 0 }}></span>
-                </Typography>
-                {props.course.priceLabel !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{
-                      color: "black",
-                      fontSize: 15,
-                      color: "red",
-                      marginLeft: 20,
-                    }}
-                  >
-                    {props.course.priceLabel}
-                  </Typography>
-                )}
+                  </Typography>}
+                  {props.creator.category[0].code === 'video-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                    {props.creator.name}
+                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                      <em> ({props.creator.country[0].name}, Video Creator,  {props.creator.age} years)</em>
+                    </span>
+                  </Typography>}
+                  {props.creator.category[0].code === 'audio-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                    {props.creator.name}
+                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                      <em> ({props.creator.country[0].name}, Jingle Creator,  {props.creator.age} years)</em>
+                    </span>
+                  </Typography>}
                 <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
+                  variant="subtitle1"
+                  color="textSecondary"
+                  component="p"
                 >
-                  <ReactMarkdown>{props.course.shortDescription}</ReactMarkdown>
+                  {Str(props.bio).limit(200, "...").get()}
                 </Typography>
-                {props.course.refNumber !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Reference Number:</strong>
-                    </span>
-                    {props.course.refNumber}
-                  </Typography>
-                )}
-                {props.course.duration !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Duration:</strong>
-                    </span>
-                    {props.course.duration}
-                  </Typography>
-                )}
-                {props.course.commencementDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Start date:</strong>
-                    </span>
-                    {props.course.commencementDate
-                      ? new Date(props.course.commencementDate).toDateString()
-                      : "Coming Soon"}
-                  </Typography>
-                )}
-                {props.course.deliveryMethod !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Delivery Method:</strong>
-                    </span>
-                    {props.course.deliveryMethod}
-                  </Typography>
-                )}
-                {props.course.venue !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Venue:</strong>
-                    </span>
-                    {props.course.venue}
-                  </Typography>
-                )}
-                {props.course.track !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Track:</strong>
-                    </span>
-                    {props.course.track}
-                  </Typography>
-                )}
-                {props.course.commencementWeekdaysDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Weekday Start Date():</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {props.course.commencementWeekdaysDate.join("|")} */}
-                      {props.course.commencementWeekdaysDate}
-                    </span>
-                  </Typography>
-                )}
-                {props.course.commencementWeekendsDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Weekend Start Date(s):</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {props.course.commencementWeekendsDate.join("|")} */}
-                      {props.course.commencementWeekendsDate}
-                    </span>
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
+                {props.creator.category[0].code === 'video-and-audio-creators'  && <Typography
+                  variant="h4"
+                  color="textSecondary"
+                  component="p"
+                  style={{ marginTop: 5, marginBottom: 15 }}
                 >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekday Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {props.course.weekdaySessionPeriod}
-                  </span>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekend Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {props.course.weekendSessionPeriod}
-                  </span>
-                </Typography>
-                {props.course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Credit:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.mentorshipCredit}&nbsp; Units &nbsp; (to be
-                      used after graduation)
-                    </span>
-                  </Typography>
-                )}
-                {props.course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Total Value of Mentorship Credit:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {getCurrencyCode()}
-                      {(
-                        props.course.mentorshipCredit *
-                        props.course.costPerMentorshipCredit
-                      )
-                        .toFixed(2)
-                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
-                    </span>
-                  </Typography>
-                )}
-                {props.course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Duration:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.mentorshipDuration}&nbsp;&nbsp; ( from the
-                      day of graduation)
-                    </span>
-                  </Typography>
-                )}
-                {props.course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Is Installmental Payment Allowed :</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.isInstallmentalPaymentAllowed
-                        .charAt(0)
-                        .toUpperCase() +
-                        props.course.isInstallmentalPaymentAllowed.slice(1)}
-                    </span>
-                  </Typography>
-                )}
-                {props.course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>
-                        Maximum Number of Installmental Payment Allowed :
-                      </strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.maximumInstallmentalPayment}&nbsp;times
-                    </span>
-                  </Typography>
-                )}
-                {props.course.passGrade !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Minimum NextChamp Grade:</strong>
-                    </span>
-                    {props.course.passGrade}
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    {" "}
+                  <span style={{ marginLeft: 30 }}>
                     <strong>
-                      Is Life Time Access To This Course Allowed?:
+                      {getCurrencyCode()}
+                      {props.creator.videoPrice
+                        ? props.creator.videoPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
                     </strong>
+                   
                   </span>
-                  {props.course.allowLifeTimeAccess ? "Yes" : "No"}
-                </Typography>
-                <br /> <br />
-                {props.course.isCourseAuditable && (
-                  <Typography>
-                    <span
-                      style={{
-                        fontSize: 18,
-                        marginLeft: 14,
-                        //textAlign: "center",
-                      }}
+                  <span style={{fontSize:12,marginLeft:0}}>/per video</span>
+                  <span>&</span>
+                  <span style={{ marginLeft: 20 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.soundPrice
+                        ? props.creator.soundPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                  <span style={{fontSize:12,marginLeft:0}}>/per jingle</span>
+                </Typography>}
+
+                {props.creator.category[0].code === 'video-only-creators' && <Typography
+                  variant="h4"
+                  color="textSecondary"
+                  component="p"
+                  style={{ marginTop: 5, marginBottom: 15 }}
+                >
+                  <span style={{ marginLeft: 30 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.videoPrice
+                        ? props.creator.videoPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                  <span style={{fontSize:12,marginLeft:0}}>/per video</span>
+                  
+                </Typography>}
+
+                {props.creator.category[0].code === 'audio-only-creators' && <Typography
+                  variant="h4"
+                  color="textSecondary"
+                  component="p"
+                  style={{ marginTop: 5, marginBottom: 15 }}
+                >
+                   <span style={{ marginLeft: 20 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.soundPrice
+                        ? props.creator.soundPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                  <span style={{fontSize:12,marginLeft:0}}>/per jingle</span>
+                  
+                </Typography>}
+                {props.creator.category[0].code === 'video-and-audio-creators' && <Typography
+                      style={{ marginTop: 9, color: "red", marginBottom: 15 }}
                     >
-                      You can audit this course for FREE for up to
+                      <span
+                        style={{ fontSize: 14, marginLeft: 10, marginTop: 20 }}
+                      >
+                        {/* <strong>Delivery Method:</strong> &nbsp; */}
+                        <span>{"This is the price for the production of a 10 to 40 seconds marketing video or jingle"}</span>
+                      </span>
+                    </Typography>}
+                    {props.creator.category[0].code === 'video-only-creators' && <Typography
+                      style={{ marginTop: 9, color: "red", marginBottom: 15 }}
+                    >
+                      <span
+                        style={{ fontSize: 14, marginLeft: 10, marginTop: 20 }}
+                      >
+                        {/* <strong>Delivery Method:</strong> &nbsp; */}
+                        <span>{"This is the price for the production of a 10 to 40 seconds marketing video"}</span>
+                      </span>
+                    </Typography>}
+                    {props.creator.category[0].code === 'audio-only-creators' && <Typography
+                      style={{ marginTop: 9, color: "red", marginBottom: 15 }}
+                    >
+                      <span
+                        style={{ fontSize: 14, marginLeft: 10, marginTop: 20 }}
+                      >
+                        {/* <strong>Delivery Method:</strong> &nbsp; */}
+                        <span>{"This is the price for the production of a 10 to 40 seconds marketing jingle"}</span>
+                      </span>
+                    </Typography>}
+               
+                
+                {(props.creator.category[0].code === 'video-and-audio-creators' || props.creator.category[0].code === 'video-only-creators') && <Typography>
+                  
+                    <strong style={{marginLeft:10}}> Cost for An Extra Video Hook:</strong>
+                    <span style={{ marginLeft: 5 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.videoHookPrice
+                        ? props.creator.videoHookPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                    
+          
+                </Typography>}
+                {(props.creator.category[0].code === 'video-and-audio-creators' || props.creator.category[0].code === 'audio-only-creators') && <Typography>
+                  
+                  <strong style={{marginLeft:10}}> Cost for An Extra Sound Hook:</strong>
+                  <span style={{ marginLeft: 5 }}>
+                  <strong>
+                    {getCurrencyCode()}
+                    {props.creator.soundHookPrice
+                      ? props.creator.soundHookPrice
+                          .toFixed(2)
+                          .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                      : 0}
+                  </strong>
+                 
+                </span>
+                  
+        
+              </Typography>}
+               
+                  
+                
+                {(props.creator.category[0].code === 'video-and-audio-creators' || props.creator.category[0].code === 'video-only-creators') && <Typography>
+                  <span style={{ fontSize: 14, marginLeft: 10 }}>
+                    <strong> Video Delivery Period:</strong>
+                    <span>{props.creator.videoDeliveryDays} days</span>
+                  </span>
+                </Typography>}
+                {(props.creator.category[0].code === 'video-and-audio-creators' || props.creator.category[0].code === 'audio-only-creators') && <Typography>
+                  <span style={{ fontSize: 14, marginLeft: 10 }}>
+                    <strong> Jingle Delivery Period:</strong>
+                    <span>{props.creator.soundDeliveryDays} days</span>
+                  </span>
+                </Typography>}
+                <Typography style={{marginLeft:10}}><strong>Niches:</strong></Typography>
+              
+               <Grid container direction="row" style={{marginLeft:30}}>
+                              {props.creator.niches.map((niche, index) => (
+                                <Typography>{niche.niche},  </Typography>
+
+                              ))}
+                            </Grid>
+                <Typography style={{marginLeft:10}}><strong>Languages:</strong></Typography>
+                
+                <Grid container direction="row" style={{marginLeft:30}}>
+                              {props.creator.languages.map((lang, index) => (
+                                <Typography>{lang.language},  </Typography>
+
+                              ))}
+                            </Grid>
+
+
+                <Typography style={{marginTop: 20}}>
+                    <span style={{ fontSize: 14, marginLeft: 12, color:"red",  }}>
                       <strong>
-                        <span>{props.course.weekdayAuditDays}</span>
+                       Note: A hook is the initial 2 to 5 seconds of a video or jingle designed to immediately capture the audience's attention and encourage them to continue watching or listening.
                       </strong>
-                      &nbsp;. You only make payment afterwards when you are sure
-                      the course is a good fit for you
+                     
                     </span>
                   </Typography>
-                )}
               </Box>
             </Grid>
             <Grid item className={classes.thirdRow}>
-              <Box>
-                <SendCourseToCheckoutForm
-                  price={price}
-                  currency={props.course.currency}
-                  courseId={props.course.id}
-                  course={props.course}
+              <Box sx={{
+                //width: 100,
+                //height: 430,
+               }}>
+                <SendCreatorToCheckoutForm
+                  videoPrice={props.creator.videoPrice}
+                  videoHookPrice={props.creator.videoHookPrice}
+                  creatorId={props.creator.id}
+                  soundPrice = {props.creator.soundPrice}
+                  soundHookPrice = {props.creator.soundHookPrice}
+                  videoDeliveryDays = {props.creator.videoDeliveryDays}
+                  soundDeliveryDays = {props.creator.soundDeliveryDays}
+                  brandId={props.brandId}
+                  brandName={props.brandName}
+                   brandCountry={props.brandCountry}
+                  categoryName={props.categoryName}
+                  categoryCode={props.categoryCode}
+                  currency={props.creator.currency}
+                  creatord={props.creatorId}
+                  creator={props.creator}
+                  image={props.creator.image}
+                  creatorLanguages={props.creator.languages}
                   token={props.token}
                   userId={props.userId}
                   handleMakeOpenSignUpDialogStatus={
@@ -870,203 +851,48 @@ export default function ProductDetailCard(props) {
               </Box>
             </Grid>
           </Grid>
+          {samplesList.length >=1 && <Typography style={{marginLeft:'40%',marginTop:20, fontSize:20, fontWeight:700}}>Creator Work Samples</Typography>}
           <Grid
             item
             container
             direction="row"
-            style={{ width: "100%" }}
+            style={{ width: "100%", marginTop:50 }}
             justifyContent="center"
           >
-            <Grid
-              item
-              className={classes.secondColumn}
-              style={{ marginLeft: "2%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>Prerequisites:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.prerequisites}</ReactMarkdown>
-                </Typography>
-              </Box>
-            </Grid>
+          
+           <Grid item style={{width:'22.5%'}}><Typography></Typography></Grid>
+           <Grid item container direction="row" style={{width:'40%'}}> 
+          
+           {samplesList.map((sample, index) => (
+                  <Grid item style={{width:'100%', marginTop:30}}>
+                         <Card>
+                             <CardMedia
+                                      className={classes.videoMedia}
+                                      component="iframe"
+                                      alt={'creator sample'}
+                                      height="140"
+                                      src={`https://www.youtube.com/embed/${sample.youtubeId}`}
+                                      allow="autoPlay"
+                                      allowfullscreen="allowfullscreen"
+                                      controls
+                                    />
+                  
+                              
+                              </Card>
+                              
+                              </Grid>
 
-            <Grid
-              item
-              className={classes.secondColumn}
-              style={{ marginLeft: "0.5%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>What you will Learn:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.whatToLearn}</ReactMarkdown>
-                </Typography>
-              </Box>
+                              ))}
+            
+           
+            
+           
             </Grid>
-            <Grid
-              item
-              className={classes.secondColumn}
-              style={{ marginLeft: "0.5%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>Required Learning Tools:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.tools}</ReactMarkdown>
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              className={classes.secondColumn}
-              style={{ marginLeft: "0.5%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>Who should attend:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.targetAudience}</ReactMarkdown>
-                </Typography>
-              </Box>
-            </Grid>
+           <Grid item style={{width:'22.5%', marginLeft:'5%'}}><Typography></Typography></Grid>
+
+           
           </Grid>
-          <Grid item className={classes.thirdColumn}>
-            <Box>
-              <Typography>
-                <strong>Course Description:</strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.longDescription}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item className={classes.forthColumn}>
-            <Box>
-              <Typography>
-                <strong>Course Content:</strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.contents}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item className={classes.fifthColumn}>
-            <Box>
-              <Typography>
-                <strong>Capstone Project:</strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.capstoneProject}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item className={classes.sixthColumn}>
-            <Box>
-              <Typography>
-                <strong>
-                  What you need to become the NextChamp in this Course:
-                </strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.successTips}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          {props.course.previewVideoId &&
-            props.course.previewVideoId !== "null" && (
-              <Typography
-                variant="h5"
-                style={{ color: "black", fontSize: 15, marginLeft: 30 }}
-              >
-                <strong>`"{props.course.title}" Course Preview`</strong>
-              </Typography>
-            )}
-          {props.course.previewVideoId &&
-            props.course.previewVideoId !== "null" && (
-              <Grid item className={classes.seventhColumn}>
-                <Card>
-                  <CardMedia
-                    className={classes.videoMedia}
-                    component="iframe"
-                    alt={props.course.title}
-                    height="140"
-                    src={`https://www.youtube.com/embed/${props.course.previewVideoId}`}
-                    //allow="autoPlay"
-                    allowfullscreen="allowfullscreen"
-                    controls
-                  />
-                </Card>
-              </Grid>
-            )}
+          
         </Grid>
       ) : (
         <Grid container direction="column" className={classes.rootMobile}>
@@ -1076,7 +902,7 @@ export default function ProductDetailCard(props) {
                 <CardMedia
                   className={classes.mediaMobile}
                   component="img"
-                  alt={props.course.title}
+                  alt={props.creator.name}
                   image={imageUrl}
                   //   title={props.name}
                   crossOrigin="anonymous"
@@ -1084,505 +910,298 @@ export default function ProductDetailCard(props) {
               </Card>
             </Grid>
             <Grid item className={classes.secondRowMobile}>
-              <Box>
-                {props.course.hasSeries ? (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {props.course.title}
+              {props.creator.category && props.creator.country && <Box>
+              {props.creator.category[0].code === 'video-and-audio-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                    {props.creator.name}
                     <span style={{ fontSize: 16, fontWeight: 700 }}>
-                      <em> ({props.course.series})</em>
+                      <em> ({props.creator.country[0].name}, Video & Jingle Creator,  {props.creator.age} years)</em>
                     </span>
-                  </Typography>
-                ) : (
-                  <Typography variant="h4" color="textSecondary" component="p">
-                    {props.course.title}
-                  </Typography>
-                )}
-                <Typography variant="h5">
-                  {getCurrencyCode()}
-                  {price
-                    ? price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                    : 0}
-                  <span style={{ fontSize: 12, marginLeft: 0 }}></span>
-                </Typography>
-                {props.course.priceLabel !== undefined && (
+                  </Typography>}
+                  {props.creator.category[0].code === 'video-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                    {props.creator.name}
+                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                      <em> ({props.creator.country[0].name}, Video Creator,  {props.creator.age} years)</em>
+                    </span>
+                  </Typography>}
+                  {props.creator.category[0].code === 'audio-only-creators'  && <Typography variant="h4" color="textSecondary" component="p">
+                    {props.creator.name}
+                    <span style={{ fontSize: 16, fontWeight: 700 }}>
+                      <em> ({props.creator.country[0].name}, Jingle Creator,  {props.creator.age} years)</em>
+                    </span>
+                  </Typography>}
                   <Typography
-                    variant="h5"
-                    style={{
-                      color: "black",
-                      fontSize: 15,
-                      color: "red",
-                      marginLeft: 20,
-                    }}
-                  >
-                    {props.course.priceLabel}
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
+                  variant="subtitle1"
+                  color="textSecondary"
+                  component="p"
                 >
-                  {props.course.shortDescription}
+                  {Str(props.bio).limit(200, "...").get()}
                 </Typography>
-                {props.course.refNumber !== "undefined" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 10 }}>
-                      {" "}
-                      <strong>Reference Number:</strong>
-                    </span>
-                    {props.course.refNumber}
-                  </Typography>
-                )}
-                {props.course.duration !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Duration:</strong>
-                    </span>
-                    {props.course.duration}
-                  </Typography>
-                )}
-                {props.course.deliveryMethod !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Delivery Method:</strong>
-                    </span>
-                    {props.course.deliveryMethod}
-                  </Typography>
-                )}
-                {props.course.venue !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Venue:</strong>
-                    </span>
-                    {props.course.venue}
-                  </Typography>
-                )}
-                {props.course.commencementWeekdaysDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Weekday Start Date(s):</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {props.course.commencementWeekdaysDate.join("|")} */}
-                      {props.course.commencementWeekdaysDate}
-                    </span>
-                  </Typography>
-                )}
-                {props.course.commencementWeekendsDate !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Weekend Start Date(s):</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {/* {props.course.commencementWeekendsDate.join("|")} */}
-                      {props.course.commencementWeekendsDate}
-                    </span>
-                  </Typography>
-                )}
-                <Typography
+                {props.creator.category[0].code === 'video-and-audio-creators'  && <Typography
                   variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
+                  color="textSecondary"
+                  component="p"
+                  style={{ marginTop: 5, marginBottom: 15 }}
                 >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekday Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {props.course.weekdaySessionPeriod}
-                  </span>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <strong>Weekend Lecture Period:</strong>
-                  </span>
-                  <span style={{ marginLeft: 3, textAlign: "center" }}>
-                    {props.course.weekendSessionPeriod}
-                  </span>
-                </Typography>
-                {props.course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Credit:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.mentorshipCredit}&nbsp; Units &nbsp; (to be
-                      used after graduation)
-                    </span>
-                  </Typography>
-                )}
-                {props.course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Total Value of Mentorship Credit:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {getCurrencyCode()}
-                      {(
-                        props.course.mentorshipCredit *
-                        props.course.costPerMentorshipCredit
-                      )
-                        .toFixed(2)
-                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
-                    </span>
-                  </Typography>
-                )}
-                {props.course.hasMentorshipCredit && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Mentorship Duration:</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.mentorshipDuration}&nbsp;&nbsp; ( from the
-                      day of graduation)
-                    </span>
-                  </Typography>
-                )}
-                {props.course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>Is Installmental Payment Allowed :</strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.isInstallmentalPaymentAllowed
-                        .charAt(0)
-                        .toUpperCase() +
-                        props.course.isInstallmentalPaymentAllowed.slice(1)}
-                    </span>
-                  </Typography>
-                )}
-                {props.course.isInstallmentalPaymentAllowed === "yes" && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      <strong>
-                        Maximum Number of Installmental Payment Allowed :
-                      </strong>
-                    </span>
-                    <span style={{ marginLeft: 3, textAlign: "center" }}>
-                      {props.course.maximumInstallmentalPayment}&nbsp;times
-                    </span>
-                  </Typography>
-                )}
-                {props.course.passGrade !== undefined && (
-                  <Typography
-                    variant="h5"
-                    style={{ color: "black", fontSize: 15 }}
-                  >
-                    <span style={{ marginRight: 20 }}>
-                      {" "}
-                      <strong>Minimum NextChamp Grade:</strong>
-                    </span>
-                    {props.course.passGrade}
-                  </Typography>
-                )}
-                <Typography
-                  variant="h5"
-                  style={{ color: "black", fontSize: 15 }}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    {" "}
+                  <span style={{ marginLeft: 0 }}>
                     <strong>
-                      Is Life Time Access To This Course Allowed?:
+                      {getCurrencyCode()}
+                      {props.creator.videoPrice
+                        ? props.creator.videoPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
                     </strong>
+                   
                   </span>
-                  {props.course.allowLifeTimeAccess ? "Yes" : "No"}
-                </Typography>
-                <br /> <br />
-                {props.course.isCourseAuditable && (
-                  <Typography>
-                    <span
-                      style={{
-                        fontSize: 18,
-                        marginLeft: 14,
-                        //textAlign: "center",
-                      }}
+                  <span style={{fontSize:12,marginLeft:0}}>/video</span>
+                  <span>&</span>
+                  <span style={{ marginLeft: 10 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.soundPrice
+                        ? props.creator.soundPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                  <span style={{fontSize:12,marginLeft:0}}>/jingle</span>
+                </Typography>}
+
+                {props.creator.category[0].code === 'video-only-creators' && <Typography
+                  variant="h4"
+                  color="textSecondary"
+                  component="p"
+                  style={{ marginTop: 5, marginBottom: 15 }}
+                >
+                  <span style={{ marginLeft: 30 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.videoPrice
+                        ? props.creator.videoPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                  <span style={{fontSize:12,marginLeft:0}}>/per video</span>
+                  
+                </Typography>}
+
+                {props.creator.category[0].code === 'audio-only-creators' && <Typography
+                  variant="h4"
+                  color="textSecondary"
+                  component="p"
+                  style={{ marginTop: 5, marginBottom: 15 }}
+                >
+                   <span style={{ marginLeft: 20 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.soundPrice
+                        ? props.creator.soundPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                  <span style={{fontSize:12,marginLeft:0}}>/per jingle</span>
+                  
+                </Typography>}
+                {props.creator.category[0].code === 'video-and-audio-creators' && <Typography
+                      style={{ marginTop: 9, color: "red", marginBottom: 15 }}
                     >
-                      You can audit this course for FREE for up to
+                      <span
+                        style={{ fontSize: 14, marginLeft: 10, marginTop: 20 }}
+                      >
+                        {/* <strong>Delivery Method:</strong> &nbsp; */}
+                        <span>{"This is the price for the production of a 10 to 40 seconds marketing video or jingle"}</span>
+                      </span>
+                    </Typography>}
+                    {props.creator.category[0].code === 'video-only-creators' && <Typography
+                      style={{ marginTop: 9, color: "red", marginBottom: 15 }}
+                    >
+                      <span
+                        style={{ fontSize: 14, marginLeft: 10, marginTop: 20 }}
+                      >
+                        {/* <strong>Delivery Method:</strong> &nbsp; */}
+                        <span>{"This is the price for the production of a 10 to 40 seconds marketing video"}</span>
+                      </span>
+                    </Typography>}
+                    {props.creator.category[0].code === 'audio-only-creators' && <Typography
+                      style={{ marginTop: 9, color: "red", marginBottom: 15 }}
+                    >
+                      <span
+                        style={{ fontSize: 14, marginLeft: 10, marginTop: 20 }}
+                      >
+                        {/* <strong>Delivery Method:</strong> &nbsp; */}
+                        <span>{"This is the price for the production of a 10 to 40 seconds marketing jingle"}</span>
+                      </span>
+                    </Typography>}
+               
+                
+                {(props.creator.category[0].code === 'video-and-audio-creators' || props.creator.category[0].code === 'video-only-creators') && <Typography>
+                  
+                    <strong style={{marginLeft:10}}> Cost for An Extra Video Hook:</strong>
+                    <span style={{ marginLeft: 5 }}>
+                    <strong>
+                      {getCurrencyCode()}
+                      {props.creator.videoHookPrice
+                        ? props.creator.videoHookPrice
+                            .toFixed(2)
+                            .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                        : 0}
+                    </strong>
+                   
+                  </span>
+                    
+          
+                </Typography>}
+                {(props.creator.category[0].code === 'video-and-audio-creators' || props.creator.category[0].code === 'audio-only-creators') && <Typography>
+                  
+                  <strong style={{marginLeft:10}}> Cost for An Extra Sound Hook:</strong>
+                  <span style={{ marginLeft: 5 }}>
+                  <strong>
+                    {getCurrencyCode()}
+                    {props.creator.soundHookPrice
+                      ? props.creator.soundHookPrice
+                          .toFixed(2)
+                          .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                      : 0}
+                  </strong>
+                 
+                </span>
+                  
+        
+              </Typography>}
+               
+                  
+                
+                <Typography>
+                  <span style={{ fontSize: 14, marginLeft: 10 }}>
+                    <strong> Delivery Period:</strong>
+                    <span>{props.creator.videoDeliveryDays} days</span>
+                  </span>
+                </Typography>
+                <Typography style={{marginLeft:10}}><strong>Niches:</strong></Typography>
+              
+               {props.creator.niches && <Grid container direction="row" style={{marginLeft:30}}>
+                              {props.creator.niches.map((niche, index) => (
+                                <Typography>{niche.niche},  </Typography>
+
+                              ))}
+                            </Grid>}
+                <Typography style={{marginLeft:10}}><strong>Languages:</strong></Typography>
+                
+                {props.creator.languages && <Grid container direction="row" style={{marginLeft:30}}>
+                              {props.creator.languages.map((lang, index) => (
+                                <Typography>{lang.language},  </Typography>
+
+                              ))}
+                            </Grid>}
+
+
+                <Typography style={{marginTop: 20}}>
+                    <span style={{ fontSize: 14, marginLeft: 12, color:"red",  }}>
                       <strong>
-                        <span>{props.course.weekdayAuditDays}</span>
+                       Note: A hook is the initial 2 to 5 seconds of a video designed to immediately capture the audience's attention and encourage them to continue watching.
                       </strong>
-                      &nbsp;. You only make payment afterwards when you are sure
-                      the course is a good fit for you
+                     
                     </span>
                   </Typography>
-                )}
-              </Box>
+              </Box>}
             </Grid>
             <Grid item className={classes.thirdRowMobile}>
               <Box>
-                <SendCourseToCheckoutForm
-                  price={price}
-                  currency={props.course.currency}
-                  courseId={props.course.id}
-                  course={props.course}
-                  token={props.token}
-                  userId={props.userId}
-                  handleMakeOpenSignUpDialogStatus={
-                    handleMakeOpenSignUpDialogStatus
-                  }
-                  handleMakeCloseSignUpDialogStatus={
-                    handleMakeCloseSignUpDialogStatus
-                  }
-                  handleMakeOpenLoginFormDialogStatus={
-                    handleMakeOpenLoginFormDialogStatus
-                  }
-                  handleMakeCloseForgotPasswordFormDialogStatus={
-                    handleMakeCloseForgotPasswordFormDialogStatus
-                  }
-                  handleSuccessfulCreateSnackbar={
-                    props.handleSuccessfulCreateSnackbar
-                  }
-                  handleFailedSnackbar={props.handleFailedSnackbar}
-                  handleFailedSignUpDialogOpenStatusWithSnackbar={
-                    handleFailedSignUpDialogOpenStatusWithSnackbar
-                  }
-                  cartCounterHandler={props.cartCounterHandler}
+                <SendCreatorToCheckoutForm
+                   videoPrice={props.creator.videoPrice}
+                   videoHookPrice={props.creator.videoHookPrice}
+                   creatorId={props.creator.id}
+                   soundPrice = {props.creator.soundPrice}
+                   soundHookPrice = {props.creator.soundHookPrice}
+                   videoDeliveryDays = {props.creator.videoDeliveryDays}
+                   soundDeliveryDays = {props.creator.soundDeliveryDays}
+                   brandId={props.brandId}
+                   brandName={props.brandName}
+                    brandCountry={props.brandCountry}
+                   categoryName={props.categoryName}
+                   categoryCode={props.categoryCode}
+                   currency={props.creator.currency}
+                   creatord={props.creatorId}
+                   creator={props.creator}
+                   image={props.creator.image}
+                   creatorLanguages={props.creator.languages}
+                   token={props.token}
+                   userId={props.userId}
+                   handleMakeOpenSignUpDialogStatus={
+                     handleMakeOpenSignUpDialogStatus
+                   }
+                   handleMakeCloseSignUpDialogStatus={
+                     handleMakeCloseSignUpDialogStatus
+                   }
+                   handleMakeOpenLoginFormDialogStatus={
+                     handleMakeOpenLoginFormDialogStatus
+                   }
+                   handleMakeCloseForgotPasswordFormDialogStatus={
+                     handleMakeCloseForgotPasswordFormDialogStatus
+                   }
+                   handleSuccessfulCreateSnackbar={
+                     props.handleSuccessfulCreateSnackbar
+                   }
+                   handleFailedSnackbar={props.handleFailedSnackbar}
+                   handleFailedSignUpDialogOpenStatusWithSnackbar={
+                     handleFailedSignUpDialogOpenStatusWithSnackbar
+                   }
+                   cartCounterHandler={props.cartCounterHandler}
                 />
               </Box>
             </Grid>
           </Grid>
+          {samplesList.length >=1 &&<Typography style={{marginLeft:'25%',marginTop:20, fontSize:20, fontWeight:700}}>Creator Work Samples</Typography>}
           <Grid
             item
             container
-            direction="column"
+            direction="row"
             style={{ width: "100%" }}
             justifyContent="center"
           >
-            <Grid
-              item
-              className={classes.secondColumnMobile}
-              style={{ marginLeft: "2%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>Prerequisites:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.prerequisites}</ReactMarkdown>
-                </Typography>
-              </Box>
-            </Grid>
+            <Grid item style={{width:'7%'}}><Typography></Typography></Grid>
+           <Grid item container direction="row" style={{width:'74%'}}> 
+          
+           {samplesList.map((sample, index) => (
+                  <Grid item style={{width:'100%', marginTop:30}}>
+                         <Card>
+                             <CardMedia
+                                      className={classes.videoMedia}
+                                      component="iframe"
+                                      alt={'creator sample'}
+                                      height="140"
+                                      src={`https://www.youtube.com/embed/${sample.youtubeId}`}
+                                      allow="autoPlay"
+                                      allowfullscreen="allowfullscreen"
+                                      controls
+                                    />
+                  
+                              
+                              </Card>
+                              
+                              </Grid>
 
-            <Grid
-              item
-              className={classes.secondColumnMobile}
-              style={{ marginLeft: "0.5%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>What you will Learn:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.whatToLearn}</ReactMarkdown>
-                </Typography>
-              </Box>
+                              ))}
+            
+           
+            
+           
             </Grid>
-            <Grid
-              item
-              className={classes.secondColumnMobile}
-              style={{ marginLeft: "0.5%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>Required Learning Tools:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.tools}</ReactMarkdown>
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              className={classes.secondColumnMobile}
-              style={{ marginLeft: "0.5%" }}
-            >
-              <Box>
-                <Typography>
-                  <strong>Who should attend:</strong>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "black",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    justifyContent: "center",
-                  }}
-                >
-                  <ReactMarkdown>{props.course.targetAudience}</ReactMarkdown>
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-          <Grid item className={classes.thirdColumnMobile}>
-            <Box>
-              <Typography>
-                <strong>Course Description:</strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.longDescription}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item className={classes.forthColumnMobile}>
-            <Box>
-              <Typography>
-                <strong>Course Content:</strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.contents}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item className={classes.fifthColumnMobile}>
-            <Box>
-              <Typography>
-                <strong>Capstone Project:</strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.capstoneProject}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item className={classes.sixthColumnMobile}>
-            <Box>
-              <Typography>
-                <strong>
-                  What you need to become the NextChamp in this Course:
-                </strong>
-              </Typography>
-              <Typography
-                variant="h5"
-                style={{
-                  color: "black",
-                  marginTop: 20,
-                  marginBottom: 20,
-                  justifyContent: "center",
-                }}
-              >
-                <ReactMarkdown>{props.course.successTips}</ReactMarkdown>
-              </Typography>
-            </Box>
-          </Grid>
-          {props.course.previewVideoId &&
-            props.course.previewVideoId !== "null" && (
-              <Typography
-                variant="h5"
-                style={{ color: "black", fontSize: 15, marginLeft: 30 }}
-              >
-                <strong>`"{props.course.title}" Course Preview`</strong>
-              </Typography>
-            )}
-          {props.course.previewVideoId &&
-            props.course.previewVideoId !== "null" && (
-              <Grid item className={classes.seventhColumn}>
-                <Card>
-                  <CardMedia
-                    className={classes.videoMedia}
-                    component="iframe"
-                    alt={props.course.title}
-                    height="140"
-                    src={`https://www.youtube.com/embed/${props.course.previewVideoId}`}
-                    //allow="autoPlay"
-                    allowfullscreen="allowfullscreen"
-                    controls
-                  />
-                </Card>
-              </Grid>
-            )}
+           <Grid item style={{width:'7%', marginLeft:'2%'}}><Typography></Typography></Grid>
 
-          {/* </Grid> */}
+           
+          
+          </Grid>       
+
+         
         </Grid>
       )}
       {renderLoginForm()}

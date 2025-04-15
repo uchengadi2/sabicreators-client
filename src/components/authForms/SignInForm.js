@@ -310,7 +310,7 @@ const SignInForm = (props) => {
               variant="text"
               onClick={() => [setSignUpOpen(true), history.push("/")]}
             >
-              Sign Uppp
+              Sign Up
             </Button>
           </Grid>
         </Grid>

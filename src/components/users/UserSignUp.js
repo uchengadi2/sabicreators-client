@@ -63,6 +63,9 @@ class UserSignUp extends React.Component {
             handleFailedSignUpDialogOpenStatusWithSnackbar={
               this.props.handleFailedSignUpDialogOpenStatusWithSnackbar
             }
+            handleMakeCloseSignCreatorUpDialogStatus={
+              this.props.handleMakeCloseSignCreatorUpDialogStatus
+            }
             token={this.props.token}
           />
         </Box>

@@ -105,6 +105,12 @@ const buttonContent = () => {
   return <React.Fragment>Submit</React.Fragment>;
 };
 
+const buttonCloseContent = () => {
+  return <React.Fragment>Close</React.Fragment>;
+};
+
+
+
 const UserChangeNameForm = (props) => {
   const classes = useStyles();
 
@@ -217,6 +223,17 @@ const UserChangeNameForm = (props) => {
             ) : (
               buttonContent()
             )}
+          </Button>
+          <Button
+              variant="text"
+              //ClassName={classes.sendButton}
+               onClick={props.handleMakeChangeNameDialogForm}
+             >
+                {loading ? (
+                 <CircularProgress size={30} color="inherit" />
+                ) : (
+                buttonCloseContent()
+              )}
           </Button>
         </Grid>
       </Box>

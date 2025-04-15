@@ -39,9 +39,11 @@ const useStyles = makeStyles((theme) => ({
     //width: 600,
     marginLeft: 15,
     height: 350,
+    maxWidth: "100%",
+    width: "1380px",
   },
   rootMobile: {
-    maxWidth: "100%",
+    maxWidth: 350,
     //height: 440,
     height: 950,
     width: "100%",
@@ -260,16 +262,7 @@ function CheckoutDeliveryAndPayment(props) {
   const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
   const matchesMD = useMediaQuery(theme.breakpoints.up("md"));
   const [isVisible, setIsVisible] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState(
-    props.acceptablePaymentOptions &&
-      props.isCourseAuditable &&
-      props.courseList.length === 1
-      ? "audit"
-      : !props.isCourseAuditable &&
-        props.acceptablePaymentOptions === "only-online"
-      ? "card"
-      : "foreigner"
-  );
+  const [paymentMethod, setPaymentMethod] = useState('card');
 
   // const [paymentMethod, setPaymentMethod] = useState();
 
@@ -286,11 +279,11 @@ function CheckoutDeliveryAndPayment(props) {
   //     ? false
   //     : true
   // );
-  const [isOnlinePayment, setIsOnlinePayment] = useState();
+  const [isOnlinePayment, setIsOnlinePayment] = useState(true);
   const [customerEmail, setCustomerEmail] = useState();
   const [customerName, setCustomerName] = useState();
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState();
-  const [currencyName, setCurrencyName] = useState("naira");
+  const [currencyName, setCurrencyName] = useState(props.currency);
   const [total, setTotal] = useState();
   const [ukRate, setUkRate] = useState(650);
   const [usRate, setUsRate] = useState(560);
@@ -310,35 +303,35 @@ function CheckoutDeliveryAndPayment(props) {
   // );
   const [loading, setLoading] = useState();
 
-  useEffect(() => {
-    // 👇️ scroll to top on page load
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, []);
+  // useEffect(() => {
+  //   // 👇️ scroll to top on page load
+  //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  // }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (props.isCourseAuditable && props.courseList.length === 1) {
-        setIsOnlinePayment(false);
-        //setPaymentMethod("audit");
-      } else {
-        if (
-          !props.isCourseAuditable &&
-          props.courseList.length >= 1 &&
-          props.acceptablePaymentOptions === "only-online"
-        ) {
-          setIsOnlinePayment(true);
-          // setPaymentMethod("card");
-        } else {
-          setIsOnlinePayment(false);
-          //setPaymentMethod("foreigner");
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (props.isCourseAuditable && props.courseList.length === 1) {
+  //       setIsOnlinePayment(false);
+  //       //setPaymentMethod("audit");
+  //     } else {
+  //       if (
+  //         !props.isCourseAuditable &&
+  //         props.courseList.length >= 1 &&
+  //         props.acceptablePaymentOptions === "only-online"
+  //       ) {
+  //         setIsOnlinePayment(true);
+  //         // setPaymentMethod("card");
+  //       } else {
+  //         setIsOnlinePayment(false);
+  //         //setPaymentMethod("foreigner");
+  //       }
+  //     }
+  //   };
 
-    //call the function
+  //   //call the function
 
-    fetchData().catch(console.error);
-  }, [props]);
+  //   fetchData().catch(console.error);
+  // }, [props]);
 
   //get the email address of the customer
 
@@ -363,6 +356,8 @@ function CheckoutDeliveryAndPayment(props) {
 
     fetchData().catch(console.error);
   }, []);
+
+  
 
   const onRecipientNameChange = (e) => {
     setRecipientName(e.target.value);
@@ -511,30 +506,31 @@ function CheckoutDeliveryAndPayment(props) {
             value={paymentMethod}
             onChange={handlePaymentMethodChange}
             label="Payment Method"
-            style={{ height: 38, width: 300, marginTop: 0, marginLeft: 10 }}
+            style={{ height: 38, width: matchesMD ? 380 : 300, marginTop: 0, marginLeft: 10 }}
           >
-            {props.isCourseAuditable && props.courseList.length === 1 && (
+            {/* {props.isCourseAuditable && props.courseList.length === 1 && (
               <MenuItem value={"audit"}>Audit Course(s) for Free</MenuItem>
-            )}
+            )} */}
             {/* {props.isCourseAuditable &&
               (props.acceptablePaymentOptions === "all-types" ||
                 (props.acceptablePaymentOptions === "only-online" && (
                   <MenuItem value={"card"}>Credit/Debit Card</MenuItem>
                 )))} */}
-            {(props.acceptablePaymentOptions === "all-types" ||
+            {/* {(props.acceptablePaymentOptions === "all-types" ||
               props.acceptablePaymentOptions === "only-online") && (
-              <MenuItem value={"card"}>Credit/Debit Card</MenuItem>
-            )}
-            {(props.acceptablePaymentOptions === "all-types" ||
+              
+            )} */}
+            <MenuItem value={"card"}>Credit/Debit Card</MenuItem>
+            {/* {(props.acceptablePaymentOptions === "all-types" ||
               props.acceptablePaymentOptions === "only-bank-transfer") && (
               <MenuItem value={"foreigner"}>
                 Register and Pay Later via Bank Transfer
               </MenuItem>
-            )}
+            )} */}
           </Select>
           <FormHelperText>
-            Payment Method (Choose "Credit/Debit Card" for online card payment
-            or Bank Transfer if you are making payment via Bank Transfers")
+            Payment Method (Choose "Credit/Debit Card" for online card payment)
+      
           </FormHelperText>
         </FormControl>
       </Box>
@@ -568,7 +564,7 @@ function CheckoutDeliveryAndPayment(props) {
   const buttonAuditContent = () => {
     return (
       <React.Fragment>
-        {props.courseList.length === 1
+        {props.cartList.length === 1
           ? "Audit this Course for FREE"
           : "Audit these Courses for FREE"}
       </React.Fragment>
@@ -620,7 +616,7 @@ function CheckoutDeliveryAndPayment(props) {
 
           setLoading(false);
 
-          props.courseList.map((cart, index) => {
+          props.cartList.map((cart, index) => {
             const data = {
               orderNumber: orderNumber,
               transactionId: transId,
@@ -733,7 +729,7 @@ function CheckoutDeliveryAndPayment(props) {
     };
 
     //change the status of this cart items
-    props.courseList.map((cart, index) => {
+    props.cartList.map((cart, index) => {
       const createForm = async () => {
         api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
         await api.delete(`/carts/${cart.id}`);
@@ -795,7 +791,7 @@ function CheckoutDeliveryAndPayment(props) {
 
           setLoading(false);
 
-          props.courseList.map((cart, index) => {
+          props.cartList.map((cart, index) => {
             const data = {
               orderNumber: orderNumber,
               transactionId: transId,
@@ -908,7 +904,7 @@ function CheckoutDeliveryAndPayment(props) {
     };
 
     //change the status of this cart items
-    props.courseList.map((cart, index) => {
+    props.cartList.map((cart, index) => {
       const createForm = async () => {
         api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
         await api.delete(`/carts/${cart.id}`);
@@ -929,6 +925,8 @@ function CheckoutDeliveryAndPayment(props) {
     history.push("/thankyou");
   };
 
+  
+
   const renderOnlinePayment = (
     email,
     amount,
@@ -943,16 +941,20 @@ function CheckoutDeliveryAndPayment(props) {
       recipientPhoneNumber: phoneNumber,
       recipientEmailAddress: email,
 
-      totalDeliveryCost: totalDeliveryCost ? totalDeliveryCost.toFixed(2) : 0,
+      // totalDeliveryCost: totalDeliveryCost ? totalDeliveryCost.toFixed(2) : 0,
       totalProductCost: totalProductCost ? totalProductCost.toFixed(2) : 0,
-      totalProductCostUk: totalProductCostForUk,
+      grandTotal: totalProductCost,
+      // totalProductCostUk: totalProductCostForUk,
 
-      totalProductCostUs: totalProductCostForUS,
+      // totalProductCostUs: totalProductCostForUS,
       productCurrency: currencyName,
       paymentMethod: paymentMethod,
+      brand:props.brand,
+      project:props.project,
       paymentStatus: "to-be-confirmed",
       orderedBy: props.userId,
     };
+    
     return (
       <Paystack
         email={email}
@@ -960,7 +962,7 @@ function CheckoutDeliveryAndPayment(props) {
         text={"Make Payment"}
         orderNumber={orderNumber}
         data={data}
-        productList={props.courseList}
+        productList={props.cartList}
         token={props.token}
         handleSuccessfulCreateSnackbar={props.handleSuccessfulCreateSnackbar}
         handleFailedSnackbar={props.handleFailedSnackbar}
@@ -989,7 +991,7 @@ function CheckoutDeliveryAndPayment(props) {
               style={{ marginTop: 10, marginBottom: 10 }}
               justifyContent="center"
             >
-              <Box
+              {/* <Box
                 sx={{
                   //width: 1200,
                   //height: 450,
@@ -1001,10 +1003,7 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography variant="h5">
                   ControlSoft Limited Bank Details:
                 </Typography>
-                {/* <Typography>
-                  <strong>Expected Amount:</strong> &nbsp; &nbsp; &#163;
-                  {totalProductCostForUkForDisplay}
-                </Typography> */}
+                
                 <Typography>
                   <strong>Pay To:</strong>
                 </Typography>
@@ -1018,9 +1017,7 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography>
                   <strong>Account Number: </strong>&nbsp; &nbsp; 2018268898
                 </Typography>
-                {/* <Typography>
-                  <strong>Sort Code:</strong> &nbsp; &nbsp; 231486
-                </Typography> */}
+                
                 <Typography style={{ marginTop: 15 }}>
                   Send proof of payment to: &nbsp; &nbsp;
                   nextchamp-academy@gmail.com
@@ -1033,10 +1030,7 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography variant="h5">
                   ControlSoft Limited Bank Details:
                 </Typography>
-                {/* <Typography>
-                  <strong>Expected Amount:</strong>&nbsp; &nbsp; $
-                  {totalProductCostForUsForDisplay}
-                </Typography> */}
+               
                 <Typography>
                   <strong>Pay To:</strong>
                 </Typography>
@@ -1050,14 +1044,12 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography>
                   <strong>Account Number: </strong>&nbsp; &nbsp; 2206083011
                 </Typography>
-                {/* <Typography>
-                  <strong>Routing (ABA):</strong> &nbsp; &nbsp; 061120084
-                </Typography> */}
+               
                 <Typography style={{ marginTop: 15 }}>
                   Send proof of payment to: &nbsp; &nbsp;
                   nextchamp-academy@gmail.com
                 </Typography>
-              </Box>
+              </Box> */}
             </Grid>
           </Grid>
           <Grid
@@ -1130,7 +1122,7 @@ function CheckoutDeliveryAndPayment(props) {
         </Grid>
       ) : (
         <Grid container direction="column" className={classes.rootMobile}>
-          <Grid
+          {/* <Grid
             item
             container
             style={{
@@ -1159,10 +1151,7 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography variant="h5">
                   ControlSoft Limited Bank Details:
                 </Typography>
-                {/* <Typography>
-                  <strong>Expected Amount:</strong> &nbsp; &nbsp; &#163;
-                  {totalProductCostForUkForDisplay}
-                </Typography> */}
+                
                 <Typography>
                   <strong>Pay To:</strong>
                 </Typography>
@@ -1176,9 +1165,7 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography>
                   <strong>Account Number: </strong>&nbsp; &nbsp; 2018268898
                 </Typography>
-                {/* <Typography>
-                  <strong>Sort Code:</strong> &nbsp; &nbsp; 231486
-                </Typography> */}
+               
                 <Typography style={{ marginTop: 15 }}>
                   Send proof of payment to: &nbsp; &nbsp;
                   nextchamp-academy@gmail.com
@@ -1189,10 +1176,7 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography variant="h5">
                   ControlSoft Limited Bank Details:
                 </Typography>
-                {/* <Typography>
-                  <strong>Expected Amount:</strong>&nbsp; &nbsp; $
-                  {totalProductCostForUsForDisplay}
-                </Typography> */}
+                
                 <Typography>
                   <strong>Pay To:</strong>
                 </Typography>
@@ -1206,16 +1190,14 @@ function CheckoutDeliveryAndPayment(props) {
                 <Typography>
                   <strong>Account Number: </strong>&nbsp; &nbsp; 2206083011
                 </Typography>
-                {/* <Typography>
-                  <strong>Routing (ABA):</strong> &nbsp; &nbsp; 061120084
-                </Typography> */}
+                
                 <Typography style={{ marginTop: 15 }}>
                   Send proof of payment to: &nbsp; &nbsp;
                   nextchamp-academy@gmail.com
                 </Typography>
               </Box>
             </Grid>
-          </Grid>
+          </Grid> */}
 
           <Grid
             item

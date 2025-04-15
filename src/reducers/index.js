@@ -23,6 +23,11 @@ import courseAssessorReducer from "./courseAssessorReducer";
 import courseMentorReducer from "./courseMentorReducer";
 import courseLessonReducer from "./courseLessonReducer";
 import courseTopicReducer from "./courseTopicReducer";
+import languageReducer from "./languageReducer";
+import nicheReducer from "./nicheReducer";
+import projectReducer from "./projectReducer";
+import creatorReducer from "./creatorReducer";
+import brandReducer from "./brandReducer";
 
 export default combineReducers({
   auth: authReducer,
@@ -49,4 +54,9 @@ export default combineReducers({
   courseMentor: courseMentorReducer,
   courseLesson: courseLessonReducer,
   courseTopic: courseTopicReducer,
+  language: languageReducer,
+  niche: nicheReducer,
+  project: projectReducer,
+  creator: creatorReducer,
+  brand: brandReducer,
 });

@@ -36,6 +36,8 @@ import ServicePreferences from "./homePageCards/ServicePreferences";
 import AllCourses from "./homePageCards/AllCourses";
 
 import { baseURL } from "../apis/util";
+import AllCreatorsOnList from "./homePageCards/AllCreatorsOnList";
+import AllProductsInCardDesign from "./homePageCards/AllProductsInCardDesign.";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -274,11 +276,20 @@ const Marketplace = (props) => {
   const [becomePartnerOpen, setBecomePartnerOpen] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
   const [coursesList, setCourseList] = useState([]);
+  const [creatorsList, setCreatorsList] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
   const [updateLearningPath, setUpdateLearningPath] = useState(false);
   const [updateServicePath, setUpdateServicePath] = useState(false);
   //const [path, setPath] = useState("crash-course");
   const [path, setPath] = useState("all");
+  const [updateAgePath, setUpdateAgePath] = useState('all');
+  const [updatePricePath, setUpdatePricePath] = useState('all');
+  const [updateGenderPath, setUpdateGenderPath] = useState('all');
+  const [updateLanguagePath, setUpdateLanguagePath] = useState(0);
+  const [updateNichePath, setUpdateNichePath] = useState(0);
+  const [updateCountryPath, setUpdateCountryPath] = useState(0);
+  const [updateDeliveryDaysPath, setUpdateDeliveryDaysPath] = useState('all');
+
 
   // const [courseType, setCourseType] = useState(0);
   const [channel, setChannel] = useState(0);
@@ -311,27 +322,38 @@ const Marketplace = (props) => {
     setUpdateLearningPath((prevState) => !prevState);
   };
 
-  // const updateCourseTypeHandler = (value) => {
-  //   console.log("the market value is:", value);
-  //   setCourseType(value);
-  // };
+ 
 
-  const updateChannelHandler = (value) => {
-    console.log("the country value is:", value);
-    setChannel(value);
+  const updateAgePathInfoHandler = (value) => {
+    setUpdateAgePath(value);
   };
-  const updateProgrammeHandler = (value) => {
-    console.log("the state value is:", value);
-    setProgramme(value);
+  const updatePricePathHandler = (value) => {
+    setUpdatePricePath(value);
   };
 
-  // const updateBuyingPathInfoInfo = () => {
-  //   setUpdateBuyingPath((prevState) => !prevState);
-  // };
+  const updateGenderPathHandler = (value) => {
+    setUpdateGenderPath(value);
+  };
 
-  console.log("channel is:", channel);
-  console.log("programme is:", programme);
-  console.log("path is:", path);
+  const updateLanguagePathHandler = (value) => {
+    setUpdateLanguagePath(value);
+  };
+
+  const updateNichePathHandler = (value) => {
+    setUpdateNichePath(value);
+  };
+
+  const updateCountryPathHandler = (value) => {
+    setUpdateCountryPath(value);
+  };
+
+  const updateDeliveryDaysPathHandler = (value) => {
+    setUpdateDeliveryDaysPath(value);
+  };
+  
+  
+
+ 
 
   const updateServicePathInfoInfo = () => {
     setUpdateServicePath((prevState) => !prevState);
@@ -360,1420 +382,2611 @@ const Marketplace = (props) => {
       setIsLoading(true);
       let allData = [];
 
-      //this is for path = crash-course
+      
 
-      if (path === "crash-course" && channel !== 0 && programme !== 0) {
+     if (updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all') {
         //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel, programme: programme },
-        });
+        const response = await data.get("/creators?sort=desc",{params:{status:"active"}});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "crash-course" && channel === 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, programme: programme },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all' ){
+        //creators from a particular country
+        
+        const response = await data.get("/creators?sort=desc",{params:{country:updateCountryPath,status:"active"}});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "crash-course" && channel !== 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //creators from a particular country but male
+        const response = await data.get("/creators?sort=desc",{params:{country:updateCountryPath,gender:updateGenderPath,status:"active"}});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+         //creators from a particular country but male
+         const response = await data.get("/creators?sort=desc",{params:{country:updateCountryPath,gender:updateGenderPath,status:"active"}});
 
-      if (path === "crash-course" && channel === 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path },
-        });
+         const workingData = response.data.data.data;
+         //console.log('working Data:',workingData)
+ 
+         workingData.map((creator) => {
+           allData.push({
+             id: creator._id,
+             name: creator.name,
+             image: creator.image,
+             bio: creator.bio,
+             user: creator.user,
+             currency: creator.currency,
+             videoPrice: creator.videoPrice,
+             videoHookPrice: creator.videoHookPrice,
+             videoDeliveryDays: creator.videoDeliveryDays,
+             soundPrice:creator.soundPrice,
+             soundHookPrice:creator.soundHookPrice,
+             soundDeliveryDays:creator.soundDeliveryDays,
+             age: creator.age,
+             gender: creator.gender,
+             rate: creator.rate,
+             country: creator.country,
+             category:creator.category,
+             niches: creator.niches,
+             languages: creator.languages,
+             slug: creator.slug,
+             status: creator.status,
+             creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+             creatorContactEmailAddress: creator.creatorContactEmailAddress,
+             
+             
+           });
+         });
+         setCreatorsList(allData);
+         setIsLoading(false);
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "all" && updateLanguagePath !==0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //creators from a particular country with language selection
+        const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            languages:updateLanguagePath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      //This is path = regular-course
-
-      if (path === "regular-course" && channel !== 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel, programme: programme },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "male" && updateLanguagePath !==0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+         //creators from a particular country with language selection and male gender
+         const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            languages:updateLanguagePath,
+            gender:updateGenderPath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "regular-course" && channel === 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, programme: programme },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "female" && updateLanguagePath !==0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //creators from a particular country with language selection and female gender
+        const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            languages:updateLanguagePath,
+            gender:updateGenderPath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "regular-course" && channel !== 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "all" && updateLanguagePath ===0 && updateNichePath!==0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //creators from a particular country with niche selection
+        const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            niches:updateNichePath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "regular-course" && channel === 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "male" && updateLanguagePath ===0 && updateNichePath!==0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+         //creators from a particular country with niche selection with gender
+         const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            niches:updateNichePath,
+            gender:updateGenderPath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      //this is path = certification
-
-      if (path === "certification" && channel !== 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel, programme: programme },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "female" && updateLanguagePath ===0 && updateNichePath!==0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+         //creators from a particular country with niche selection with gender
+         const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            niches:updateNichePath,
+            gender:updateGenderPath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "certification" && channel === 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, programme: programme },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "all" && updateLanguagePath !==0 && updateNichePath!==0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //creators from a particular country with niche and language selection
+        const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            niches:updateNichePath,
+            languages:updateLanguagePath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
 
-      if (path === "certification" && channel !== 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "male" && updateLanguagePath !==0 && updateNichePath!==0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+          //creators from a particular country with niche and language selection
+        const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            niches:updateNichePath,
+            languages:updateLanguagePath,
+            gender:updateGenderPath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
 
-      if (path === "certification" && channel === 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path },
-        });
+      }else if(updateAgePath === "all" && updatePricePath==="all" && updateGenderPath === "female" && updateLanguagePath !==0 && updateNichePath!==0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+          //creators from a particular country with niche and language selection
+        const response = await data.get("/creators?sort=desc",{
+          params:{
+            country:updateCountryPath,
+            niches:updateNichePath,
+            languages:updateLanguagePath,
+            gender:updateGenderPath,
+            status:"active"
+          }});
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
 
-      //this is path = vocational
+      }else if(updateAgePath ==="18-24" && updatePricePath==="all" && updateGenderPath === "all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
 
-      if (path === "vocational" && channel !== 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel, programme: programme },
-        });
+        //selecting country and ages between 18 & 24
+        const response = await data.get(`/creators?sort=desc`,{
+          params:{
+            country:updateCountryPath,
+            status:"active",
+            'age[gte]':18,
+            'age[lte]':24,
+                       
+            
+            }        
+          });
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "vocational" && channel === 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, programme: programme },
-        });
+      }else if(updateAgePath === "25-34" && updatePricePath==="all" && updateGenderPath === "all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //selecting country and age between 25 & 34
+        const response = await data.get(`/creators?sort=desc`,{
+          params:{
+            country:updateCountryPath,
+            status:"active",
+            'age[gte]':25,
+            'age[lte]':34,           
+            
+            }        
+          });
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
-
-      if (path === "vocational" && channel !== 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path, channel: channel },
-        });
+      }else if(updateAgePath ==="35-45" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //selecting country age between 35 & 45
+        const response = await data.get(`/creators?sort=desc`,{
+          params:{
+            country:updateCountryPath,
+            status:"active",
+            'age[gte]':35,
+            'age[lte]':45,           
+            
+            }        
+          });
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
 
-      if (path === "vocational" && channel === 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { type: path },
-        });
+      }else if(updateAgePath ==="above-45" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+        //selecting country, and age above 45
+        const response = await data.get(`/creators?sort=desc`,{
+          params:{
+            country:updateCountryPath,
+            status:"active",
+            'age[gt]':45,
+                      
+            
+            }        
+          });
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
 
-      //this is when path =all
-
-      if (path === "all" && channel === 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc");
+      }else if(updateAgePath ==="above-45" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+         //selecting age above 45 only
+         const response = await data.get(`/creators?sort=desc`,{
+          params:{
+             'age[gt]':45,
+             status:"active"
+                      
+            
+            }        
+          });
 
         const workingData = response.data.data.data;
+        //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
+        workingData.map((creator) => {
           allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
+            id: creator._id,
+            name: creator.name,
+            image: creator.image,
+            bio: creator.bio,
+            user: creator.user,
+            currency: creator.currency,
+            videoPrice: creator.videoPrice,
+            videoHookPrice: creator.videoHookPrice,
+            videoDeliveryDays: creator.videoDeliveryDays,
+            soundPrice:creator.soundPrice,
+            soundHookPrice:creator.soundHookPrice,
+            soundDeliveryDays:creator.soundDeliveryDays,
+            age: creator.age,
+            gender: creator.gender,
+            rate: creator.rate,
+            country: creator.country,
+            category:creator.category,
+            niches: creator.niches,
+            languages: creator.languages,
+            slug: creator.slug,
+            status: creator.status,
+            creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+            creatorContactEmailAddress: creator.creatorContactEmailAddress,
+            
+            
           });
         });
-        setCourseList(allData);
+        setCreatorsList(allData);
         setIsLoading(false);
-      } //ends here
+      }else if(updateAgePath ==="35-45" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+        //selecting age above  between 35 and 45
+        const response = await data.get(`/creators?sort=desc`,{
+         params:{
+            'age[gte]':35,
+            'age[lte]':45,
+            status:"active"
+                     
+           
+           }        
+         });
 
-      if (path === "all" && channel !== 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { channel: channel, programme: programme },
-        });
+       const workingData = response.data.data.data;
+       //console.log('working Data:',workingData)
 
-        const workingData = response.data.data.data;
+       workingData.map((creator) => {
+         allData.push({
+           id: creator._id,
+           name: creator.name,
+           image: creator.image,
+           bio: creator.bio,
+           user: creator.user,
+           currency: creator.currency,
+           videoPrice: creator.videoPrice,
+           videoHookPrice: creator.videoHookPrice,
+           videoDeliveryDays: creator.videoDeliveryDays,
+           soundPrice:creator.soundPrice,
+           soundHookPrice:creator.soundHookPrice,
+           soundDeliveryDays:creator.soundDeliveryDays,
+           age: creator.age,
+           gender: creator.gender,
+           rate: creator.rate,
+           country: creator.country,
+           category:creator.category,
+           niches: creator.niches,
+           languages: creator.languages,
+           slug: creator.slug,
+           status: creator.status,
+           creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+           creatorContactEmailAddress: creator.creatorContactEmailAddress,
+           
+           
+         });
+       });
+       setCreatorsList(allData);
+       setIsLoading(false);
+     }else if(updateAgePath ==="25-34" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+      //selecting age above  between 25 and 34
+      const response = await data.get(`/creators?sort=desc`,{
+       params:{
+          'age[gte]':25,
+          'age[lte]':34,
+          status:"active"
+                   
+         
+         }        
+       });
 
-        workingData.map((course) => {
-          allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
-          });
-        });
-        setCourseList(allData);
-        setIsLoading(false);
-      } //ends here
+     const workingData = response.data.data.data;
+     //console.log('working Data:',workingData)
 
-      if (path === "all" && channel !== 0 && programme === 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { channel: channel },
-        });
+     workingData.map((creator) => {
+       allData.push({
+         id: creator._id,
+         name: creator.name,
+         image: creator.image,
+         bio: creator.bio,
+         user: creator.user,
+         currency: creator.currency,
+         videoPrice: creator.videoPrice,
+         videoHookPrice: creator.videoHookPrice,
+         videoDeliveryDays: creator.videoDeliveryDays,
+         soundPrice:creator.soundPrice,
+         soundHookPrice:creator.soundHookPrice,
+         soundDeliveryDays:creator.soundDeliveryDays,
+         age: creator.age,
+         gender: creator.gender,
+         rate: creator.rate,
+         country: creator.country,
+         category:creator.category,
+         niches: creator.niches,
+         languages: creator.languages,
+         slug: creator.slug,
+         status: creator.status,
+         creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+         creatorContactEmailAddress: creator.creatorContactEmailAddress,
+         
+         
+       });
+     });
+     setCreatorsList(allData);
+     setIsLoading(false);
+   }else if(updateAgePath ==="18-24" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+    //selecting age above  between 25 and 34
+    const response = await data.get(`/creators?sort=desc`,{
+     params:{
+        'age[gte]':18,
+        'age[lte]':24,
+        status:"active"
+                 
+       
+       }        
+     });
 
-        const workingData = response.data.data.data;
+   const workingData = response.data.data.data;
+   //console.log('working Data:',workingData)
 
-        workingData.map((course) => {
-          allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
-          });
-        });
-        setCourseList(allData);
-        setIsLoading(false);
-      } //ends here
+   workingData.map((creator) => {
+     allData.push({
+       id: creator._id,
+       name: creator.name,
+       image: creator.image,
+       bio: creator.bio,
+       user: creator.user,
+       currency: creator.currency,
+       videoPrice: creator.videoPrice,
+       videoHookPrice: creator.videoHookPrice,
+       videoDeliveryDays: creator.videoDeliveryDays,
+       soundPrice:creator.soundPrice,
+       soundHookPrice:creator.soundHookPrice,
+       soundDeliveryDays:creator.soundDeliveryDays,
+       age: creator.age,
+       gender: creator.gender,
+       rate: creator.rate,
+       country: creator.country,
+       category:creator.category,
+       niches: creator.niches,
+       languages: creator.languages,
+       slug: creator.slug,
+       status: creator.status,
+       creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+       creatorContactEmailAddress: creator.creatorContactEmailAddress,
+       
+       
+     });
+   });
+   setCreatorsList(allData);
+   setIsLoading(false);
+ }else if(updateAgePath ==="18-24" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 25 and 34 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gte]':18,
+      'age[lte]':24,
+               
+     
+     }        
+   });
 
-      if (path === "all" && channel === 0 && programme !== 0) {
-        //data.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await data.get("/courses?sort=desc", {
-          params: { programme: programme },
-        });
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
 
-        const workingData = response.data.data.data;
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="18-24" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 25 and 34 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gte]':18,
+      'age[lte]':24,
+               
+     
+     }        
+   });
 
-        workingData.map((course) => {
-          allData.push({
-            id: course._id,
-            title: course.title,
-            image: course.imageCover,
-            features: course.features,
-            shortDescription: course.shortDescription,
-            longDescription: course.longDescription,
-            deliveryMethod: course.deliveryMethod,
-            duration: course.duration,
-            commencementDate: course.commencementDate,
-            price: course.price,
-            priceLabel: course.priceLabel,
-            venue: course.venue,
-            instructor: course.instructor,
-            sessionDuration: course.sessionDuration,
-            sessionPeriod: course.sessionPeriod,
-            studyPeriod: course.studyPeriod,
-            lectureDuration: course.lectureDuration,
-            projectDuration: course.projectDuration,
-            category: course.category[0].id,
-            image: course.imageCover,
-            prerequisites: course.prerequisites,
-            tools: course.tools,
-            targetAudience: course.targetAudience,
-            whatToLearn: course.whatToLearn,
-            venueLink: course.venueLink,
-            track: course.track,
-            status: course.status,
-            commencementWeekdaysDate: course.commencementWeekdaysDate,
-            commencementWeekendsDate: course.commencementWeekendsDate,
-            channel: course.channel[0].id,
-            programme: course.programme[0].id,
-            showGenericWeekdayStartDateText:
-              course.showGenericWeekdayStartDateText,
-            showGenericWeekendStartDateText:
-              course.showGenericWeekendStartDateText,
-            genericWeekdayStartDateText: course.genericWeekdayStartDateText,
-            genericWeekendStartDateText: course.genericWeekendStartDateText,
-            weekdaySessionPeriod: course.weekdaySessionPeriod,
-            weekendSessionPeriod: course.weekendSessionPeriod,
-            paymentOptions: course.paymentOptions,
-            slug: course.slug,
-            isCourseAuditable: course.isCourseAuditable,
-            weekdayAuditDays: course.weekdayAuditDays,
-            weekendAuditDays: course.weekendAuditDays,
-            hasMentorshipCredit: course.hasMentorshipCredit,
-            mentorshipCredit: course.mentorshipCredit,
-            mentorshipDuration: course.mentorshipDuration,
-            hasSeries: course.hasSeries,
-            series: course.series,
-            costPerMentorshipCredit: course.costPerMentorshipCredit,
-            isInstallmentalPaymentAllowed: course.isInstallmentalPaymentAllowed,
-            maximumInstallmentalPayment: course.maximumInstallmentalPayment,
-            allowLifeTimeAccess: course.allowLifeTimeAccess,
-            acceptablePaymentOptions: course.acceptablePaymentOptions,
-          });
-        });
-        setCourseList(allData);
-        setIsLoading(false);
-      } //ends here
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="25-34" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 25 and 34 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gte]':25,
+      'age[lte]':34,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="25-34" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 25 and 34 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gte]':25,
+      'age[lte]':34,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="35-45" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 35 and 45 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gte]':35,
+      'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="35-45" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 35 and 45 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gte]':35,
+      'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="above-45" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age above 45 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gt]':45,
+      //'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="above-45" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age above 45 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'age[gt]':45,
+      //'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="above-45" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age above 45 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gt]':45,
+      //'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="above-45" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age above 45 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gt]':45,
+      //'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="35-45" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age above 45 and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gte]':35,
+      'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="35-45" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 32 and 45 and country and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gte]':35,
+      'age[lte]':45,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="25-34" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 25 and 34 and country and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gte]':25,
+      'age[lte]':34,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="25-34" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 25 and 34 and country and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gte]':25,
+      'age[lte]':34,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="18-24" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 18 and 24 and country and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gte]':18,
+      'age[lte]':24,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="18-24" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath!==0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 18 and 24 and country and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      'country':updateCountryPath,
+      'age[gte]':18,
+      'age[lte]':24,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="female" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 18 and 24 and country and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active"
+      //'country':updateCountryPath,
+      //'age[gte]':18,
+      //'age[lte]':24,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="male" && updateLanguagePath ===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting age between 18 and 24 and country and male gender
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      gender:updateGenderPath,
+      status:"active",
+      //'country':updateCountryPath,
+      //'age[gte]':18,
+      //'age[lte]':24,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath!==0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting language only
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      languages:updateLanguagePath,
+      status:"active",
+      //'country':updateCountryPath,
+      //'age[gte]':18,
+      //'age[lte]':24,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath!==0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting niches only
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+      niches:updateNichePath,
+      status:"active",
+      //'country':updateCountryPath,
+      //'age[gte]':18,
+      //'age[lte]':24,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="less-than-100000" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting prices that are less than N100,000 only
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoPrice':updateNichePath,
+      //'country':updateCountryPath,
+      'videoPrice[lt]':100000,
+      status:"active"
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="100000-200000" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting prices is between 100000 and 200000
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoPrice':updateNichePath,
+      //'country':updateCountryPath,
+      'videoPrice[gte]':100000,
+      'videoPrice[lte]':200000,
+      status:"active"
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="200000-400000" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting prices is between 200000 and 400000
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoPrice':updateNichePath,
+      //'country':updateCountryPath,
+      'videoPrice[gte]':200000,
+      'videoPrice[lt]':400000,
+      status:"active"
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="400000-600000" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting prices is between 400000 and 600000
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoPrice':updateNichePath,
+      //'country':updateCountryPath,
+      'videoPrice[gte]':400000,
+      'videoPrice[lt]':600000,
+      status:"active"
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="600000-1000000" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting prices is between 600000 and 1000000
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoPrice':updateNichePath,
+      //'country':updateCountryPath,
+      'videoPrice[gte]':600000,
+      'videoPrice[lt]':1000000,
+      status:"active"
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="above-1000000" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='all'){
+  //selecting prices is between 600000 and 1000000
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoPrice':updateNichePath,
+      //'country':updateCountryPath,
+      'videoPrice[gt]':1000000,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='1'){
+  //selecting delivery days of 1
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    'videoDeliveryDays':1,
+    status:"active"
+      //'country':updateCountryPath,
+      //'videoDeliveryDays[gt]':1,
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='<=2'){
+  //selecting delivery days of less than or equalt to 2
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoDeliveryDays':1,
+      //'country':updateCountryPath,
+      'videoDeliveryDays[lte]':2,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='<=3'){
+  //selecting delivery days of less than or equalt to 3
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoDeliveryDays':1,
+      //'country':updateCountryPath,
+      'videoDeliveryDays[lte]':3,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='<=4'){
+  //selecting delivery days of less than or equalt to 4
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoDeliveryDays':1,
+      //'country':updateCountryPath,
+      'videoDeliveryDays[lte]':4,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='<=5'){
+  //selecting delivery days of less than or equalt to 5
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoDeliveryDays':1,
+      //'country':updateCountryPath,
+      'videoDeliveryDays[lte]':5,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='<=6'){
+  //selecting delivery days of less than or equalt to 6
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoDeliveryDays':1,
+      //'country':updateCountryPath,
+      'videoDeliveryDays[lte]':6,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='<=7'){
+  //selecting delivery days of less than or equalt to 7
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoDeliveryDays':1,
+      //'country':updateCountryPath,
+      'videoDeliveryDays[lte]':7,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else if(updateAgePath ==="all" && updatePricePath==="all" && updateGenderPath ==="all" && updateLanguagePath===0 && updateNichePath===0 && updateCountryPath===0 && updateDeliveryDaysPath==='above-7'){
+  //selecting delivery days above  7
+  const response = await data.get(`/creators?sort=desc`,{
+   params:{
+    //'videoDeliveryDays':1,
+      //'country':updateCountryPath,
+      'videoDeliveryDays[gt]':7,
+      status:"active"
+      //'videoPrice[lt]':1000000,
+               
+     
+     }        
+   });
+
+ const workingData = response.data.data.data;
+ //console.log('working Data:',workingData)
+
+ workingData.map((creator) => {
+   allData.push({
+     id: creator._id,
+     name: creator.name,
+     image: creator.image,
+     bio: creator.bio,
+     user: creator.user,
+     currency: creator.currency,
+     videoPrice: creator.videoPrice,
+     videoHookPrice: creator.videoHookPrice,
+     videoDeliveryDays: creator.videoDeliveryDays,
+     soundPrice:creator.soundPrice,
+     soundHookPrice:creator.soundHookPrice,
+     soundDeliveryDays:creator.soundDeliveryDays,
+     age: creator.age,
+     gender: creator.gender,
+     rate: creator.rate,
+     country: creator.country,
+     category:creator.category,
+     niches: creator.niches,
+     languages: creator.languages,
+     slug: creator.slug,
+     status: creator.status,
+     creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+     creatorContactEmailAddress: creator.creatorContactEmailAddress,
+     
+     
+   });
+ });
+ setCreatorsList(allData);
+ setIsLoading(false);
+}else{
+  //selecting delivery days above  7
+  const response = await data.get(`/creators?sort=desc`,{params:{status:"active"}});
+ 
+  const workingData = response.data.data.data;
+  //console.log('working Data:',workingData)
+ 
+  workingData.map((creator) => {
+    allData.push({
+      id: creator._id,
+      name: creator.name,
+      image: creator.image,
+      bio: creator.bio,
+      user: creator.user,
+      currency: creator.currency,
+      videoPrice: creator.videoPrice,
+      videoHookPrice: creator.videoHookPrice,
+      videoDeliveryDays: creator.videoDeliveryDays,
+      soundPrice:creator.soundPrice,
+      soundHookPrice:creator.soundHookPrice,
+      soundDeliveryDays:creator.soundDeliveryDays,
+      age: creator.age,
+      gender: creator.gender,
+      rate: creator.rate,
+      country: creator.country,
+      category:creator.category,
+      niches: creator.niches,
+      languages: creator.languages,
+      slug: creator.slug,
+      status: creator.status,
+      creatorContactPhoneNumber: creator.creatorContactPhoneNumber,
+      creatorContactEmailAddress: creator.creatorContactEmailAddress,
+      
+      
+    });
+  });
+  setCreatorsList(allData);
+  setIsLoading(false);
+ } //ends here
+
+      
     };
 
     //call the function
 
     fetchData().catch(console.error);
-  }, [path, channel, programme, updateServicePath]);
+  }, [updateAgePath, 
+    updatePricePath,
+    updateGenderPath,
+    updateLanguagePath,
+    updateNichePath,
+    updateCountryPath,
+    updateDeliveryDaysPath
+  ]);
 
+
+  
   useEffect(() => {
     // 👇️ scroll to top on page load
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -1781,73 +2994,40 @@ const Marketplace = (props) => {
 
   const Str = require("@supercharge/strings");
 
-  const allCoursesList = matchesMD ? (
+  const allCreatorsList = matchesMD ? (
     <React.Fragment>
       {
         <Grid container direction="row">
-          {coursesList.map((course, index) => (
-            <AllCourses
-              title={course.title}
-              key={`${course.id}${index}`}
-              shortDescription={Str(course.shortDescription)
+          {creatorsList.map((creator, index) => (
+            <AllCreatorsOnList
+            name={creator.name}
+            creatorId={creator.id}
+              key={`${creator.id}${index}`}
+              bio={Str(creator.bio)
                 .limit(500, "...")
                 .get()}
-              longDescription={course.longDescription}
-              features={course.features}
-              deliveryMethod={course.deliveryMethod}
-              duration={course.duration}
-              commencementDate={course.commencementDate}
-              price={course.price}
-              priceLabel={course.priceLabel}
-              instructor={course.instructor}
-              venue={course.venue}
-              sessionDuration={course.sessionDuration}
-              lectureDuration={course.lectureDuration}
-              projectDuration={course.projectDuration}
-              sessionPeriod={course.sessionPeriod}
-              studyPeriod={course.studyPeriod}
-              category={course.category}
-              prerequisites={course.prerequisites}
-              tools={course.tools}
-              targetAudience={course.targetAudience}
-              whatToLearn={course.whatToLearn}
-              venueLink={course.venueLink}
-              track={course.track}
-              status={course.status}
-              acceptablePaymentOptions={course.acceptablePaymentOptions}
-              commencementWeekdaysDate={course.commencementWeekdaysDate}
-              commencementWeekendsDate={course.commencementWeekendsDate}
-              showGenericWeekdayStartDateText={
-                course.showGenericWeekdayStartDateText
-              }
-              showGenericWeekendStartDateText={
-                course.showGenericWeekendStartDateText
-              }
-              genericWeekdayStartDateText={course.genericWeekdayStartDateText}
-              genericWeekendStartDateText={course.genericWeekendStartDateText}
-              channel={course.channel}
-              programme={course.programme}
-              weekdaySessionPeriod={course.weekdaySessionPeriod}
-              weekendSessionPeriod={course.weekendSessionPeriod}
-              paymentOptions={course.paymentOptions}
-              image={course.image}
-              courseId={course.id}
-              slug={course.slug}
-              isCourseAuditable={course.isCourseAuditable}
-              weekdayAuditDays={course.weekdayAuditDays}
-              weekendAuditDays={course.weekendAuditDays}
-              hasMentorshipCredit={course.hasMentorshipCredit}
-              mentorshipCredit={course.mentorshipCredit}
-              mentorshipDuration={course.mentorshipDuration}
-              hasSeries={course.hasSeries}
-              costPerMentorshipCredit={course.costPerMentorshipCredit}
-              isInstallmentalPaymentAllowed={
-                course.isInstallmentalPaymentAllowed
-              }
-              maximumInstallmentalPayment={course.maximumInstallmentalPayment}
-              series={course.series}
-              allowLifeTimeAccess={course.allowLifeTimeAccess}
-              token={props.token}
+                //bio={course.bio}
+                user={creator.user}
+                currency={creator.currency}
+                videoPrice={creator.videoPrice}
+                videoHookPrice={creator.videoHookPrice}
+                videoDeliveryDays={creator.videoDeliveryDays}
+                soundPrice={creator.soundPrice}
+                soundHookPrice={creator.soundHookPrice}
+                soundDeliveryDays={creator.soundDeliveryDays}
+                age={creator.age}
+                gender={creator.gender}
+                rate={creator.rate}
+                country={creator.country}
+                category={creator.category}
+                niches={creator.niches}
+                languages={creator.languages}
+                slug={creator.slug}
+                status={creator.status}
+                creatorContactPhoneNumber={creator.creatorContactPhoneNumber}
+                creatorContactEmailAddress={creator.creatorContactEmailAddress}
+                image={creator.image}
+                token={props.token}
               userId={props.userId}
               setToken={props.setToken}
               setUserId={props.setUserId}
@@ -1856,6 +3036,15 @@ const Marketplace = (props) => {
             />
           ))}
         </Grid>
+        // <AllProductsInCardDesign 
+        //   creatorsList={creatorsList}
+        //     userId={props.userId}
+        //     setToken={props.setToken}
+        //     setUserId={props.setUserId}
+        //     pdateLearningPathInfoInfo={updateLearningPathInfoInfo}
+        //     path={path}
+        
+        // />
       }
     </React.Fragment>
   ) : (
@@ -1867,74 +3056,41 @@ const Marketplace = (props) => {
           justifyContent="center"
           alignItems="center"
         >
-          {coursesList.map((course, index) => (
-            <AllCourses
-              title={course.title}
-              key={`${course.id}${index}`}
-              shortDescription={Str(course.shortDescription)
-                .limit(500, "...")
-                .get()}
-              longDescription={course.longDescription}
-              features={course.features}
-              deliveryMethod={course.deliveryMethod}
-              duration={course.duration}
-              commencementDate={course.commencementDate}
-              price={course.price}
-              priceLabel={course.priceLabel}
-              venue={course.venue}
-              instructor={course.instructor}
-              sessionDuration={course.sessionDuration}
-              lectureDuration={course.lectureDuration}
-              projectDuration={course.projectDuration}
-              sessionPeriod={course.sessionPeriod}
-              studyPeriod={course.studyPeriod}
-              category={course.category}
-              prerequisites={course.prerequisites}
-              tools={course.tools}
-              targetAudience={course.targetAudience}
-              whatToLearn={course.whatToLearn}
-              venueLink={course.venueLink}
-              track={course.track}
-              status={course.status}
-              acceptablePaymentOptions={course.acceptablePaymentOptions}
-              commencementWeekdaysDate={course.commencementWeekdaysDate}
-              commencementWeekendsDate={course.commencementWeekendsDate}
-              showGenericWeekdayStartDateText={
-                course.showGenericWeekdayStartDateText
-              }
-              showGenericWeekendStartDateText={
-                course.showGenericWeekendStartDateText
-              }
-              genericWeekdayStartDateText={course.genericWeekdayStartDateText}
-              genericWeekendStartDateText={course.genericWeekendStartDateText}
-              channel={course.channel}
-              programme={course.programme}
-              weekdaySessionPeriod={course.weekdaySessionPeriod}
-              weekendSessionPeriod={course.weekendSessionPeriod}
-              paymentOptions={course.paymentOptions}
-              image={course.image}
-              courseId={course.id}
-              isCourseAuditable={course.isCourseAuditable}
-              weekdayAuditDays={course.weekdayAuditDays}
-              weekendAuditDays={course.weekendAuditDays}
-              hasMentorshipCredit={course.hasMentorshipCredit}
-              mentorshipCredit={course.mentorshipCredit}
-              mentorshipDuration={course.mentorshipDuration}
-              hasSeries={course.hasSeries}
-              costPerMentorshipCredit={course.costPerMentorshipCredit}
-              series={course.series}
-              isInstallmentalPaymentAllowed={
-                course.isInstallmentalPaymentAllowed
-              }
-              maximumInstallmentalPayment={course.maximumInstallmentalPayment}
-              slug={course.slug}
-              allowLifeTimeAccess={course.allowLifeTimeAccess}
+          {creatorsList.map((creator, index) => (
+            <AllCreatorsOnList
+            name={creator.name}
+            creatorId={creator.id}
+            key={`${creator.id}${index}`}
+            bio={Str(creator.bio)
+              .limit(500, "...")
+              .get()}
+              //bio={course.bio}
+              user={creator.user}
+              currency={creator.currency}
+              videoPrice={creator.videoPrice}
+              videoHookPrice={creator.videoHookPrice}
+              videoDeliveryDays={creator.videoDeliveryDays}
+              soundPrice={creator.soundPrice}
+              soundHookPrice={creator.soundHookPrice}
+              soundDeliveryDays={creator.soundDeliveryDays}
+              age={creator.age}
+              gender={creator.gender}
+              rate={creator.rate}
+              country={creator.country}
+              category={creator.category}
+              niches={creator.niches}
+              languages={creator.languages}
+              slug={creator.slug}
+              status={creator.status}
+              creatorContactPhoneNumber={creator.creatorContactPhoneNumber}
+              creatorContactEmailAddress={creator.creatorContactEmailAddress}
+              image={creator.image}
               token={props.token}
-              userId={props.userId}
-              setToken={props.setToken}
-              setUserId={props.setUserId}
-              updateLearningPathInfoInfo={updateLearningPathInfoInfo}
-              path={path}
+            userId={props.userId}
+            setToken={props.setToken}
+            setUserId={props.setUserId}
+            updateLearningPathInfoInfo={updateLearningPathInfoInfo}
+            path={path}
             />
           ))}
         </Grid>
@@ -1953,7 +3109,7 @@ const Marketplace = (props) => {
           className={classes.backgroundMobile}
           justifyContent={matchesSM ? "center" : "space-between"}
           direction={matchesSM ? "column" : "row"}
-          style={{ marginTop: -100 }}
+          style={{ marginTop: -50, marginBottom:0 }}
         >
           <Grid item>
             {" "}
@@ -1978,7 +3134,7 @@ const Marketplace = (props) => {
                     <Typography
                       variant={matchesSM ? "subtitle2" : "h2"}
                       align="left"
-                      style={{ marginTop: "22rem" }}
+                      style={{ marginTop: "8rem" }}
                       //justifyContent="center"
                       //alignItems="center"
                     >
@@ -1988,14 +3144,14 @@ const Marketplace = (props) => {
                         }}
                       >
                         {" "}
-                        Nextchamp is a learning platform where seasoned <br />
+                        Connect with top creators to craft high-quality <br />
                       </span>{" "}
                       <span style={{ marginLeft: matchesSM ? 20 : 60 }}>
-                        experts and academicians train and mentor novices,
+                      marketing videos and audio jingles that,
                       </span>
                       <br />
                       <span style={{ marginLeft: matchesSM ? 20 : 110 }}>
-                        transforming them into future champions in their fields
+                      elevate your brand
                       </span>
                       <br />
                     </Typography>
@@ -2013,19 +3169,19 @@ const Marketplace = (props) => {
                         }}
                       >
                         {" "}
-                        Nextchamp is a learning platform where <br />
+                        Connect with top creators to craft high-quality<br />
                       </span>{" "}
                       <span style={{ marginLeft: matchesSM ? 20 : 60 }}>
-                        seasoned experts and academicians train
+                      marketing videos and audio jingles that
                       </span>
                       <br />
                       <span style={{ marginLeft: matchesSM ? 30 : 110 }}>
-                        and mentor novices,transforming them
+                      elevate your brand
                       </span>
                       <br />
-                      <span style={{ marginLeft: matchesSM ? 50 : 140 }}>
+                      {/* <span style={{ marginLeft: matchesSM ? 50 : 140 }}>
                         into future champions in their fields
-                      </span>
+                      </span> */}
                     </Typography>
                   )}
 
@@ -2052,8 +3208,8 @@ const Marketplace = (props) => {
         </Grid>
         {/* </section> */}
         <TopCover />
-        <TopCoverServices />
-        <TopCoverNew />
+        {/* <TopCoverServices />
+        <TopCoverNew /> */}
         {/* <TopCover /> */}
         {/* <LearningPath
           updatePathHandler={updatePathHandler}
@@ -2061,11 +3217,16 @@ const Marketplace = (props) => {
         /> */}
         <ServicePreferences
           //updateCourseTypeHandler={updateCourseTypeHandler}
-          updatePathHandler={updatePathHandler}
-          updateChannelHandler={updateChannelHandler}
-          updateProgrammeHandler={updateProgrammeHandler}
+          updateAgePathInfoHandler={updateAgePathInfoHandler}
+          updatePricePathHandler={updatePricePathHandler}
+          updateGenderPathHandler={updateGenderPathHandler}
+          updateLanguagePathHandler={updateLanguagePathHandler}
+          updateNichePathHandler={updateNichePathHandler}
+          updateCountryPathHandler={updateCountryPathHandler}
+          updateDeliveryDaysPathHandler={updateDeliveryDaysPathHandler}
           updateServicePathInfoInfo={updateServicePathInfoInfo}
-          //preference={preference}
+          
+    
         />
 
         {isLoading && (
@@ -2076,96 +3237,22 @@ const Marketplace = (props) => {
           />
         )}
         {/**if there is no course */}
-        {!isLoading && coursesList.length === 0 && (
+        {!isLoading && creatorsList.length === 0 && (
           <Typography
             variant="h4"
             color="textSecondary"
             component="p"
             style={{ marginTop: 60, marginLeft: 170 }}
           >
-            No Course Is Found
+            No Creator Is Found
           </Typography>
         )}
         {/** This is for path = crash-course**/}
-        {!isLoading &&
-          path === "crash-course" &&
-          channel !== 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "crash-course" &&
-          channel === 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "crash-course" &&
-          channel !== 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "crash-course" &&
-          channel === 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
-        {/** This is for path = regular-course**/}
-        {!isLoading &&
-          path === "regular-course" &&
-          channel !== 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "regular-course" &&
-          channel === 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "regular-course" &&
-          channel !== 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "regular-course" &&
-          channel === 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
-        {/** This is for path = vocational**/}
-        {!isLoading &&
-          path === "vocational" &&
-          channel !== 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "vocational" &&
-          channel === 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "vocational" &&
-          channel !== 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "vocational" &&
-          channel === 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
-        {/** This is for path = certification**/}
-        {!isLoading &&
-          path === "certification" &&
-          channel !== 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "certification" &&
-          channel === 0 &&
-          programme !== 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "certification" &&
-          channel !== 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
-        {!isLoading &&
-          path === "certification" &&
-          channel === 0 &&
-          programme === 0 && <Grid item>{allCoursesList}</Grid>}
+       
         {/** This is for path = all**/}
-        {!isLoading && path === "all" && channel !== 0 && programme !== 0 && (
-          <Grid item>{allCoursesList}</Grid>
-        )}
-        {!isLoading && path === "all" && channel === 0 && programme !== 0 && (
-          <Grid item>{allCoursesList}</Grid>
-        )}
-        {!isLoading && path === "all" && channel !== 0 && programme === 0 && (
-          <Grid item>{allCoursesList}</Grid>
-        )}
-        {!isLoading && path === "all" && channel === 0 && programme === 0 && (
-          <Grid item>{allCoursesList}</Grid>
+       
+        {!isLoading && path === "all" && (
+          <Grid item>{allCreatorsList}</Grid>
         )}
         <Grid item className={classes.footer}>
           <UpperFooter />

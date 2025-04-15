@@ -219,6 +219,10 @@ function CheckoutPage(props) {
   const [currency, setCurrency] = useState();
   const [isCourseAuditable, setIsCourseAuditable] = useState();
   const [acceptablePaymentOptions, setAcceptablePaymentOptions] = useState();
+  const [grandTotal, setGrandTotal] = useState();
+  const [currencyName, setCurrencyName] = useState();
+  const [brand, setBrand] = useState();
+  const [project, setProject] = useState();
   const [isLoading, setIsLoading] = useState(null);
 
   const [alert, setAlert] = useState({
@@ -236,8 +240,8 @@ function CheckoutPage(props) {
   };
 
   const renderCheckoutUpdate = (value) => {
-    console.log("the value of this removed cart is:", value);
-    setUpdateCheckout(value);
+    
+       setUpdateCheckout(value);
   };
 
   const cartHolder = props.userId;
@@ -275,86 +279,77 @@ function CheckoutPage(props) {
       let allData = [];
       api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
       const response = await api.get(`/carts`, {
-        params: { cartHolder: cartHolder, status: "marked-for-checkout" },
+        params: { cartHolder: cartHolder, status: "marked-for-checkout",isDeleted:false },
       });
       const items = response.data.data.data;
 
+      //console.log('items in checkout:',items);
       items.map((cart) => {
         allData.push({
           id: cart._id,
-          course: cart.course,
-          cartHolder: cart.cartHolder,
           dateAddedToCart: cart.dateAddedToCart,
-          refNumber: cart.refNumber,
-          quantity: cart.quantity,
-          price: cart.price,
+          creator: cart.creator,
+          brand: cart.brand,
+          brandName: cart.brandName,
+          brandCountry: cart.brandCountry,
+          refNumber: cart.refNumber, 
+          creativeQuantity: cart.creativeQuantity,
+          creativeHookQuantity: cart.creativeHookQuantity,
+          creativeType: cart.creativeType,
+          project: cart.project,
+          creativeLanguage: cart.creativeLanguage,
+          creatorCategoryCode: cart.creatorCategoryCode,
+          creatorCategoryName: cart.creatorCategoryName,
+          grandTotal: cart.grandTotal, 
+          cartHolder: cart.cartHolder,
+          isDeleted: cart.isDeleted,
+          creativeUnitPrice: cart.creativeUnitPrice,
+          creativeHookUnitPrice: cart.creativeHookUnitPrice,
+          creativeDeliveryDays: cart.createiveDeliveryDays,
           currency: cart.currency,
-          status: cart.status,
-          preferredStartDate: cart.preferredStartDate,
-          isCourseAuditable: cart.isCourseAuditable,
-
-          weekdayAuditDays: cart.weekdayAuditDays,
-          weekendAuditDays: cart.weekendAuditDays,
-          venue: cart.venue,
-          venueLink: cart.venueLink,
-          weekdaySessionPeriod: cart.weekdaySessionPeriod,
-          weekendSessionPeriod: cart.weekendSessionPeriod,
-          type: cart.type,
-          lectureDuration: cart.lectureDuration,
-          projectDuration: cart.projectDuration,
-          capstoneProject: cart.capstoneProject,
-          passGrade: cart.passGrade,
-          hasMentorshipCredit: cart.hasMentorshipCredit,
-          mentorshipCredit: cart.mentorshipCredit,
-          mentorshipDuration: cart.mentorshipDuration,
-          costPerMentorshipCredit: cart.costPerMentorshipCredit,
-          videoId: cart.videoId,
-          previewVideoId: cart.previewVideoId,
-          deliveryMethod: cart.deliveryMethod,
-          duration: cart.duration,
-          category: cart.category[0].id,
-          channel: cart.channel[0].id,
-          programme: cart.programme[0].id,
-          hasMentorshipCredit: cart.hasMentorshipCredit,
-          mentorshipCredit: cart.mentorshipCredit,
-          mentorshipDuration: cart.mentorshipDuration,
-          costPerMentorshipCredit: cart.costPerMentorshipCredit,
-          series: cart.series,
-          hasSeries: cart.hasSeries,
-          commencementWeekdaysDate: cart.commencementWeekdaysDate,
-          commencementWeekendsDate: cart.commencementWeekendsDate,
-          isInstallmentalPaymentAllowed: cart.isInstallmentalPaymentAllowed,
-          maximumInstallmentalPayment: cart.maximumInstallmentalPayment,
-          paymentOptions: cart.paymentOptions,
+          currencyName: cart.currencyName,
+          //status: "marked-for-checkout",    
+          status: cart.status,  
+          category: cart.category,            
           slug: cart.slug,
-          category: cart.category[0].id,
-          channel: cart.channel[0].id,
-          programme: cart.programme[0].id,
-          allowLifeTimeAccess: cart.allowLifeTimeAccess,
-          priceLabel: cart.priceLabel,
-          acceptablePaymentOptions: cart.acceptablePaymentOptions,
+          image:cart.creatorImage
         });
       });
 
-      if (allData.lenght === 0) {
-        return;
-      }
+     
 
       if (!allData) {
+        setCartProductList(allData);
+        setIsLoading(false);
         return;
+        
       }
 
-      if (allData.length >= 1) {
-        setIsCourseAuditable(allData[0].isCourseAuditable);
+      // if (allData.length >= 1) {
+      //   setIsCourseAuditable(false);
+      // }
+
+      // if (allData.length >= 1) {
+      //   setAcceptablePaymentOptions(allData[0].acceptablePaymentOptions);
+      // }
+      console.log('allData.length:',allData.length)
+      if (allData.length === 0) {
+        setCartProductList(allData);
+        setIsLoading(false);
+        return;
+        
+      }else{
+        setCartProductList(allData);
+        setGrandTotal(allData[0].grandTotal);
+        setCurrencyName(allData[0].currencyName);
+        setBrand(allData[0].brand);
+        setProject(allData[0].project.id);
+
+        setIsLoading(false);
       }
 
-      if (allData.length >= 1) {
-        setAcceptablePaymentOptions(allData[0].acceptablePaymentOptions);
-      }
-
-      setCartProductList(allData);
-
-      setIsLoading(false);
+      
+      
     };
 
     //call the function
@@ -362,6 +357,8 @@ function CheckoutPage(props) {
     fetchData().catch(console.error);
   }, [updateCheckout]);
 
+  
+  
   const Str = require("@supercharge/strings");
 
   const cartList = matchesMD ? (
@@ -370,20 +367,37 @@ function CheckoutPage(props) {
         <Grid container direction="row">
           {cartProductList.map((cart, index) => (
             <CheckoutCard
-              course={cart.course}
+              creator={cart.creator}
               key={`${cart.id}${index}`}
               cartHolder={cart.cartHolder}
-              acceptablePaymentOptions={acceptablePaymentOptions}
-              priceLabel={cart.priceLabel}
               cartId={cart.id}
               dateAddedToCart={cart.dateAddedToCart}
-              refNumber={cart.refNumber}
-              quantity={cart.quantity}
-              price={cart.price}
-              preferredStartDate={cart.preferredStartDate}
+              brand={cart.brand}
+              brandName= {cart.brandName}
+              brandCountry={cart.brandCountry}
+              refNumber={cart.refNumber} 
+              creativeQuantity={cart.creativeQuantity}
+              creativeHookQuantity={cart.creativeHookQuantity}
+              creativeType={cart.creativeType}
+              project={cart.project}
+              projectName={cart.project?cart.project.name:""}
+              projectLanguage={cart.project?cart.project.language[0].language:""}
+              projectType={cart.project?cart.project.type:""}
+              creativeLanguage={cart.creativeLanguage}
+              creatorCategoryCode={cart.creatorCategoryCode}
+              creatorCategoryName= {cart.creatorCategoryName}
+              grandTotal={cart.grandTotal} 
+              isDeleted= {cart.isDeleted}
+              creativeUnitPrice={cart.creativeUnitPrice}
+              creativeHookUnitPrice={cart.creativeHookUnitPrice}
+              creativeDeliveryDays={cart.creativeDeliveryDays}
               currency={cart.currency}
-              isCourseAuditable={isCourseAuditable}
+              currencyName={cart.currencyName}
+              //status: "marked-for-checkout",
               status={cart.status}
+              category={cart.category}
+              slug={cart.slug}
+              image={cart.image}
               token={props.token}
               userId={props.userId}
               setToken={props.setToken}
@@ -410,20 +424,37 @@ function CheckoutPage(props) {
         >
           {cartProductList.map((cart, index) => (
             <CheckoutCard
-              course={cart.course}
+              creator={cart.creator}
               key={`${cart.id}${index}`}
               cartHolder={cart.cartHolder}
               cartId={cart.id}
               dateAddedToCart={cart.dateAddedToCart}
-              acceptablePaymentOptions={acceptablePaymentOptions}
               refNumber={cart.refNumber}
-              quantity={cart.quantity}
-              isCourseAuditable={isCourseAuditable}
-              price={cart.price}
-              priceLabel={cart.priceLabel}
-              preferredStartDate={cart.preferredStartDate}
+              brand={cart.brand}
+              brandName= {cart.brandName}
+              brandCountry={cart.brandCountry}
+              creativeQuantity={cart.creativeQuantity}
+              creativeHookQuantity={cart.creativeHookQuantity}
+              creativeType={cart.creativeType}
+              project={cart.project}
+              projectName={cart.project?cart.project.name:""}
+              projectLanguage={cart.project?cart.project.language[0].language:""}
+              projectType={cart.project?cart.project.type:""}
+              creativeLanguage={cart.creativeLanguage}
+              creatorCategoryCode={cart.creatorCategoryCode}
+              creatorCategoryName= {cart.creatorCategoryName}
+              grandTotal={cart.grandTotal} 
+              isDeleted= {cart.isDeleted}
+              creativeUnitPrice={cart.creativeUnitPrice}
+              creativeHookUnitPrice={cart.creativeHookUnitPrice}
+              creativeDeliveryDays={cart.creativeDeliveryDays}
               currency={cart.currency}
+              currencyName={cart.currencyName}
+              //status: "marked-for-checkout",
               status={cart.status}
+              category={cart.category}
+              slug={cart.slug}
+              image={cart.image}
               token={props.token}
               userId={props.userId}
               setToken={props.setToken}
@@ -461,7 +492,7 @@ function CheckoutPage(props) {
         {!isLoading && cartProductList.length === 0 ? (
           <p style={{ marginTop: 50, marginLeft: 10 }}>
             {" "}
-            There are no course in your checkout
+            There are no items in your checkout
           </p>
         ) : (
           <Grid item>{cartList}</Grid>
@@ -471,14 +502,15 @@ function CheckoutPage(props) {
       <Grid>
         {!isLoading &&
           (cartProductList.length === 0 ? (
-            ""
+            // <Typography>There are no course in your checkout</Typography>
+            " "
           ) : (
             <CheckoutDeliveryAndPayment
-              courseList={cartProductList}
-              isCourseAuditable={isCourseAuditable}
-              acceptablePaymentOptions={acceptablePaymentOptions}
-              totalCost={total}
-              currency="naira"
+              cartList={cartProductList}
+              brand={brand}
+              project={project}
+              totalCost={grandTotal}
+              currency={currencyName}
               token={props.token}
               userId={props.userId}
               setToken={props.setToken}

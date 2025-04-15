@@ -67,6 +67,37 @@ const renderNameField = ({
   );
 };
 
+
+const renderCodeField = ({
+  input,
+  label,
+  meta: { touched, error, invalid },
+  type,
+  id,
+  ...custom
+}) => {
+  return (
+    <TextField
+      //error={touched && invalid}
+      helperText="Category Unique Code"
+      variant="outlined"
+      label={label}
+      id={input.name}
+      defaultValue={input.value}
+      fullWidth
+      //required
+      type={type}
+      {...custom}
+      onChange={input.onChange}
+      inputProps={{
+        style: {
+          height: 1,
+        },
+      }}
+    />
+  );
+};
+
 const renderSlugField = ({
   input,
   label,
@@ -185,6 +216,7 @@ function CategoryEditForm(props) {
 
     const form = new FormData();
     form.append("name", formValues.name ? formValues.name : params[0].name);
+    form.append("code", formValues.code ? formValues.code : params[0].code);
     form.append("slug", formValues.slug ? formValues.slug : params[0].slug);
     form.append(
       "description",
@@ -291,6 +323,14 @@ function CategoryEditForm(props) {
           defaultValue={params[0].description}
           type="text"
           component={renderDescriptionField}
+        />
+         <Field
+          label=""
+          id="code"
+          name="code"
+          defaultValue={params[0].code}
+          type="text"
+          component={renderCodeField}
         />
         <Field
           label=""

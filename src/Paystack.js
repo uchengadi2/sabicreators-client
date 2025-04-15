@@ -73,8 +73,8 @@ function Paystack(props) {
     className: classes.checkout,
     email: props.email,
     amount: props.amount,
-    //publicKey: "pk_test_9181f2dcbb5a6bf2cf56c8f2632eaa5e2fd182cb", //wholeroof test
-    publicKey: "pk_live_5700e72ac96f8aafda7af34e76b1dcfd1b6ec8b2", //wholeroof live
+    publicKey: "pk_test_9181f2dcbb5a6bf2cf56c8f2632eaa5e2fd182cb", //wholeroof test
+    //publicKey: "pk_live_5700e72ac96f8aafda7af34e76b1dcfd1b6ec8b2", //wholeroof live
   };
 
   // you can call this function anything
@@ -109,11 +109,12 @@ function Paystack(props) {
       recipientName: props.data.recipientName,
       recipientPhoneNumber: props.data.recipientPhoneNumber,
       recipientEmailAddress: props.data.recipientEmailAddress,
-
-      totalDeliveryCost: props.data.totalDeliveryCost,
+      brand: props.data.brand,
+      project:props.data.project,
+      grandTotal: props.data.grandTotal,
       totalProductCost: props.data.totalProductCost,
-      totalProductCostUs: props.data.totalProductCostUs,
-      totalProductCostUk: props.data.totalProductCostUk,
+      // totalProductCostUs: props.data.totalProductCostUs,
+      // totalProductCostUk: props.data.totalProductCostUk,
       paymentMethod: props.data.paymentMethod,
       paymentStatus: "to-be-confirmed",
       orderedBy: props.data.orderedBy,
@@ -137,59 +138,37 @@ function Paystack(props) {
             const data = {
               orderNumber: props.data.orderNumber,
               transactionId: transId,
-              product: cart.course,
-              orderedPrice: cart.price,
+              creator: cart.creator,
+              orderedCreativePricePerUnit: cart.creativeUnitPrice,
+              orderedHookPricePerUnit:cart.creativeHookUnitPrice,
               recipientName: props.data.recipientName,
               recipientPhoneNumber: props.data.recipientPhoneNumber,
               recipientEmailAddress: props.data.recipientEmailAddress,
-              totalDeliveryCost: props.data.totalDeliveryCost.toFixed(2),
-              preferredStartDate: cart.preferredStartDate,
               cartId: cart.id,
-              quantityAdddedToCart: cart.quantity,
-              orderedQuantity: cart.quantity,
+              quantityAdddedToCart: cart.creativeQuantity,
+              orderedCreativeQuantity: cart.creativeQuantity,
+              orderedHookQuantity:cart.creativeHookQuantity,
               dateAddedToCart: cart.dateAddedToCart,
-              productCurrency: cart.currency,
+              productCurrency: cart.currency.id,
+              currencyName:cart.currencyName,
               paymentMethod: props.data.paymentMethod,
               paymentStatus: "to-be-confirmed",
               orderedBy: cart.cartHolder,
-
-              isCourseAuditable: cart.isCourseAuditable,
-              weekdayAuditDays: cart.weekdayAuditDays,
-              weekendAuditDays: cart.weekendAuditDays,
-              venue: cart.venue,
-              venueLink: cart.venueLink,
-              weekdaySessionPeriod: cart.weekdaySessionPeriod,
-              weekendSessionPeriod: cart.weekendSessionPeriod,
-              type: cart.type,
-              lectureDuration: cart.lectureDuration,
-              projectDuration: cart.projectDuration,
-              capstoneProject: cart.capstoneProject,
-              passGrade: cart.passGrade,
-              hasMentorshipCredit: cart.hasMentorshipCredit,
-              mentorshipCredit: cart.mentorshipCredit,
-              mentorshipDuration: cart.mentorshipDuration,
-              costPerMentorshipCredit: cart.costPerMentorshipCredit,
-              videoId: cart.videoId,
-              previewVideoId: cart.previewVideoId,
-              deliveryMethod: cart.deliveryMethod,
-              duration: cart.duration,
-              category: cart.category[0].id,
-              channel: cart.channel[0].id,
-              programme: cart.programme[0].id,
-              hasMentorshipCredit: cart.hasMentorshipCredit,
-              mentorshipCredit: cart.mentorshipCredit,
-              mentorshipDuration: cart.mentorshipDuration,
-              costPerMentorshipCredit: cart.costPerMentorshipCredit,
-              series: cart.series,
-              hasSeries: cart.hasSeries,
-              commencementWeekdaysDate: cart.commencementWeekdaysDate,
-              commencementWeekendsDate: cart.commencementWeekendsDate,
-              isInstallmentalPaymentAllowed: cart.isInstallmentalPaymentAllowed,
-              maximumInstallmentalPayment: cart.maximumInstallmentalPayment,
-              paymentOptions: cart.paymentOptions,
+              project:cart.project.id,
+              projectName:cart.project.name,
+              creativeType: cart.creativeType,              
+              productCategory: cart.category[0].id,              
+              //paymentOptions: cart.paymentOptions,
               slug: cart.slug,
-              allowLifeTimeAccess: cart.allowLifeTimeAccess,
-              videoType: cart.videoType,
+              brand: cart.brand,
+              brandName: cart.brandName,
+              brandCountry: cart.brandCountry,
+              creativeLanguage: cart.creativeLanguage.language,
+              language:cart.creativeLanguage.id,
+              creatorCategoryCode: cart.creatorCategoryCode,
+              creativeDeliveryDays: cart.creativeDeliveryDays,
+              image: cart.image,
+              
             };
             if (data) {
               const createForm = async () => {
@@ -248,7 +227,7 @@ function Paystack(props) {
       });
     });
     props.handleSuccessfulCreateSnackbar(
-      `Thank you for your patronage, we will process your request as soon as possible`
+      `Thank you for your patronage, we will contact the creator to commence work immediately on the project`
     );
     history.push("/thankyou");
   };

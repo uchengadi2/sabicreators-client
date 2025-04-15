@@ -97,7 +97,11 @@ const UserChangePasswordForm = (props) => {
   const buttonContent = () => {
     return <React.Fragment>Submit</React.Fragment>;
   };
+  const buttonCloseContent = () => {
+    return <React.Fragment>Close</React.Fragment>;
+  };
 
+  
   const onSubmit = (formValues) => {
     setLoading(true);
     // if (!formValues.passwordCurrent) {
@@ -135,8 +139,7 @@ const UserChangePasswordForm = (props) => {
         api.defaults.headers.common["Authorization"] = `Bearer ${props.token}`;
         const response = await api.patch(`/users/updateMyPassword`, formValues);
 
-        console.log("response:", response);
-
+       
         if (response.status === 200) {
           const token = {
             status: "success",
@@ -145,7 +148,7 @@ const UserChangePasswordForm = (props) => {
           };
 
           props.setToken(token);
-          props.setUserId(token);
+          //props.setUserId(token);
           dispatch({
             type: CHANGE_OWN_PASSWORD,
             payload: response.data,
@@ -254,6 +257,17 @@ const UserChangePasswordForm = (props) => {
                   buttonContent()
                 )}
               </Button>
+              <Button
+                variant="text"
+                //className={classes.sendButton}
+                onClick={props.handleMakeChangePasswordDialogForm}
+              >
+                {loading ? (
+                  <CircularProgress size={30} color="inherit" />
+                ) : (
+                  buttonCloseContent()
+                )}
+              </Button>
             </Grid>
           </Box>
         </Box>
@@ -287,7 +301,7 @@ const UserChangePasswordForm = (props) => {
                 alignItems="center"
                 style={{ marginTop: 15 }}
               >
-                <Grid item>
+                {/* <Grid item>
                   <Field
                     label="Current Password"
                     id="passwordCurrent"
@@ -296,7 +310,7 @@ const UserChangePasswordForm = (props) => {
                     component={renderTextField}
                     style={{ marginTop: 10, width: 340 }}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item>
                   <Field
                     label="New Password"
@@ -326,6 +340,17 @@ const UserChangePasswordForm = (props) => {
                 >
                   Submit
                 </Button>
+                <Button
+                variant="text"
+                //className={classes.sendButton}
+                onClick={props.handleMakeChangePasswordDialogForm}
+              >
+                {loading ? (
+                  <CircularProgress size={30} color="inherit" />
+                ) : (
+                  buttonCloseContent()
+                )}
+              </Button>
               </Grid>
             </Box>
           </Box>

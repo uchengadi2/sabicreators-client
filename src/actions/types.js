@@ -210,3 +210,46 @@ export const FETCH_COURSE_TOPICS = "FETCH_COURSE_TOPICS";
 export const FETCH_COURSE_TOPIC = "FETCH_COURSE_TOPIC";
 export const DELETE_COURSE_TOPIC = "DELETE_COURSE_TOPIC";
 export const EDIT_COURSE_TOPIC = "EDIT_COURSE_TOPIC";
+
+// for LANGUAGE resources
+export const CREATE_LANGUAGE = "CREATE_LANGUAGE";
+export const FETCH_LANGUAGES = "FETCH_LANGUAGES";
+export const FETCH_LANGUAGE = "FETCH_LANGUAGE";
+export const DELETE_LANGUAGE = "DELETE_LANGUAGE";
+export const EDIT_LANGUAGE = "EDIT_LANGUAGE";
+
+// for NICHE resources
+export const CREATE_NICHE = "CREATE_NICHE";
+export const FETCH_NICHES = "FETCH_NICHES";
+export const FETCH_NICHE = "FETCH_NICHE";
+export const DELETE_NICHE = "DELETE_NICHE";
+export const EDIT_NICHE = "EDIT_NICHE";
+
+// for PROJECT resources
+export const CREATE_PROJECT = "CREATE_PROJECT";
+export const FETCH_PROJECTS = "FETCH_PROJECTS";
+export const FETCH_PROJECT = "FETCH_PROJECT";
+export const DELETE_PROJECT = "DELETE_PROJECT";
+export const EDIT_PROJECT = "EDIT_PROJECT";
+
+// for CREATOR resources
+export const CREATE_CREATOR = "CREATE_CREATOR";
+export const FETCH_CREATORS = "FETCH_CREATORS";
+export const FETCH_CREATOR = "FETCH_CREATOR";
+export const DELETE_CREATOR = "DELETE_CREATOR";
+export const EDIT_CREATOR = "EDIT_CREATOR";
+
+// for BRAND resources
+export const CREATE_BRAND = "CREATE_BRAND";
+export const FETCH_BRANDS = "FETCH_BRANDS";
+export const FETCH_BRAND = "FETCH_BRAND";
+export const DELETE_BRAND = "DELETE_BRAND";
+export const EDIT_BRAND = "EDIT_BRAND";
+
+
+// for SAMPLE resources
+export const CREATE_SAMPLE = "CREATE_SAMPLE";
+export const FETCH_SAMPLES = "FETCH_SAMPLES";
+export const FETCH_SAMPLE = "FETCH_SAMPLE";
+export const DELETE_SAMPLE = "DELETE_SAMPLE";
+export const EDIT_SAMPLE = "EDIT_SAMPLE";

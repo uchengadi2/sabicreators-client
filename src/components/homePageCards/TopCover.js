@@ -180,21 +180,23 @@ export default function TopCover() {
             <Grid item style={{ width: "48%", border: "1px dotted grey" }}>
               <CardContent disableRipple>
                 <Typography variant="h5" color="textSecondary" component="p">
-                  Nextchamp is an innovative learning platform designed to
-                  bridge the gap between expertise and ambition. We empower
-                  novices by connecting them with seasoned professionals,
-                  academicians and industry leaders, who provide personalized
-                  guidance, mentorship, and hands-on training. Our mission is to
-                  nurture talent, build skills, and inspire growth, transforming
-                  learners into the next generation of champions in their
-                  respective fields.
+                In today’s fast-paced digital landscape, compelling content is the key to capturing 
+                attention and driving engagement. Our platform bridges the gap between brands and                 
+                top creative talent, providing a seamless way to produce high-quality marketing videos 
+                and catchy jingles that leave a lasting impact.
+
+                
                 </Typography>
                 <br />
                 <Typography
                   variant="h5"
                   color="textSecondary"
                   component="p"
-                ></Typography>
+                >
+                 Whether you're a startup looking to establish a strong identity or a well-established 
+                brand aiming to refresh your marketing strategy, we connect you with experienced Marketing Video 
+                and Jingle creators who specialize in crafting captivating content tailored to your brand’s unique voice.
+                </Typography>
               </CardContent>
             </Grid>
 
@@ -210,19 +212,17 @@ export default function TopCover() {
               <Grid item>
                 <CardContent disableRipple>
                   <Typography variant="h5" color="textSecondary" component="p">
-                    By fostering a dynamic community of continuous learning and
-                    expert-driven development, Nextchamp helps individuals
-                    unlock their full potential and achieve excellence.
+                  From concept to execution, the creator ensures that you get professionally 
+                  produced marketing assets that resonate with your audience and enhance brand recognition. 
+                  
                   </Typography>
                   <br />
                   <Typography variant="h5" color="textSecondary" component="p">
-                    Join us and become part of a transformative journey where
-                    experience meets opportunity to shape the leaders of
-                    tomorrow.
+                  Elevate your marketing with the power of creativity—connect with the industry’s best creators today!
                   </Typography>
                 </CardContent>
               </Grid>
-              <Grid
+              {/* <Grid
                 item
                 alignItems="center"
                 style={{ height: "10%", marginLeft: "1.5em" }}
@@ -243,7 +243,7 @@ export default function TopCover() {
                     instructorSection()
                   )}
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
           {/* </CardActionArea> */}
@@ -255,21 +255,17 @@ export default function TopCover() {
             <Grid item style={{ width: "100%", border: "1px dotted grey" }}>
               <CardContent disableRipple>
                 <Typography variant="h5" color="textSecondary" component="p">
-                  Nextchamp is an innovative learning platform designed to
-                  bridge the gap between expertise and ambition. We empower
-                  novices by connecting them with seasoned professionals,
-                  academicians and industry leaders, who provide personalized
-                  guidance, mentorship, and hands-on training. Our mission is to
-                  nurture talent, build skills, and inspire growth, transforming
-                  learners into the next generation of champions in their
-                  respective fields.
+                In today’s fast-paced digital landscape, compelling content is the key to capturing 
+                attention and driving engagement. Our platform bridges the gap between brands and                 
+                top creative talent, providing a seamless way to produce high-quality marketing videos 
+                and catchy jingles that leave a lasting impact.
                 </Typography>
-                {/* <br />
+                <br />
                 <Typography variant="h5" color="textSecondary" component="p">
-                  A certificate of attendance will be awarded to all students at
-                  the completion of a course. However the students that meet the
-                  NextChamp grade mark on that course will become a NextChamp.
-                </Typography> */}
+                Whether you're a startup looking to establish a strong identity or a well-established 
+                brand aiming to refresh your marketing strategy, we connect you with experienced Marketing Video 
+                 and Jingle creators who specialize in crafting captivating content tailored to your brand’s unique voice.
+                </Typography>
               </CardContent>
             </Grid>
 
@@ -286,19 +282,17 @@ export default function TopCover() {
               <Grid item>
                 <CardContent disableRipple>
                   <Typography variant="h5" color="textSecondary" component="p">
-                    By fostering a dynamic community of continuous learning and
-                    expert-driven development, Nextchamp helps individuals
-                    unlock their full potential and achieve excellence.
+                  From concept to execution, the creator ensures that you get professionally 
+                  produced marketing assets that resonate with your audience and enhance brand recognition. 
+                  
                   </Typography>
                   <br />
                   <Typography variant="h5" color="textSecondary" component="p">
-                    Join us and become part of a transformative journey where
-                    experience meets opportunity to shape the leaders of
-                    tomorrow.
+                  Elevate your marketing with the power of creativity—connect with the industry’s best creators today!
                   </Typography>
                 </CardContent>
               </Grid>
-              <Grid
+              {/* <Grid
                 item
                 alignItems="center"
                 style={{ height: "10%", marginLeft: "1.5em" }}
@@ -319,7 +313,7 @@ export default function TopCover() {
                     instructorSection()
                   )}
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
           {/* </CardActionArea> */}

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link, useParams } from "react-router-dom";
+import useToken from "../../custom-hooks/useToken";
+import useUserId from "../../custom-hooks/useUserId";
+import Snackbar from "@material-ui/core/Snackbar";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
@@ -11,10 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
-import ContentCut from "@mui/icons-material/ContentCut";
-import ContentCopy from "@mui/icons-material/ContentCopy";
-import ContentPaste from "@mui/icons-material/ContentPaste";
-import Cloud from "@mui/icons-material/Cloud";
+
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PolicyIcon from "@mui/icons-material/Policy";
@@ -91,33 +91,25 @@ import Suppliers from "./utilities/Suppliers";
 import Policy from "./settings/Policy";
 import CurrencyExchange from "./settings/CurrencyExchange";
 import Notifications from "./settings/Notifications";
-// import ShippingRates from "./settings/ShippingRates";
-import PoSOrders from "./pos/Orders";
-import PoSDelivery from "./pos/Delivery";
-import PoSInvoicing from "./pos/Invoicing";
-import PoSPackaging from "./pos/Packaging";
-import PoSPayments from "./pos/Payment";
-import PoSReturns from "./pos/Returns";
-import PoSSubscription from "./pos/Subscription";
-import Instructors from "./products/Instructors";
-import Assessors from "./products/Assessors";
-import Mentors from "./products/Mentors";
+
 import CourseInstructors from "./products/CourseInstructors";
 import CourseAssessors from "./products/CourseAssessors";
 import CourseMentors from "./products/CourseMentors";
 import CourseLessons from "./products/CourseLessons";
 import CourseTopics from "./products/CourseTopics";
-// import Delistments from "./products/Delistments";
-// import Accessories from "./utilities/Accessories";
-// import Affiliates from "./utilities/Affiliates";
+import Niches from "./utilities/Niches";
+import { Language } from "@material-ui/icons";
+import Languages from "./utilities/Languages";
+import Creators from "./products/Creators";
+import Brands from "./products/Brands";
+import CompletedOrders from "./ecommerce/CompletedOrders";
+import PendingPaymentOrders from "./ecommerce/PendingPaymentOrders";
+import api from "./../../apis/local";
+import PaymentInDispute from "./ecommerce/PaymentInDispute";
+import Samples from "./products/Creators/Samples";
+import CreatorSamples from "./products/CreatorSamples";
+import CreatorApprovedSamples from "./products/CreatorApprovedSamples";
 
-// const Item = styled(Paper)(({ theme }) => ({
-//   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-//   ...theme.typography.body2,
-//   padding: theme.spacing(1),
-//   textAlign: "center",
-//   color: theme.palette.text.secondary,
-// }));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -140,9 +132,26 @@ const useStyles = makeStyles((theme) => ({
 
 function Dashboard(props) {
   const classes = useStyles();
+  const { token, setToken } = useToken();
+   const { userId, setUserId } = useUserId();
   const [slug, setSlug] = useState();
   const [loading, setLoading] = useState(false);
   const params = useParams();
+  const [hasInfo,setHasInfo] = useState(false);
+  const [policy, setPolicy] = useState([]);
+  const [platformRate, setPlatformRate] = useState();
+  const [updatePage, setUpdatePage] = useState(false);
+  const [minimumPlatformCharge, setMinimumPlatformCharge] = useState();
+  const [vat, setVat] = useState();
+  const [policyId, setPolicyId] = useState();
+  const [platformRateIsIncludedAsPartOfUserInputedAmount, setPlatformRateIsIncludedAsPartOfUserInputedAmount] = useState();
+  const [vatIsIncludedAsPartOfUserInputedAmount, setVatIsIncludedAsPartOfUserInputedAmount] = useState();
+  const [alert, setAlert] = useState({
+          open: false,
+          message: "",
+          backgroundColor: "",
+        })
+  
 
   useEffect(() => {
     setLoading(true);
@@ -154,6 +163,81 @@ function Dashboard(props) {
     // 👇️ scroll to top on page load
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
+
+  const renderUpdatePage = () => {
+    setUpdatePage((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+          const fetchData = async () => {
+            let allData = {};
+            api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            const response = await api.get(`/policies`);
+            const workingData = response.data.data.data;
+                
+           
+           if(workingData.length > 0){
+            
+            setHasInfo(true);
+            setPlatformRate(workingData[0].platformRate);
+            setMinimumPlatformCharge(workingData[0].minimumPlatformCharge);
+            setVat(workingData[0].vat);
+            setPlatformRateIsIncludedAsPartOfUserInputedAmount(workingData[0].platformRateIsIncludedAsPartOfUserInputedAmount);
+            setVatIsIncludedAsPartOfUserInputedAmount(workingData[0].vatIsIncludedAsPartOfUserInputedAmount);
+            setPolicyId(workingData[0]._id);
+
+            
+            }else{
+            setHasInfo(false);
+           }
+            
+          };
+      
+          //call the function
+      
+          fetchData().catch(console.error);
+        }, [updatePage,slug]);
+
+               
+
+
+  const handleSuccessfulCreateSnackbar = (message) => {
+    //setBecomePartnerOpen(false);
+    setAlert({
+      open: true,
+      message: message,
+      //backgroundColor: "#4BB543",
+      backgroundColor: "#FF731D",
+    });
+  };
+  const handleSuccessfulEditSnackbar = (message) => {
+    //setBecomePartnerOpen(false);
+    setAlert({
+      open: true,
+      message: message,
+      //backgroundColor: "#4BB543",
+      backgroundColor: "#FF731D",
+    });
+  };
+
+  const handleSuccessfulDeletedItemSnackbar = (message) => {
+    //setBecomePartnerOpen(false);
+    setAlert({
+      open: true,
+      message: message,
+      //backgroundColor: "#4BB543",
+      backgroundColor: "#FF731D",
+    });
+  };
+
+  const handleFailedSnackbar = (message) => {
+    setAlert({
+      open: true,
+      message: message,
+      backgroundColor: "#FF3232",
+    });
+    //setBecomePartnerOpen(true);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }} style={{ marginTop: 80 }}>
@@ -179,21 +263,8 @@ function Dashboard(props) {
               </MenuItem>
               <Divider />
               <Typography style={{ marginLeft: 10, fontWeight: "Bold" }}>
-                Courses, Programmes & Channels
+                Creators & Brands
               </Typography>
-              <MenuItem
-                className={slug === "products" ? classes.selected : null}
-                selected={slug === "products" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/products`);
-                }}
-              >
-                <ListItemIcon>
-                  <InterestsIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Courses</ListItemText>
-              </MenuItem>
               <MenuItem
                 className={slug === "categories" ? classes.selected : null}
                 selected={slug === "categories" ? true : false}
@@ -208,141 +279,59 @@ function Dashboard(props) {
                 <ListItemText>Categories</ListItemText>
               </MenuItem>
               <MenuItem
-                className={slug === "channels" ? classes.selected : null}
-                selected={slug === "channels" ? true : false}
+                className={slug === "creators" ? classes.selected : null}
+                selected={slug === "creators" ? true : false}
                 onClick={(event) => {
                   event.preventDefault();
-                  history.push(`/dashboard/channels`);
+                  history.push(`/dashboard/creators`);
                 }}
               >
                 <ListItemIcon>
-                  <CollectionsIcon fontSize="small" />
+                  <InterestsIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Channels</ListItemText>
+                <ListItemText>Creators</ListItemText>
               </MenuItem>
               <MenuItem
-                className={slug === "programmes" ? classes.selected : null}
-                selected={slug === "programmes" ? true : false}
+                className={slug === "creator-unapproved-samples" ? classes.selected : null}
+                selected={slug === "creator-unapproved-samples" ? true : false}
                 onClick={(event) => {
                   event.preventDefault();
-                  history.push(`/dashboard/programmes`);
+                  history.push(`/dashboard/creator-unapproved-samples`);
                 }}
               >
                 <ListItemIcon>
-                  <CollectionsIcon fontSize="small" />
+                  <CategoryIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Programmes</ListItemText>
+                <ListItemText>Creator Unapproved Samples</ListItemText>
               </MenuItem>
               <MenuItem
-                className={slug === "instructors" ? classes.selected : null}
-                selected={slug === "instructors" ? true : false}
+                className={slug === "creator-approved-samples" ? classes.selected : null}
+                selected={slug === "creator-approved-samples" ? true : false}
                 onClick={(event) => {
                   event.preventDefault();
-                  history.push(`/dashboard/instructors`);
+                  history.push(`/dashboard/creator-approved-samples`);
                 }}
               >
                 <ListItemIcon>
-                  <HailIcon fontSize="small" />
+                  <CategoryIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Instructors</ListItemText>
+                <ListItemText>Creator Approved Samples</ListItemText>
               </MenuItem>
               <MenuItem
-                className={slug === "mentors" ? classes.selected : null}
-                selected={slug === "mentors" ? true : false}
+                className={slug === "brands" ? classes.selected : null}
+                selected={slug === "brands" ? true : false}
                 onClick={(event) => {
                   event.preventDefault();
-                  history.push(`/dashboard/mentors`);
+                  history.push(`/dashboard/brands`);
                 }}
               >
                 <ListItemIcon>
-                  <TransferWithinAStationIcon fontSize="small" />
+                  <CategoryIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Mentors</ListItemText>
+                <ListItemText>Brands</ListItemText>
               </MenuItem>
-              <MenuItem
-                className={slug === "assessors" ? classes.selected : null}
-                selected={slug === "assessors" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/assessors`);
-                }}
-              >
-                <ListItemIcon>
-                  <TransferWithinAStationIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Assessors</ListItemText>
-              </MenuItem>
-              <MenuItem
-                className={
-                  slug === "courseinstructors" ? classes.selected : null
-                }
-                selected={slug === "courseinstructors" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/courseinstructors`);
-                }}
-              >
-                <ListItemIcon>
-                  <TransferWithinAStationIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Course Instructors</ListItemText>
-              </MenuItem>
-
-              <MenuItem
-                className={slug === "courseassessors" ? classes.selected : null}
-                selected={slug === "courseassessors" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/courseassessors`);
-                }}
-              >
-                <ListItemIcon>
-                  <TransferWithinAStationIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Course Assessors</ListItemText>
-              </MenuItem>
-
-              <MenuItem
-                className={slug === "coursementors" ? classes.selected : null}
-                selected={slug === "coursementors" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/coursementors`);
-                }}
-              >
-                <ListItemIcon>
-                  <TransferWithinAStationIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Course Mentors</ListItemText>
-              </MenuItem>
-
-              <MenuItem
-                className={slug === "courselessons" ? classes.selected : null}
-                selected={slug === "courselessons" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/courselessons`);
-                }}
-              >
-                <ListItemIcon>
-                  <TransferWithinAStationIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Course Lessons</ListItemText>
-              </MenuItem>
-
-              <MenuItem
-                className={slug === "coursetopics" ? classes.selected : null}
-                selected={slug === "coursetopics" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/coursetopics`);
-                }}
-              >
-                <ListItemIcon>
-                  <TransferWithinAStationIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Course Topics</ListItemText>
-              </MenuItem>
+            
+             
 
               <Divider />
               <Typography style={{ marginLeft: 10, fontWeight: "Bold" }}>
@@ -377,8 +366,42 @@ function Dashboard(props) {
                 <ListItemIcon>
                   <AssignmentReturnIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Orders List</ListItemText>
+                <ListItemText>Pending Orders</ListItemText>
               </MenuItem>
+              <MenuItem
+                className={
+                  slug === "dashboard-orderscompleted" ? classes.selected : null
+                }
+                selected={slug === "dashboard-orderscompleted" ? true : false}
+                onClick={(event) => {
+                  event.preventDefault();
+                  history.push(`/dashboard/dashboard-orderscompleted`);
+                }}
+              >
+                <ListItemIcon>
+                  <AssignmentReturnIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Completed Orders</ListItemText>
+              </MenuItem>
+              <MenuItem
+                className={
+                  slug === "dashboard-pendingpaymentorders" ? classes.selected : null
+                }
+                selected={slug === "dashboard-pendingpaymentorders" ? true : false}
+                onClick={(event) => {
+                  event.preventDefault();
+                  history.push(`/dashboard/dashboard-pendingpaymentorders`);
+                }}
+              >
+                <ListItemIcon>
+                  <AssignmentReturnIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Pending Payment Orders</ListItemText>
+              </MenuItem>
+              <Divider />
+              <Typography style={{ marginLeft: 10, fontWeight: "Bold" }}>
+                Payments
+              </Typography>
               <MenuItem
                 className={
                   slug === "dashboard-payment" ? classes.selected : null
@@ -392,8 +415,25 @@ function Dashboard(props) {
                 <ListItemIcon>
                   <PaymentsIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Payment & Reconciliation</ListItemText>
+                <ListItemText>Payments</ListItemText>
               </MenuItem>
+              <MenuItem
+                className={
+                  slug === "dashboard-disputed-payment" ? classes.selected : null
+                }
+                selected={slug === "dashboard-disputed-payment" ? true : false}
+                onClick={(event) => {
+                  event.preventDefault();
+                  history.push(`/dashboard/dashboard-disputed-payment`);
+                }}
+              >
+                <ListItemIcon>
+                  <PaymentsIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Payments in Dispute</ListItemText>
+              </MenuItem>
+             
+             
 
               <Divider />
               <Typography style={{ marginLeft: 10, fontWeight: "Bold" }}>
@@ -427,21 +467,9 @@ function Dashboard(props) {
               </MenuItem>
               <Divider />
               <Typography style={{ marginLeft: 10, fontWeight: "Bold" }}>
-                Customers & Reviews
+                Reviews
               </Typography>
-              <MenuItem
-                className={slug === "customers" ? classes.selected : null}
-                selected={slug === "customers" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/customers`);
-                }}
-              >
-                <ListItemIcon>
-                  <Groups2Icon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Customers</ListItemText>
-              </MenuItem>
+             
               <MenuItem
                 className={slug === "reviews" ? classes.selected : null}
                 selected={slug === "reviews" ? true : false}
@@ -474,51 +502,38 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText>Countries</ListItemText>
               </MenuItem>
+              
               <MenuItem
                 className={
-                  slug === "utilities-states" ? classes.selected : null
+                  slug === "utilities-languages" ? classes.selected : null
                 }
-                selected={slug === "utilities-states" ? true : false}
+                selected={slug === "utilities-languages" ? true : false}
                 onClick={(event) => {
                   event.preventDefault();
-                  history.push(`/dashboard/utilities-states`);
-                }}
-              >
-                <ListItemIcon>
-                  <PlaceIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>States</ListItemText>
-              </MenuItem>
-              <MenuItem
-                className={
-                  slug === "utilities-cities" ? classes.selected : null
-                }
-                selected={slug === "utilities-cities" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/utilities-cities`);
-                }}
-              >
-                <ListItemIcon>
-                  <LocationCityIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Cities</ListItemText>
-              </MenuItem>
-              <MenuItem
-                className={
-                  slug === "utilities-skills" ? classes.selected : null
-                }
-                selected={slug === "utilities-skills" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/utilities-skills`);
+                  history.push(`/dashboard/utilities-languages`);
                 }}
               >
                 <ListItemIcon>
                   <StorefrontIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Skills</ListItemText>
+                <ListItemText>Languages</ListItemText>
               </MenuItem>
+              <MenuItem
+                className={
+                  slug === "utilities-niches" ? classes.selected : null
+                }
+                selected={slug === "utilities-niches" ? true : false}
+                onClick={(event) => {
+                  event.preventDefault();
+                  history.push(`/dashboard/utilities-niches`);
+                }}
+              >
+                <ListItemIcon>
+                  <StorefrontIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Niches</ListItemText>
+              </MenuItem>
+             
               <MenuItem
                 className={
                   slug === "utilities-currencies" ? classes.selected : null
@@ -534,51 +549,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText>Currencies</ListItemText>
               </MenuItem>
-              {/* <MenuItem
-                className={
-                  slug === "utilities-suppliers" ? classes.selected : null
-                }
-                selected={slug === "utilities-suppliers" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/utilities-suppliers`);
-                }}
-              >
-                <ListItemIcon>
-                  <SellIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Suppliers</ListItemText>
-              </MenuItem>
-              <MenuItem
-                className={
-                  slug === "utilities-carriers" ? classes.selected : null
-                }
-                selected={slug === "utilities-carriers" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/utilities-carriers`);
-                }}
-              >
-                <ListItemIcon>
-                  <CommuteIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Carriers</ListItemText>
-              </MenuItem>
-              <MenuItem
-                className={
-                  slug === "utilities-affiliates" ? classes.selected : null
-                }
-                selected={slug === "utilities-affiliates" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/utilities-affiliates`);
-                }}
-              >
-                <ListItemIcon>
-                  <AddTaskIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Affiliates</ListItemText>
-              </MenuItem> */}
+             
 
               <Divider />
               <Typography style={{ marginLeft: 10, fontWeight: "Bold" }}>
@@ -598,21 +569,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText>Policy</ListItemText>
               </MenuItem>
-              {/* <MenuItem
-                className={
-                  slug === "settings-shipping-rates" ? classes.selected : null
-                }
-                selected={slug === "settings-shipping-rates" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/settings-shipping-rates`);
-                }}
-              >
-                <ListItemIcon>
-                  <CorporateFareIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Shipping Rates</ListItemText>
-              </MenuItem> */}
+             
               <MenuItem
                 className={
                   slug === "settings-notifications" ? classes.selected : null
@@ -628,23 +585,7 @@ function Dashboard(props) {
                 </ListItemIcon>
                 <ListItemText>Notifications</ListItemText>
               </MenuItem>
-              {/* <MenuItem
-                className={
-                  slug === "settings-currency-exchanges"
-                    ? classes.selected
-                    : null
-                }
-                selected={slug === "settings-currency-exchanges" ? true : false}
-                onClick={(event) => {
-                  event.preventDefault();
-                  history.push(`/dashboard/settings-currency-exchanges`);
-                }}
-              >
-                <ListItemIcon>
-                  <CurrencyExchangeIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Currency Exchange</ListItemText>
-              </MenuItem> */}
+              
             </MenuList>
           </Paper>
         </Grid>
@@ -653,9 +594,14 @@ function Dashboard(props) {
             <MainDashboard />
           </Grid>
         )}
-        {slug === "products" && (
+        {slug === "creators" && (
           <Grid item xs={9.5}>
-            <Products />
+            <Creators />
+          </Grid>
+        )}
+        {slug === "brands" && (
+          <Grid item xs={9.5}>
+            <Brands />
           </Grid>
         )}
         {slug === "categories" && (
@@ -663,42 +609,7 @@ function Dashboard(props) {
             <Categories />
           </Grid>
         )}
-        {slug === "channels" && (
-          <Grid item xs={9.5}>
-            <Channels />
-          </Grid>
-        )}
-        {slug === "programmes" && (
-          <Grid item xs={9.5}>
-            <Programmes />
-          </Grid>
-        )}
-        {slug === "discount" && (
-          <Grid item xs={9.5}>
-            <Discount />
-          </Grid>
-        )}
-        {slug === "instructors" && (
-          <Grid item xs={9.5}>
-            <Instructors />
-          </Grid>
-        )}
-        {slug === "purchaseorders" && (
-          <Grid item xs={9.5}>
-            <PurchaseOrders />
-          </Grid>
-        )}
-
-        {slug === "mentors" && (
-          <Grid item xs={9.5}>
-            <Mentors />
-          </Grid>
-        )}
-        {slug === "assessors" && (
-          <Grid item xs={9.5}>
-            <Assessors />
-          </Grid>
-        )}
+      
         {slug === "dashboard-transactions" && (
           <Grid item xs={9.5}>
             <Orders />
@@ -709,14 +620,40 @@ function Dashboard(props) {
             <OrderList />
           </Grid>
         )}
+        {slug === "dashboard-orderscompleted" && (
+          <Grid item xs={9.5}>
+            <CompletedOrders />
+          </Grid>
+        )}
+        {slug === "dashboard-pendingpaymentorders" && (
+          <Grid item xs={9.5}>
+            <PendingPaymentOrders />
+          </Grid>
+        )}
+
+
+
+
         {slug === "dashboard-payment" && (
           <Grid item xs={9.5}>
             <Payments />
           </Grid>
         )}
-        {slug === "courseassessors" && (
+         {slug === "dashboard-disputed-payment" && (
           <Grid item xs={9.5}>
-            <CourseAssessors />
+            <PaymentInDispute />
+          </Grid>
+        )}
+
+
+        {slug === "creator-unapproved-samples" && (
+          <Grid item xs={9.5}>
+            <CreatorSamples />
+          </Grid>
+        )}
+        {slug === "creator-approved-samples" && (
+          <Grid item xs={9.5}>
+            <CreatorApprovedSamples />
           </Grid>
         )}
         {slug === "coursementors" && (
@@ -799,7 +736,17 @@ function Dashboard(props) {
             <Cities />
           </Grid>
         )}
-        {slug === "utilities-skills" && (
+        {slug === "utilities-languages" && (
+          <Grid item xs={9.5}>
+            <Languages />
+          </Grid>
+        )}
+         {slug === "utilities-niches" && (
+          <Grid item xs={9.5}>
+            <Niches />
+          </Grid>
+        )}
+         {slug === "utilities-projects" && (
           <Grid item xs={9.5}>
             <Categories />
           </Grid>
@@ -809,24 +756,24 @@ function Dashboard(props) {
             <Currencies />
           </Grid>
         )}
-        {/* {slug === "utilities-suppliers" && (
-          <Grid item xs={9.5}>
-            <Suppliers />
-          </Grid>
-        )} */}
-        {/* {slug === "utilities-carriers" && (
-          <Grid item xs={9.5}>
-            <Carriers />
-          </Grid>
-        )}
-        {slug === "utilities-affiliates" && (
-          <Grid item xs={9.5}>
-            <Affiliates />
-          </Grid>
-        )} */}
+       
         {slug === "settings-policy" && (
           <Grid item xs={9.5}>
-            <Policy />
+            <Policy 
+            id={policyId}          
+            userId={userId}
+            token={token}
+            platformRate={platformRate}
+            minimumPlatformCharge={minimumPlatformCharge}
+            vat={vat}
+            platformRateIsIncludedAsPartOfUserInputedAmount={platformRateIsIncludedAsPartOfUserInputedAmount}
+            vatIsIncludedAsPartOfUserInputedAmount={vatIsIncludedAsPartOfUserInputedAmount}
+            renderUpdatePage={renderUpdatePage}
+            hasInfo={hasInfo}
+             handleSuccessfulCreateSnackbar={handleSuccessfulCreateSnackbar}
+              handleSuccessfulEditSnackbar={handleSuccessfulEditSnackbar}
+              handleFailedSnackbar={handleFailedSnackbar}
+            />
           </Grid>
         )}
         {/* {slug === "settings-shipping-rates" && (
@@ -839,48 +786,18 @@ function Dashboard(props) {
             <Notifications />
           </Grid>
         )}
-        {slug === "settings-currency-exchanges" && (
-          <Grid item xs={9.5}>
-            <CurrencyExchange />
-          </Grid>
-        )}
-
-        {slug === "pos-orders" && (
-          <Grid item xs={9.5}>
-            <PoSOrders />
-          </Grid>
-        )}
-        {slug === "pos-payments" && (
-          <Grid item xs={9.5}>
-            <PoSPayments />
-          </Grid>
-        )}
-        {slug === "pos-returns" && (
-          <Grid item xs={9.5}>
-            <PoSReturns />
-          </Grid>
-        )}
-        {slug === "pos-invoicing" && (
-          <Grid item xs={9.5}>
-            <PoSInvoicing />
-          </Grid>
-        )}
-        {slug === "pos-packaging" && (
-          <Grid item xs={9.5}>
-            <PoSPackaging />
-          </Grid>
-        )}
-        {slug === "pos-subscriptions" && (
-          <Grid item xs={9.5}>
-            <PoSSubscription />
-          </Grid>
-        )}
-        {slug === "pos-delivery" && (
-          <Grid item xs={9.5}>
-            <PoSDelivery />
-          </Grid>
-        )}
+        
       </Grid>
+      <Snackbar
+                            open={alert.open}
+                            message={alert.message}
+                            ContentProps={{
+                              style: { backgroundColor: alert.backgroundColor },
+                            }}
+                            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                            onClose={() => setAlert({ ...alert, open: false })}
+                            autoHideDuration={4000}
+                          />
     </Box>
   );
 }
