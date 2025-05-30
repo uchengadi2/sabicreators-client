@@ -450,6 +450,8 @@ export default function AllCreatorsOnList(props) {
     return <></>;
   }
 
+  //Thiis the first UI design for the front page
+
   return (
     <>
       {matchesMDUp ? (
@@ -936,3 +938,6 @@ export default function AllCreatorsOnList(props) {
     </>
   );
 }
+
+
+

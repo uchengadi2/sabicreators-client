@@ -555,6 +555,38 @@ const Header = (props) => {
     setOpenSignUpForm(true);
   };
 
+  const handleSuccessfulSignUpCreatorDialogOpenStatusWithSnackbar = (message) => {
+    // history.push("/categories/new");
+
+    setAlert({
+      open: true,
+      message: message,
+      backgroundColor: "#4BB543",
+    });
+    setOpenSignUpForm(false);
+    setOpenCreatorSignUpForm(false);
+    setOpenDrawer(false);
+  };
+
+  
+
+  const handleFailedSignUpCreatorDialogOpenStatusWithSnackbar = (message) => {
+    // history.push("/categories/new");
+    setAlert({
+      open: true,
+      message: message,
+
+      backgroundColor: "#FF3232",
+    });
+    setOpenCreatorSignUpForm(true);
+  };
+
+
+    const handleMakeCloseSignUpCreatorDialogStatus = () => {
+    // history.push("/categories/new");
+    setOpenSignUpForm(false);
+    setOpenCreatorSignUpForm(false);
+  };
 
   const handleSuccessfulForgotPasswordDialogOpenStatusWithSnackbar = (message) => {
     // history.push("/categories/new");
@@ -768,7 +800,7 @@ const Header = (props) => {
             <img alt="company logo" src={logo} className={classes.logo} />
             {`Cart` + `(${props.cartCounter})`}
           </Button> */}
-          <Button
+          {userRole === 'brand' && <Button
             onClick={() => <CheckoutPage />}
             disableRipple
             component={Link}
@@ -778,7 +810,7 @@ const Header = (props) => {
           >
             {/* <img alt="company logo" src={logo} className={classes.logo} /> */}
             Checkout
-          </Button>
+          </Button>}
           <Button
             onClick={() => <ProfileLayout />}
             disableRipple
@@ -994,15 +1026,16 @@ const Header = (props) => {
             handleMakeOpenLoginFormDialogStatus={
               handleMakeOpenLoginFormDialogStatus
             }
-            handleSuccessfulSignUpDialogOpenStatusWithSnackbar={
-              handleSuccessfulSignUpDialogOpenStatusWithSnackbar
+            handleSuccessfulSignUpCreatorDialogOpenStatusWithSnackbar={
+              handleSuccessfulSignUpCreatorDialogOpenStatusWithSnackbar
             }
-            handleFailedSignUpDialogOpenStatusWithSnackbar={
-              handleFailedSignUpDialogOpenStatusWithSnackbar
+            handleFailedSignUpCreatorDialogOpenStatusWithSnackbar={
+              handleFailedSignUpCreatorDialogOpenStatusWithSnackbar
             }
-            handleMakeCloseSignUpDialogStatus={
-              handleMakeCloseSignUpDialogStatus
+            handleMakeCloseSignUpCreatorDialogStatus={
+              handleMakeCloseSignUpCreatorDialogStatus
             }
+            handleLoginDialogOpenStatus={handleLoginDialogOpenStatus}
 
             setToken={props.setToken}
             setUserId={props.setUserId}
@@ -1241,7 +1274,7 @@ const Header = (props) => {
                 </ListItemText>
               </ListItem>}
               
-              <ListItem
+              {userRole === 'brand' && <ListItem
                 className={classes.drawerItem}
                 onClick={() => [
                   setOpenDrawer(false),
@@ -1264,7 +1297,7 @@ const Header = (props) => {
                 <ListItemText className={classes.drawerItem} disableTypography>
                   Checkout
                 </ListItemText>
-              </ListItem>
+              </ListItem>}
               <ListItem
                 className={classes.drawerItem}
                 onClick={() => [

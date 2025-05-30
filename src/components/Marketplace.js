@@ -38,6 +38,7 @@ import AllCourses from "./homePageCards/AllCourses";
 import { baseURL } from "../apis/util";
 import AllCreatorsOnList from "./homePageCards/AllCreatorsOnList";
 import AllProductsInCardDesign from "./homePageCards/AllProductsInCardDesign.";
+import HeroSection from "./homePageCards/HeroSection"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -2994,10 +2995,13 @@ const Marketplace = (props) => {
 
   const Str = require("@supercharge/strings");
 
+
+  //This is the working code that had been tested
   const allCreatorsList = matchesMD ? (
     <React.Fragment>
       {
         <Grid container direction="row">
+        <Box>
           {creatorsList.map((creator, index) => (
             <AllCreatorsOnList
             name={creator.name}
@@ -3035,27 +3039,43 @@ const Marketplace = (props) => {
               path={path}
             />
           ))}
+           </Box>
         </Grid>
-        // <AllProductsInCardDesign 
-        //   creatorsList={creatorsList}
-        //     userId={props.userId}
-        //     setToken={props.setToken}
-        //     setUserId={props.setUserId}
-        //     pdateLearningPathInfoInfo={updateLearningPathInfoInfo}
-        //     path={path}
+       
+
+
+        //This is the new code for Card implementation
+        // <Box>
+         
+        //     <AllProductsInCardDesign
+        //      creatorsList={creatorsList}
+              
+        //         token={props.token}
+        //         userId={props.userId}
+        //         setToken={props.setToken}
+        //         setUserId={props.setUserId}
+        //         updateLearningPathInfoInfo={updateLearningPathInfoInfo}
+        //         path={path}
+        //     />
         
-        // />
+
+        // </Box>
+       
       }
     </React.Fragment>
   ) : (
     <React.Fragment>
       {
+        //This is teh first design for Card implementation
+
         <Grid
           container
           direction="column"
           justifyContent="center"
           alignItems="center"
         >
+        <Box>
+     
           {creatorsList.map((creator, index) => (
             <AllCreatorsOnList
             name={creator.name}
@@ -3093,7 +3113,24 @@ const Marketplace = (props) => {
             path={path}
             />
           ))}
-        </Grid>
+       </Box>
+    </Grid>
+        
+        
+    //This is the second design for Card implementation
+        
+        // <Box>         
+        //     <AllProductsInCardDesign
+        //      creatorsList={creatorsList}
+              
+        //         token={props.token}
+        //         userId={props.userId}
+        //         setToken={props.setToken}
+        //         setUserId={props.setUserId}
+        //         updateLearningPathInfoInfo={updateLearningPathInfoInfo}
+        //         path={path}
+        //     />
+        //     </Box>
       }
     </React.Fragment>
   );
@@ -3207,7 +3244,8 @@ const Marketplace = (props) => {
           </Grid>
         </Grid>
         {/* </section> */}
-        <TopCover />
+        <HeroSection />
+        {/* <TopCover /> */}
         {/* <TopCoverServices />
         <TopCoverNew /> */}
         {/* <TopCover /> */}

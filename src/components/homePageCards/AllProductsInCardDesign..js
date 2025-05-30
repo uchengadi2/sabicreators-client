@@ -50,9 +50,16 @@ const useStyles = makeStyles((theme) => ({
 
     marginLeft: "10px",
     //borderRadius: 30,
-    marginTop: "5rem",
+    marginTop: "2rem",
     marginBottom: "1.5em",
     padding: 0,
+    borderRadius: 10,
+    // border: "solid",
+    // borderColor: theme.palette.common.grey,
+    // borderColor: "transparent",
+    // backgroundColor: theme.palette.common.white,
+    // borderShadow: "1px 1px 1px 1px",
+    // boxShadow: "2px 2px 2px 2px",
     // "&:hover": {
     //   //border: "solid",
     //   //borderColor: theme.palette.common.grey,
@@ -456,15 +463,83 @@ export default function AllProductsInCardDesign(props) {
     <>
       {matchesMDUp ? (
         <Box>
-        <Card className={classes.root}>
-          
-        </Card>
+            <Grid container direction="row" style={{marginBottom:20, marginTop:20, marginLeft:'2%',marginRight:'5%'}}>
+                {props.creatorsList.map((creator, index) => (
+                
+
+                 <Grid item container justifyContent="center" alignItems="center" style={{width:'17%',marginLeft:"2%",marginTop:20}}>
+                    <Card style={{height:400}} raised={true} className={classes.root}>
+                
+
+                        <CardActionArea
+                            component={Link}
+                            to={`/products/${props.id}`}
+                            className={classes.imageContainer}
+                             onClick={() => {
+                        
+                    }}
+                    >
+                    <CardMedia
+                        className={classes.media}
+                        component="img"
+                        alt={props.name}
+                        image={`${baseURL}/images/creators/${creator.image}`}
+                        //title={product.name}
+                        crossOrigin="anonymous"
+                     />
+                </CardActionArea>  
+                <CardContent style={{height:'auto'}}>
+                    <Typography>This is the content Area</Typography>
+                </CardContent>
+
+                </Card>
+              </Grid>   
+             
+        
+         ))}
+         </Grid>
         </Box>
+      
+      
+        
+        
       ) : (
         <Box>
-        <Card className={classes.rootMobile} disableRipple>
-          
-        </Card>
+            <Grid container direction="row" style={{marginBottom:20, marginTop:10, marginLeft:'2%',marginRight:'5%'}}>
+                {props.creatorsList.map((creator, index) => (
+                
+
+                 <Grid item container justifyContent="center" alignItems="center" style={{width:'45%',marginLeft:"2%",marginTop:10}}>
+                    <Card style={{height:400}} raised={true} className={classes.root}>
+                
+
+                        <CardActionArea
+                            component={Link}
+                            to={`/products/${props.id}`}
+                            className={classes.imageContainer}
+                             onClick={() => {
+                        
+                    }}
+                    >
+                    <CardMedia
+                        className={classes.media}
+                        component="img"
+                        alt={props.name}
+                        image={`${baseURL}/images/creators/${creator.image}`}
+                        //title={product.name}
+                        crossOrigin="anonymous"
+                     />
+                </CardActionArea>  
+                <CardContent style={{height:'auto'}}>
+                    <Typography>This is the content Area</Typography>
+                </CardContent>
+
+                </Card>
+              </Grid>   
+             
+        
+         ))}
+         </Grid>
         </Box>
       )}
     </>
