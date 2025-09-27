@@ -46,6 +46,8 @@ import ProductAssessmentDetails from "./products/ProductAssessmentDetails";
 import DashboardBrand from "./Dashboard/DashboardBrand";
 import DashboardCreator from "./Dashboard/DashboardCreator";
 import ResetUserPasswordForm from "./authForms/ResetUserPasswordForm";
+import BrandServicesHomeScreen from "./BrandServicesHomeScreen"
+import InfluencerServicesHomeScreen from "./InfluencerServicesHomeScreen";
 
 function App() {
   const { token, setToken } = useToken();
@@ -160,6 +162,24 @@ function App() {
                 userId={userId}
                 setToken={setToken ? setToken : {}}
                 setUserId={setUserId ? setUserId : {}}
+              />
+            </Route>
+             <Route path="/brandcentral">
+              <BrandServicesHomeScreen
+                token={token}
+                setToken={setToken ? setToken : {}}
+                userId={userId}
+                setUserId={setUserId ? setUserId : {}}
+              
+              />
+            </Route>
+             <Route path="/creatorscentral">
+              <InfluencerServicesHomeScreen
+                token={token}
+                setToken={setToken ? setToken : {}}
+                userId={userId}
+                setUserId={setUserId ? setUserId : {}}
+              
               />
             </Route>
             {/* <Route path="/orders">

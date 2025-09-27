@@ -25,7 +25,7 @@ import backgroundRetail from "./../../assets/images/covers/delivery.png";
 
 import backgroundProduct from "./../../assets/images/covers/aboutus-cover.jpg";
 import backgroundGrowth from "./../../assets/images/covers/channels.jpg";
-import heroImage from "./../../assets/images/controlsoft/cover1.webp";
+import heroImage from "./../../assets/images/controlsoft/image24.webp";
 
 import { baseURL } from "./../../apis/util";
 
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     
       uppercard: {
         maxWidth: "100%",
-        height: 500,
+        height: 700,
         //height: 350,
         width: "100%",
     
@@ -59,8 +59,8 @@ const useStyles = makeStyles((theme) => ({
         //borderRadius: 30,
         marginTop: "3em",
         marginBottom: "1em",
-        padding: 20,
-        backgroundColor:"#FFFFFF"
+        padding: 40,
+        //backgroundColor:"#DDEB9D"
         // "&:hover": {
         //   //border: "solid",
         //   //borderColor: theme.palette.common.grey,
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
       },
       uppercardMobile: {
         maxWidth: "100%",
-        height: 370,
+        height: 430,
         //height: 350,
         width: "100%",
     
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: "3em",
         marginBottom: "1em",
         padding: 10,
-        backgroundColor:"#FFFFFF"
+        //backgroundColor:"#DDEB9D"
         // "&:hover": {
         //   //border: "solid",
         //   //borderColor: theme.palette.common.grey,
@@ -367,8 +367,8 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "250px",
         marginLeft: "50%",
         marginRight: "150px",
-        height: "45px",
-        width: "180px",
+        height: "35px",
+        width: "160px",
           marginBottom:100,
     
         "&:hover": {
@@ -381,8 +381,10 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "250px",
         marginLeft: "0%",
         marginRight: "0px",
-        height: "45px",
-        width: "180px",
+        //height: "35px",
+        width: "140px",
+        fontSize:11,
+        marginTop:10,
       
     
         "&:hover": {
@@ -392,7 +394,7 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-export default function CarHireOnlyService() {
+export default function HeroSectionInfluencer() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openLoginForm, setOpenLoginForm] = useState(false);
@@ -428,13 +430,14 @@ export default function CarHireOnlyService() {
 
   const Str = require("@supercharge/strings");
 
-  const whatwedoSection = "Connect with Africa’s most impactful content creators. Our platform makes it easy for brands to discover, engage, and collaborate with influencers across the continent—securely, transparently, and at scale. Whether you're launching a local product or expanding across markets, we provide the tools, talent, and support to drive real results..\n\n\n\n";
+  const whatwegetSection ="* Paid brand collaborations tailored to you \n\n* Exclusive campaigns and ongoing projects\n\n* Tangible rewards for authentic engagement\n\n\n\n";
+  const whyitworksSection = "* **Work With Leading Brands**: Partner on projects that match your skills and vision. \n\n* **Showcase Your Talent**: Get recognized for the unique content you create.\n\n* **Earn Rewards**: Turn your creativity into consistent income and lasting opportunities.\n\n\n\n";
     return (
       <>
         {matchesMDUp ? (
           <>
             <Box className={classes.uppercard} disableRipple={true}>
-              {/* <Typography variant="h5" style={{marginLeft:"60%", marginBottom:0, width:"100%"}}>Our Process</Typography> */}
+               {/* <Typography variant="h4" style={{marginLeft:'50%',marginBottom:30, fontSize:30, fontWeight:700, color:"black"}}>Car Rental Services</Typography> */}
               <Grid
                 container
                 direction="row"
@@ -451,49 +454,46 @@ export default function CarHireOnlyService() {
                   //direction={matchesSM ? "column" : "row"}
                   item
                 >
-                  {/* <Typography variant="h5" style={{marginLeft:"30%", marginBottom:20, width:"60%"}}>Our Process</Typography> */}
+                {/* <Typography variant="h3" style={{marginLeft:'0%',marginBottom:30}}>Chauffeur-Driven Exotic Car Rentals in Lagos</Typography> */}
                   
                 </Grid>
-                {/* <Typography style={{marginTop:0, padding: 70}}>
-                          <ReactMarkdown>{whatwedoSection}</ReactMarkdown>
-                    </Typography> */}
+                {/* <Typography variant="h3" style={{marginLeft:'0%',marginBottom:30}}>Chauffeur-Driven Exotic Car Rentals in Lagos</Typography> */}
                   <Grid
                     item
                     // alignItems="center"
                     // justifyContent="center"
                     //style={{ height: "60%", marginLeft: "3.5em" }}
-                    style={{ height: "70%", marginLeft: "10%", width:"50%", padding:50  }}
+                    style={{ height: "60%", marginLeft: "5%", width:"60%", padding:30, marginTop:0  }}
                   >
-                    <Typography style={{marginTop:0, fontSize:16}}>
-                          <ReactMarkdown>In today’s fast-paced digital landscape, compelling content is the key to capturing 
-                            attention and driving engagement. Our platform bridges the gap between brands and                 
-                            top creative talent, providing a seamless way to produce high-quality marketing videos 
-                            and catchy jingles that leave a lasting impact. </ReactMarkdown>
+                    <Typography variant="h3" style={{marginLeft:'0%',marginBottom:30}}>Collaborate. Create. Get Rewarded.</Typography>
+                    <Typography style={{marginTop:0, padding: 0,fontSize:17}}>
+                          <strong><ReactMarkdown>Your creativity deserves the spotlight—and the rewards that come with it.</ReactMarkdown></strong>
                     </Typography>
-                    <Typography style={{marginTop:15, fontSize:16}}>
-                          <ReactMarkdown>Whether you're a startup looking to establish a strong identity or a well-established 
-                            brand aiming to refresh your marketing strategy, we connect you with experienced Marketing Video 
-                            and Jingle creators who specialize in crafting captivating content tailored to your brand’s unique voice.</ReactMarkdown>
+                    <Typography style={{marginTop:20, fontSize:15}}>
+                          <ReactMarkdown>Join our platform to connect with brands that value your voice, your style, and your influence. From video campaigns to audio jingles, every project is an opportunity to showcase your talent, grow your reach, and earn through meaningful collaborations. </ReactMarkdown>
                     </Typography>
-                    <Typography style={{marginTop:15, fontSize:16}}>
-                          <ReactMarkdown>From concept to execution, the creator ensures that you get professionally 
-                              produced marketing assets that resonate with your audience and enhance brand recognition. </ReactMarkdown>
+                    <Typography style={{marginTop:30, fontSize:15}}>
+                          <ReactMarkdown>**Why Creators Join:**</ReactMarkdown>
                     </Typography>
-                    <Typography style={{marginTop:15, fontSize:16}}>
-                          <ReactMarkdown>Elevate your marketing with the power of creativity—connect with the industry’s best creators today! </ReactMarkdown>
+                    <Typography style={{marginTop:30, fontSize:15}}>
+                          <ReactMarkdown>{whyitworksSection}</ReactMarkdown>
                     </Typography>
+                     <Typography style={{marginTop:20, fontSize:15}}>
+                         <em><ReactMarkdown>Start collaborating today—because your creativity and Influence are worth more than just likes. </ReactMarkdown></em>
+                    </Typography>
+                    
                   </Grid>
                   {/* <Grid item  style={{width: "100%", marginTop: 0, marginLeft:"20%", marginBottom:0}}>
-                    <Button 
+                     <Button 
                         variant="contained" 
                         color="secondary" 
                         justifyContent="center" 
                         className={classes.button}
                         component={Link}
-                         to="/influencercentral/"
+                        to="/bookingcentral/carhireandsecurity"
                     
                     >
-                        Get Influencers!
+                        Book Now!
                     </Button>
                   </Grid> */}
                   
@@ -506,12 +506,14 @@ export default function CarHireOnlyService() {
           </>
         ) : (
           <Box className={classes.uppercardMobile} disableRipple>
+            {/* <Typography variant="h5" style={{marginLeft:"30%", marginBottom:20, width:"70%"}}>Car Rental Services</Typography> */}
              <Grid
                 container
                 direction="column"
                 style={{ marginTop: 20, height: "100%" }}
                 
               >
+                
                 <Grid
                   container
                   direction="row"
@@ -522,7 +524,7 @@ export default function CarHireOnlyService() {
                   //direction={matchesSM ? "column" : "row"}
                   item
                 >
-                  {/* <Typography variant="h5" style={{marginLeft:"30%", marginBottom:20, width:"60%"}}>Our Process</Typography> */}
+                  {/* <Typography variant="h5" style={{marginLeft:"30%", marginBottom:20, width:"100%"}}>What Is PPAR (Pay Per Actual Reach)?</Typography> */}
                   
                 </Grid>
                 {/* <Typography style={{marginTop:0, padding: 70}}>
@@ -533,38 +535,37 @@ export default function CarHireOnlyService() {
                     // alignItems="center"
                     // justifyContent="center"
                     //style={{ height: "60%", marginLeft: "3.5em" }}
-                    style={{ height: "70%", marginLeft: "2%", width:"70%", padding:5, marginRight:"10%"  }}
+                    style={{ height: "85%", marginLeft: "2%", width:"65%", padding:5, marginRight:"10%"  }}
                   >
-                    <Typography style={{marginTop:0, fontSize:10}}>
-                          <ReactMarkdown>In today’s fast-paced digital landscape, compelling content is the key to capturing 
-                            attention and driving engagement. Our platform bridges the gap between brands and                 
-                            top creative talent, providing a seamless way to produce high-quality marketing videos 
-                            and catchy jingles that leave a lasting impact. </ReactMarkdown>
+                   <Typography variant="h5" style={{marginLeft:'0%',marginBottom:30, fontWeight:700}}>Collaborate. Create. Get Rewarded.</Typography>
+                    <Typography style={{marginTop:0, padding: 0,fontSize:12}}>
+                          <strong><ReactMarkdown>Your creativity deserves the spotlight—and the rewards that come with it.</ReactMarkdown></strong>
                     </Typography>
                     <Typography style={{marginTop:10, fontSize:10}}>
-                          <ReactMarkdown>Whether you're a startup looking to establish a strong identity or a well-established 
-                            brand aiming to refresh your marketing strategy, we connect you with experienced Marketing Video 
-                            and Jingle creators who specialize in crafting captivating content tailored to your brand’s unique voice.</ReactMarkdown>
+                          <ReactMarkdown>Join our platform to connect with brands that value your voice, your style, and your influence. From video campaigns to audio jingles, every project is an opportunity to showcase your talent, grow your reach, and earn through meaningful collaborations. </ReactMarkdown>
                     </Typography>
                     <Typography style={{marginTop:10, fontSize:10}}>
-                          <ReactMarkdown>From concept to execution, the creator ensures that you get professionally 
-                              produced marketing assets that resonate with your audience and enhance brand recognition.</ReactMarkdown>
+                          <ReactMarkdown>**Why Creators Join:**</ReactMarkdown>
                     </Typography>
-                     <Typography style={{marginTop:10, fontSize:10}}>
-                          <ReactMarkdown>Elevate your marketing with the power of creativity—connect with the industry’s best creators today!</ReactMarkdown>
+                    <Typography style={{marginTop:10, fontSize:10}}>
+                          <ReactMarkdown>{whyitworksSection}</ReactMarkdown>
                     </Typography>
+                     <Typography style={{marginTop:20, fontSize:10}}>
+                          <em><ReactMarkdown>Start collaborating today—because your creativity and Influence are worth more than just likes. </ReactMarkdown></em>
+                    </Typography>
+                    
                   </Grid>
-                  {/* <Grid item  style={{width: "30%", height: "10%",marginLeft:"10%", marginBottom:0}}>
+                  {/* <Grid item  style={{width: "30%", height: "5%",marginLeft:"0%", marginBottom:0}}>
                     <Button 
-                        variant="contained" 
+                        variant="contained"
+                        //disabled={true} 
                         color="secondary" 
                         justifyContent="center" 
                         className={classes.buttonMobile}
                         component={Link}
-                        to="/influencercentral/"
-                    
+                        to="/bookingcentral/carhireandsecurity"                 
                     >
-                        Get Influencers!
+                        Book Now!
                     </Button>
                   </Grid> */}
                 

@@ -3245,7 +3245,7 @@ const Marketplace = (props) => {
         </Grid>
         {/* </section> */}
         <HeroSection />
-        {/* <TopCover /> */}
+        <TopCover /> 
         {/* <TopCoverServices />
         <TopCoverNew /> */}
         {/* <TopCover /> */}
