@@ -23,7 +23,8 @@ import animationData from "../animations/landinganimation/data";
 import revolutionBackground from "./../assets/repeatingBackground.svg";
 import infoBackground from "./../assets/infoBackground.svg";
 
-import background from "./../assets/images/covers/cover_1_image.jpg";
+//import background from "./../assets/images/covers/cover_1_image.jpg";
+import background from  "./../assets/images/controlsoft/creator2.jpg";
 import UpperFooter from "./ui/UpperFooter";
 import TopCover from "./homePageCards/TopCover";
 import LearningPath from "./homePageCards/LearningPath";

@@ -311,7 +311,7 @@ function UpperFooter(props) {
                         practice, mentoring and assessment <br />
                       </strong> */}
                       <strong>
-                        At TopCreators, we believe that powerful storytelling is at the heart of every successful brand.
+                        At DNinjas, we believe that powerful storytelling is at the heart of every successful brand.
                         Our platform is designed to connect businesses with top-tier creators specializing in marketing videos and jingles 
                         that captivate audiences and leave a lasting impression
 

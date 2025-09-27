@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "37903a3f8479e7488b76f4bb459830bf",
+    "revision": "a9013eea97430d7545be6678658df372",
     "url": "/index.html"
   },
   {
-    "revision": "b936e9ad33f471b3695a",
+    "revision": "ed35132e17887343f2d7",
     "url": "/static/css/main.8a8db68b.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/2.46378851.chunk.js"
   },
   {
-    "revision": "b936e9ad33f471b3695a",
-    "url": "/static/js/main.0308239e.chunk.js"
+    "revision": "ed35132e17887343f2d7",
+    "url": "/static/js/main.1599b6c8.chunk.js"
   },
   {
     "revision": "56256c405bfa76082cb3",
@@ -120,10 +120,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/media/cover3.1e1c7c3b.webp"
   },
   {
-    "revision": "3cc7b613d4feb20460e19edb40de6512",
-    "url": "/static/media/cover_1_image.3cc7b613.jpg"
-  },
-  {
     "revision": "6565588c8d5b3c6b2867d1d9037e4f21",
     "url": "/static/media/cover_image2.6565588c.png"
   },
@@ -134,6 +130,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "e4c42df3e78e0bc7a7d51482df4a066a",
     "url": "/static/media/crane truck2.e4c42df3.png"
+  },
+  {
+    "revision": "666d501ff31d7c210daaf6145445379f",
+    "url": "/static/media/creator2.666d501f.jpg"
   },
   {
     "revision": "ed8eced32a716b446e624c9f88d708ff",
@@ -188,8 +188,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/media/linkedin.9d7dbabd.svg"
   },
   {
-    "revision": "46bdecb5f40b510cb1d2fd6f06a656c3",
-    "url": "/static/media/logo.46bdecb5.png"
+    "revision": "2f5d5c82cc5b8d9b5309465d19023ab5",
+    "url": "/static/media/logo.2f5d5c82.png"
   },
   {
     "revision": "d7131d778b438bb8e5c089bcc08401cf",
