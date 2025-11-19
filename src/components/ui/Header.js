@@ -248,6 +248,7 @@ const useStyles = makeStyles((theme) => ({
   drawerIcon: {
     height: "50px",
     width: "50px",
+    color:"white",
   },
   drawerIconContainer: {
     //marginLeft: "auto",
@@ -259,6 +260,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     backgroundColor: theme.palette.common.green,
     marginLeft: "0px",
+    color:"white",
   },
   drawerItem: {
     ...theme.typography.tab,
